@@ -15,7 +15,6 @@ config HAVE_BLE_802154_LINK_LAYER
 
 config HAVE_BLE_HOST_ROM_IMAGE
 	bool
-	default n
 	help
 	  ROM image includes BLE host libraries
 
