@@ -1,0 +1,10 @@
+# Copyright (c) 2024 Alif Semiconductor
+#
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_SERIES_ENSEMBLE_E7
+	bool "Alif Ensemble E7 MCU Series"
+	select ARM
+	select SOC_FAMILY_ENSEMBLE
+	help
+	  Enable support for Alif Ensemble MCU and MPU series
