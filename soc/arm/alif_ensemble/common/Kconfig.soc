@@ -1,0 +1,12 @@
+# Copyright (c) 2024 Alif Semiconductor
+#
+# SPDX-License-Identifier: Apache-2.0
+config RTSS_HE
+	bool "RTSS_HE core"
+	help
+	  Enable RTSS_HE core.
+
+config RTSS_HP
+	bool "RTSS_HP core"
+	help
+	  Enable RTSS_HP core.

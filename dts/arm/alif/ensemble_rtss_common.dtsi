@@ -1,0 +1,268 @@
+/* Copyright (c) 2024 Alif Semiconductor
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+#include <arm/armv8.1-m.dtsi>
+#include <mem.h>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+&{/soc} {
+	uart2: uart@4901a000 {
+		compatible = "ns16550";
+		reg = <0x4901a000 0x100>;
+		/* 100Mhz baud clock */
+		clock-frequency = <100000000>;
+		interrupts = <126 3>;
+		reg-shift = <2>;
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_uart2 >;
+		pinctrl-names = "default";
+		status = "disabled";
+	};
+
+	uart4: uart@4901c000 {
+		compatible = "ns16550";
+		reg = <0x4901c000 0x100>;
+		/* 100Mhz baud clock */
+		clock-frequency = <100000000>;
+		interrupts = <128 3>;
+		reg-shift = <2>;
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_uart4 >;
+		pinctrl-names = "default";
+		status = "disabled";
+	};
+
+	uartclk: uart-clock {
+		compatible = "fixed-clock";
+		clock-frequency = <10000000>;
+		#clock-cells = <0>;
+	};
+
+	hsuart0:uart@1a510000 {
+		compatible = "arm,pl011";
+		reg = <0x1a510000 0x1000>;
+		clocks = <&uartclk>;
+		interrupts = <19 3>;
+		interrupt-names = "rx";
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_hsuart0 >;
+		pinctrl-names = "default";
+		status = "disabled";
+	};
+
+	gpio0: gpio@49000000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49000000 0x1000>;
+		ngpios = <8>;
+		interrupts = <179 3>, <180 3>,
+			     <181 3>, <182 3>,
+			     <183 3>, <184 3>,
+			     <185 3>, <186 3>;
+		pinctrl-0 = < &pinctrl_gpio0 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio1: gpio@49001000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49001000 0x1000>;
+		ngpios = <8>;
+		interrupts = <187 3>, <188 3>,
+			     <189 3>, <190 3>,
+			     <191 3>, <192 3>,
+			     <193 3>, <194 3>;
+		pinctrl-0 = < &pinctrl_gpio1 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio2: gpio@49002000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49002000 0x1000>;
+		ngpios = <8>;
+		interrupts = <195 3>, <196 3>,
+			     <197 3>, <198 3>,
+			     <199 3>, <200 3>,
+			     <201 3>, <202 3>;
+		pinctrl-0 = < &pinctrl_gpio2 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio3: gpio@49003000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49003000 0x1000>;
+		ngpios = <8>;
+		interrupts = <203 3>, <204 3>,
+			     <205 3>, <206 3>,
+			     <207 3>, <208 3>,
+			     <209 3>, <210 3>;
+		pinctrl-0 = < &pinctrl_gpio3 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio4: gpio@49004000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49004000 0x1000>;
+		ngpios = <8>;
+		interrupts = <211 3>, <212 3>,
+			     <213 3>, <214 3>,
+			     <215 3>, <216 3>,
+			     <217 3>, <218 3>;
+	/*	Commenting this here as gpio 4 is used for
+	 *	jtag connection
+	 *
+	 *	pinctrl-0 = < &pinctrl_gpio4 >;
+	 *	pinctrl-names = "default";
+	 */
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio5: gpio@49005000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49005000 0x1000>;
+		ngpios = <8>;
+		interrupts = <219 3>, <220 3>,
+			     <221 3>, <222 3>,
+			     <223 3>, <224 3>,
+			     <225 3>, <226 3>;
+		pinctrl-0 = < &pinctrl_gpio5 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio6: gpio@49006000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49006000 0x1000>;
+		ngpios = <8>;
+		interrupts = <227 3>, <228 3>,
+			     <229 3>, <230 3>,
+			     <231 3>, <232 3>,
+			     <233 3>, <234 3>;
+		pinctrl-0 = < &pinctrl_gpio6 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio7: gpio@49007000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49007000 0x1000>;
+		ngpios = <8>;
+		interrupts = <235 3>, <236 3>,
+			     <237 3>, <238 3>,
+			     <239 3>, <240 3>,
+			     <241 3>, <242 3>;
+		pinctrl-0 = < &pinctrl_gpio7 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	gpio8: gpio@49008000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49008000 0x1000>;
+		ngpios = <8>;
+		interrupts = <243 3>, <244 3>,
+			     <245 3>, <246 3>,
+			     <247 3>, <248 3>,
+			     <249 3>, <250 3>;
+		pinctrl-0 = < &pinctrl_gpio8 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio9: gpio@49009000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x49009000 0x1000>;
+		ngpios = <8>;
+		interrupts = <251 3>, <252 3>,
+			     <253 3>, <254 3>,
+			     <255 3>, <256 3>,
+			     <257 3>, <258 3>;
+		pinctrl-0 = < &pinctrl_gpio9 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio10: gpio@4900a000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x4900A000 0x1000>;
+		ngpios = <8>;
+		interrupts = <259 3>, <260 3>,
+			     <261 3>, <262 3>,
+			     <263 3>, <264 3>,
+			     <265 3>, <266 3>;
+		pinctrl-0 = < &pinctrl_gpio10 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio11: gpio@4900b000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x4900B000 0x1000>;
+		ngpios = <8>;
+		interrupts = <267 3>, <268 3>,
+			     <269 3>, <270 3>,
+			     <271 3>, <272 3>,
+			     <273 3>, <274 3>;
+		pinctrl-0 = < &pinctrl_gpio11 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio12: gpio@4900c000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x4900C000 0x1000>;
+		ngpios = <8>;
+		interrupts = <275 3>, <276 3>,
+			     <277 3>, <278 3>,
+			     <279 3>, <280 3>,
+			     <281 3>, <282 3>;
+		pinctrl-0 = < &pinctrl_gpio12 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio13: gpio@4900d000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x4900D000 0x1000>;
+		ngpios = <8>;
+		interrupts = <283 3>, <284 3>,
+			     <285 3>, <286 3>,
+			     <287 3>, <288 3>,
+			     <289 3>, <290 3>;
+		pinctrl-0 = < &pinctrl_gpio13 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+	gpio14: gpio@4900e000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x4900E000 0x1000>;
+		ngpios = <8>;
+		interrupts = <291 3>, <292 3>,
+			     <293 3>, <294 3>,
+			     <295 3>, <296 3>,
+			     <297 3>, <298 3>;
+		pinctrl-0 = < &pinctrl_gpio14 >;
+		pinctrl-names = "default";
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+};
+
+&{/} {
+	clocks {
+		syst_hclk: ahb_clk {
+			compatible = "fixed-clock";
+			clock-frequency = <200000000>;
+			#clock-cells = <0>;
+		};
+		syst_pclk: apb_clk {
+			compatible = "fixed-clock";
+			clock-frequency = <160000000>;
+			#clock-cells = <0>;
+		};
+	};
+};
