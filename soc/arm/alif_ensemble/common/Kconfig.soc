@@ -25,3 +25,11 @@ config SOC_SUPPORT_ARM_MHUV2
 	select ARM_MHUV2
 	help
 	  SoC support communication through Arm MHUv2
+
+config ENSEMBLE_PDM
+	bool "Enable PDM in Ensemble family"
+	select AUDIO
+	select AUDIO_CODEC
+	select AUDIO_DMIC
+	help
+	  Enable PDM in Ensemble family

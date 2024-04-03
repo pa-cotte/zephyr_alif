@@ -47,6 +47,10 @@ static int ensemble_e7_dk_rtss_hp_init(void)
 	data |= (1 << 16);
 	sys_write32(data, 0x43007010);
 
+	/* enable pdm in expansion master */
+	data = sys_read32(0x4902F000);
+	data |= 0x100;
+
 	return 0;
 }
 

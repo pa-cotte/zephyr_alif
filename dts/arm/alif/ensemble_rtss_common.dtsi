@@ -185,6 +185,16 @@
 		status = "disabled";
 	};
 
+	pdm0: pdm0@4902d000 {
+		compatible = "alif,alifpcm";
+		reg = <0x4902d000 0x1000>;
+		interrupts = <145 1>;
+		pinctrl-0 = < &pinctrl_pdm0 >;
+		pinctrl-names = "default";
+		status = "okay";
+	};
+
+
 	gpio0: gpio@49000000 {
 		compatible = "snps,designware-gpio";
 		reg = <0x49000000 0x1000>;

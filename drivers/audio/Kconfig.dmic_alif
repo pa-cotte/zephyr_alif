@@ -1,0 +1,7 @@
+# Copyright (c) 2024 Alif Semiconductor
+#
+# SPDX-License-Identifier: Apache-2.0
+config ALIF_PDM
+	bool "Alif PDM module driver enable"
+	help
+	  Enable Alif PDM module driver
