@@ -410,7 +410,34 @@
 			#clock-cells = <0>;
 		};
 	};
+
+	mram_flash: mram_flash@80500000 {
+		compatible = "alif,mram-flash-controller";
+		reg = <0x80500000 DT_SIZE_K(10)>;
+
+		#address-cells = <1>;
+		#size-cells = <1>;
+		mram_storage: mram_storage@80500000 {
+			compatible = "soc-nv-flash";
+			reg = <0x80500000 DT_SIZE_K(10)>;
+			erase-block-size = <1024>;
+			write-block-size = <16>;
+		};
+	};
+
 	chosen {
 		zephyr,entropy = &rng;
+	};
+};
+
+&mram_storage {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		storage_partition: partition@0 {
+			label = "storage";
+			reg = <0x0 DT_SIZE_K(10)>;
+		};
 	};
 };
