@@ -394,6 +394,10 @@
 };
 
 &{/} {
+	rng: rng {
+		status = "okay";
+		compatible = "alif,secure-enclave-trng";
+	};
 	clocks {
 		syst_hclk: ahb_clk {
 			compatible = "fixed-clock";
@@ -405,5 +409,8 @@
 			clock-frequency = <160000000>;
 			#clock-cells = <0>;
 		};
+	};
+	chosen {
+		zephyr,entropy = &rng;
 	};
 };
