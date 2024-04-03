@@ -6,6 +6,87 @@
 #include <mem.h>
 #include <zephyr/dt-bindings/gpio/gpio.h>
 &{/soc} {
+	hwsem0: hwsem@4902e000 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E000 0x10>;
+		interrupts = < 105 3 >;
+	};
+	hwsem1: hwsem@4902e010 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E010 0x10>;
+		interrupts = < 106 3 >;
+	};
+	hwsem2: hwsem@4902e020 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E020 0x10>;
+		interrupts = < 107 3 >;
+	};
+	hwsem3: hwsem@4902e030 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E030 0x10>;
+		interrupts = < 108 3 >;
+	};
+	hwsem4: hwsem@4902e040 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E040 0x10>;
+		interrupts = < 109 3 >;
+	};
+	hwsem5: hwsem@4902e050 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E050 0x10>;
+		interrupts = < 110 3 >;
+	};
+	hwsem6: hwsem@4902e060 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E060 0x10>;
+		interrupts = < 111 3 >;
+	};
+	hwsem7: hwsem@4902e070 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E070 0x10>;
+		interrupts = < 112 3 >;
+	};
+	hwsem8: hwsem@4902e080 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E080 0x10>;
+		interrupts = < 113 3 >;
+	};
+	hwsem9: hwsem@4902e090 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E090 0x10>;
+		interrupts = < 114 3 >;
+	};
+	hwsem10: hwsem@4902e0a0 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E0A0 0x10>;
+		interrupts = < 115 3 >;
+	};
+	hwsem11: hwsem@4902e0b0 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E0B0 0x10>;
+		interrupts = < 116 3 >;
+	};
+	hwsem12: hwsem@4902e0c0 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E0C0 0x10>;
+		interrupts = < 117 3 >;
+	};
+	hwsem13: hwsem@4902e0d0 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E0D0 0x10>;
+		interrupts = < 118 3 >;
+	};
+	hwsem14: hwsem@4902e0e0 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E0E0 0x10>;
+		interrupts = < 119 3 >;
+	};
+	hwsem15: hwsem@4902e0f0 {
+		compatible = "alif,hwsem";
+		reg = <0x4902E0F0 0x10>;
+		interrupts = < 120 3 >;
+	};
+
 	uart2: uart@4901a000 {
 		compatible = "ns16550";
 		reg = <0x4901a000 0x100>;
