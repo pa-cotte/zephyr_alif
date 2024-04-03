@@ -17,3 +17,11 @@ config ALIF_HWSEM_INIT_PRIORITY
 	default 50
 	help
 	  Hardware Semaphore driver initialization priority.
+
+config SOC_SUPPORT_ARM_MHUV2
+	bool "SoC support communication through Arm MHUv2"
+	depends on SOC_FAMILY_ENSEMBLE
+	select IPM
+	select ARM_MHUV2
+	help
+	  SoC support communication through Arm MHUv2
