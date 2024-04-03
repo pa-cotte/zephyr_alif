@@ -31,6 +31,7 @@ aeroflexgaisler	Aeroflex Gaisler AB
 aesop	AESOP Embedded Forum
 al	Annapurna Labs
 alcatel	Alcatel
+alif	Alif Semiconductor
 allegro	Allegro DVT
 allo	Allo.com
 allwinner	Allwinner Technology Co., Ltd.
