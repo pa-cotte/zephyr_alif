@@ -33,6 +33,15 @@ macro(toolchain_ld_baremetal)
   # CONFIG_LINKER_ORPHAN_SECTION_PLACE is to place the orphan sections
   # without any warnings or errors, which is the default behavior.
   # So there is no need to explicitly set a linker flag.
+  # HACK: Link -lc -lm -lclang_rt.builtins librares required by ld.lld
+  if(CONFIG_LLVM_USE_LLD AND CONFIG_CPU_CORTEX_M55)
+    set(LLVM_LINK_LIB "-lc -lm -lclang_rt.builtins")
+  else()
+    set(LLVM_LINK_LIB "")
+  endif()
+  zephyr_ld_options(
+    ${LLVM_LINK_LIB}
+  )
   if(CONFIG_LINKER_ORPHAN_SECTION_WARN)
     zephyr_ld_options(
       ${LINKERFLAGPREFIX},--orphan-handling=warn

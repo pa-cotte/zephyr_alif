@@ -26,7 +26,10 @@ if("${ARCH}" STREQUAL "arm")
     set(triple arm-none-eabi)
   endif()
 
-  set(CMAKE_EXE_LINKER_FLAGS_INIT "--specs=nosys.specs")
+  if(CONFIG_LLVM_USE_LD)
+    set(CMAKE_EXE_LINKER_FLAGS_INIT "--specs=nosys.specs")
+  endif()
+
 elseif("${ARCH}" STREQUAL "x86")
   if(CONFIG_64BIT)
     set(triple x86_64-pc-none-elf)
@@ -49,7 +52,9 @@ elseif(CONFIG_COMPILER_RT_RTLIB)
   set(runtime_lib "compiler_rt")
 endif()
 
+if(NOT CONFIG_LLVM_USE_LLD)
 list(APPEND TOOLCHAIN_C_FLAGS --config
 	${ZEPHYR_BASE}/cmake/toolchain/llvm/clang_${runtime_lib}.cfg)
 list(APPEND TOOLCHAIN_LD_FLAGS --config
 	${ZEPHYR_BASE}/cmake/toolchain/llvm/clang_${runtime_lib}.cfg)
+endif()

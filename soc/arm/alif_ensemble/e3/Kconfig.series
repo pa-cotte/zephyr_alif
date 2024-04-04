@@ -6,5 +6,6 @@ config SOC_SERIES_ENSEMBLE_E3
 	bool "Alif Ensemble E3 MCU Series"
 	select ARM
 	select SOC_FAMILY_ENSEMBLE
+	select BUILD_NO_GAP_FILL
 	help
 	  Enable support for Alif Ensemble MCU and MPU series
