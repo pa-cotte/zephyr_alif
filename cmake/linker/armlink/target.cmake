@@ -45,6 +45,9 @@ macro(configure_linker_script linker_script_gen linker_pass_define)
       -DSYMBOLS="$<TARGET_PROPERTY:linker,SYMBOLS>"
       ${STEERING_FILE_ARG}
       ${STEERING_C_ARG}
+      -DZEPHYR_TOOLCHAIN_VARIANT=${ZEPHYR_TOOLCHAIN_VARIANT}
+      -DCONFIG_SRAM_BASE_ADDRESS=${CONFIG_SRAM_BASE_ADDRESS}
+      -DCONFIG_FLASH_BASE_ADDRESS=${CONFIG_FLASH_BASE_ADDRESS}
       -DOUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/${linker_script_gen}
       -P ${ZEPHYR_BASE}/cmake/linker/armlink/scatter_script.cmake
   )

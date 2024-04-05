@@ -39,7 +39,13 @@ zephyr_linker(ENTRY ${CONFIG_KERNEL_ENTRY})
 
 zephyr_linker_memory(NAME FLASH    FLAGS rx START ${FLASH_ADDR} SIZE ${FLASH_SIZE})
 zephyr_linker_memory(NAME RAM      FLAGS wx START ${RAM_ADDR}   SIZE ${RAM_SIZE})
+# set IDT_LIST to 4K similar to used with GCC.
+if(CONFIG_SOC_FAMILY_ENSEMBLE AND CONFIG_ARMCLANG_STD_LIBC)
+zephyr_linker_memory(NAME IDT_LIST FLAGS wx START ${IDT_ADDR}   SIZE 4K)
+else()
 zephyr_linker_memory(NAME IDT_LIST FLAGS wx START ${IDT_ADDR}   SIZE 2K)
+endif()
+
 
 # Only use 'rw' as FLAGS. It's not used anyway.
 dt_comp_path(paths COMPATIBLE "zephyr,memory-region")

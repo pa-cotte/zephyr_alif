@@ -631,8 +631,18 @@ foreach(region ${MEMORY_REGIONS})
   endif()
 endforeach()
 
-list(SORT region_sort COMPARE NATURAL)
-set(MEMORY_REGIONS_SORTED)
+# HACK for armclang: keep regions in unsorted if the CONFIG_FLASH_BASE_ADDRESS
+# is more than CONFIG_SRAM_BASE_ADDRESS address to make sure .bss macros
+# are referred within RAM section
+if(${ZEPHYR_TOOLCHAIN_VARIANT} STREQUAL "armclang")
+  if(${CONFIG_FLASH_BASE_ADDRESS} LESS ${CONFIG_SRAM_BASE_ADDRESS})
+    list(SORT region_sort COMPARE NATURAL)
+    set(MEMORY_REGIONS_SORTED)
+  endif()
+else()
+  list(SORT region_sort COMPARE NATURAL)
+  set(MEMORY_REGIONS_SORTED)
+endif()
 foreach(region_start ${region_sort})
   list(APPEND MEMORY_REGIONS_SORTED "${region_${region_start}}")
 endforeach()

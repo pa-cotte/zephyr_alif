@@ -16,6 +16,12 @@ include(${ZEPHYR_BASE}/cmake/gcc-m-fpu.cmake)
 # 'cortex-m33+nodsp' we need that to be 'cortex-m33' for CMAKE_SYSTEM_PROCESSOR
 string(REGEX REPLACE "\\+.*" "" CMAKE_SYSTEM_PROCESSOR ${GCC_M_CPU})
 
+#HACK - do not relocate FB allocations for Display application to SRAM0 if
+#compiler is armclang
+if(ZEPHYR_TOOLCHAIN_VARIANT STREQUAL "armclang" AND DEFINED CONFIG_DISPLAY)
+  list(APPEND TOOLCHAIN_C_FLAGS -DNO_RELOCATE_SRAM0)
+endif()
+
 list(APPEND TOOLCHAIN_C_FLAGS
   -fshort-enums
   )
