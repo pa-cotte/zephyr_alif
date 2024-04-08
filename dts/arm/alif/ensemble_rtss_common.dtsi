@@ -151,6 +151,7 @@
 		current-speed = <115200>;
 		pinctrl-0 = < &pinctrl_uart2 >;
 		pinctrl-names = "default";
+		fifo-size = <32>;
 		status = "disabled";
 	};
 
@@ -164,6 +165,7 @@
 		current-speed = <115200>;
 		pinctrl-0 = < &pinctrl_uart4 >;
 		pinctrl-names = "default";
+		fifo-size = <32>;
 		status = "disabled";
 	};
 
