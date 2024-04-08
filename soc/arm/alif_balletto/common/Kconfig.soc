@@ -60,6 +60,14 @@ config SPI_DW_ENABLE
 	  Enable Designware SPI driver.
 	select HAS_SPI_DW
 
+choice BT_HCI_BUS_TYPE
+	default BT_ALIF
+endchoice
+
+choice BT_RECV_CONTEXT
+	default BT_RECV_BLOCKING
+endchoice
+
 # Use HW entropy for seed Xoshiro128 pseudo random generator
 choice RNG_GENERATOR_CHOICE
 	default XOSHIRO_RANDOM_GENERATOR
