@@ -430,6 +430,14 @@
 		gpio-controller;
 		#gpio-cells = <2>;
 	};
+
+	crc: crc@48107000 {
+		compatible = "alif,alif-crc";
+		reg = <0x48107000 0x1000>;
+		crc_algo = "CRC_8_BIT_SIZE";
+		status = "okay";
+	};
+
 	se_service: se_service {
 		compatible = "alif,secure-enclave-services";
 		mhuv2-send-node = <&seservice0s>;
