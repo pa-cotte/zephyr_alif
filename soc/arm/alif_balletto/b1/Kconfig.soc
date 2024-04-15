@@ -1,0 +1,22 @@
+# Copyright (c) 2024 Alif Semiconductor
+#
+# SPDX-License-Identifier: Apache-2.0
+
+choice
+	prompt "Alif Balletto Family Selection"
+	depends on SOC_SERIES_BALLETTO_B1
+
+config SOC_B1_DK_RTSS_HE
+	bool "SOC_B1_RTSS_HE"
+	select CPU_CORTEX_M55
+	select SOC_SERIES_BALLETTO
+	select CPU_HAS_ARM_MPU
+	select CPU_CORTEX_M_HAS_SYSTICK
+	select CPU_HAS_FPU
+	select ARMV8_M_DSP
+	select ARMV8_1_M_MVEI
+	select ARMV8_1_M_MVEF
+endchoice
+
+config SOC_SERIES_BALLETTO
+	bool "Alif Balletto Series"

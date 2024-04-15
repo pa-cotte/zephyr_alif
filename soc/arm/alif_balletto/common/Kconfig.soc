@@ -1,0 +1,67 @@
+# Copyright (c) 2024 Alif Semiconductor
+#
+# SPDX-License-Identifier: Apache-2.0
+
+config HAVE_BLE_802154_LINK_LAYER
+	bool
+	default y
+	help
+	  SOC includes BLE and 802.15.4 Link layer system
+
+config HAVE_BLE_HOST_ROM_IMAGE
+	bool
+	default n
+	help
+	  ROM image includes BLE host libraries
+
+config HAS_ALIF_SE_SERVICES
+	bool
+	default y
+	help
+	  Device has Secure Enclave services
+
+config HAS_ALIF_POWER_MANAGER
+	bool
+	depends on HAS_ALIF_SE_SERVICES
+	default y
+	help
+	  Device has Alif Power Manager services
+
+config ARM_MHUV2_INIT_PRIORITY
+	int "MHUv2 Init priority"
+	depends on ARM_MHUV2
+	default 40
+	help
+	  MHUv2 driver initialization priority.
+
+config ALIF_HWSEM_INIT_PRIORITY
+	int "HWSEM Init priority"
+	depends on ALIF_HWSEM
+	default 50
+	help
+	  Hardware Semaphore driver initialization priority.
+
+config SOC_SUPPORT_ARM_MHUV2
+	bool "SoC support communication through Arm MHUv2"
+	select IPM
+	select ARM_MHUV2
+	help
+	  SoC support communication through Arm MHUv2
+
+config SPI_DW_ENABLE
+	bool
+	default y
+	depends on SPI
+	help
+	  Enable Designware SPI driver.
+	select HAS_SPI_DW
+
+# Use HW entropy for seed Xoshiro128 pseudo random generator
+choice RNG_GENERATOR_CHOICE
+	default XOSHIRO_RANDOM_GENERATOR
+endchoice
+
+# Use HW entropy for seed CTR-DRBG
+choice CSPRNG_GENERATOR_CHOICE
+	default CTR_DRBG_CSPRNG_GENERATOR
+endchoice

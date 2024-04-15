@@ -1,0 +1,10 @@
+# Copyright (c) 2024 Alif Semiconductor
+#
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_SERIES_BALLETTO_B1
+	bool "Alif Balletto B1 MCU Series"
+	select ARM
+	select SOC_FAMILY_BALLETTO
+	help
+	  Enable support for Alif Balletto MCU series

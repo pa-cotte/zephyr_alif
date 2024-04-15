@@ -1,0 +1,48 @@
+/* Copyright (c) 2024 Alif Semiconductor
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/dts-v1/;
+
+#include <alif/balletto_rtss_common.dtsi>
+#include <alif/balletto-pinctrl.dtsi>
+
+/ {
+	compatible = "arm,alif-b1-fpga-rtss-he";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+};
+&ieee802154 {
+	status = "okay";
+};
+
+&{/} {
+	chosen {
+		zephyr,console = &uart4;
+		zephyr,shell-uart = &uart4;
+		zephyr,bt-uart = &uart_hci;
+	};
+};
+
+&uart4 {
+	status = "okay";
+};
+
+&uart_hci {
+	/* [MV] with 24M the divisor is 1.5 to get 1M.
+	 * So use DLF=8 (0.5) and 20M clock to get integer divisor 1
+	 */
+	clock-frequency = <20000000>;
+	dlf = <8>;
+};
+
+&uart_ahi {
+	/* [MV] with 24M the divisor is 1.5 to get 1M.
+	 * So use DLF=8 (0.5) and 20M clock to get integer divisor 1
+	 */
+	clock-frequency = <20000000>;
+	dlf = <8>;
+	pinctrl-0 = < &pinctrl_ahi_trace >;
+	pinctrl-names = "default";
+};
