@@ -33,3 +33,140 @@ config ENSEMBLE_PDM
 	select AUDIO_DMIC
 	help
 	  Enable PDM in Ensemble family
+
+if COUNTER_SNPS_DW
+menu "LPTIMER channel configurations"
+
+# LPTIMER 0 Clock Settings
+choice LPTIMER0_CLOCK_SELECT
+	prompt "Ensemble LPTimer-0 Clock Select"
+	default LPTIMER0_CLOCK_SOURCE_32K
+	help
+	  "Clock Selection for LPTimer 0"
+
+config LPTIMER0_CLOCK_SOURCE_32K
+	bool "32KHZ Clock"
+	help
+	  This option selects 32KHz(Actual clock freq is 32.768KHz) clock for lptimer 0.
+
+config LPTIMER0_CLOCK_SOURCE_128K
+	bool "128KHZ Clock"
+	help
+	  This option selects 128KHz clock for lptimer 0.
+
+config LPTIMER0_CLOCK_SOURCE_EXT
+	bool "External Clock Input"
+	help
+	  This option selects external clock source through lpgpio pin 0.
+endchoice
+
+# LPTIMER 1 Clock Settings
+choice LPTIMER1_CLOCK_SELECT
+	prompt "Ensemble LPTimer-1 Clock Select"
+	default LPTIMER1_CLOCK_SOURCE_32K
+	help
+	  "Clock Selection for LPTimer 1"
+
+config LPTIMER1_CLOCK_SOURCE_32K
+	bool "32KHZ Clock"
+	help
+	  This option selects 32KHz(Actual clock freq is 32.768KHz) clock for lptimer 1.
+
+config LPTIMER1_CLOCK_SOURCE_128K
+	bool "128KHZ CLOCK"
+	help
+	  This option selects 128KHz clock for lptimer 1.
+
+config LPTIMER1_CLOCK_SOURCE_CASCADE
+	bool "Cascade Clock Input from LPTIMER 0"
+	help
+	  This option selects cascaded clock input for lptimer 1 from lptimer 0.
+
+config LPTIMER1_CLOCK_SOURCE_EXT
+	bool "External Clock Input"
+	help
+	  This option selects external clock source through lpgpio pin 1.
+endchoice
+
+# LPTIMER 2 Clock Settings
+choice LPTIMER2_CLOCK_SELECT
+	prompt "Ensemble LPTimer-2 Clock Select"
+	default LPTIMER2_CLOCK_SOURCE_32K
+	help
+	  "Clock Selection for LPTimer 2"
+
+config LPTIMER2_CLOCK_SOURCE_32K
+	bool "32KHZ Clock"
+	help
+	  This option selects 32KHz clock for lptimer 2.
+
+config LPTIMER2_CLOCK_SOURCE_128K
+	bool "128KHZ Clock"
+	help
+	  This option selects 128KHz clock for lptimer 2.
+
+config LPTIMER2_CLOCK_SOURCE_EXT
+	bool "External Clock Input"
+	help
+	  This option selects external clock source through lpgpio pin 2.
+endchoice
+
+# LPTIMER 3 Clock Settings
+choice LPTIMER3_CLOCK_SELECT
+	prompt "Ensemble LPTimer-3 Clock Select"
+	default LPTIMER3_CLOCK_SOURCE_32K
+	help
+	  "Clock Selection for LPTimer 3"
+
+config LPTIMER3_CLOCK_SOURCE_32K
+	bool "32KHZ Clock"
+	help
+	  This options enables number generator based on system timer
+
+config LPTIMER3_CLOCK_SOURCE_128K
+	bool "128KHZ Clock"
+	help
+	  This option selects 128KHz clock for lptimer 3.
+
+config LPTIMER3_CLOCK_SOURCE_CASCADE
+	bool "Cascade Clock Input from LPTIMER 2"
+	help
+	  This options enables number generator based on system timer
+
+config LPTIMER3_CLOCK_SOURCE_EXT
+	bool "External Clock Input"
+	help
+	  This option selects external clock source through lpgpio pin 3.
+endchoice
+
+endmenu # "LP-Timer Clock sources"
+
+config LPTIMER0_OUTPUT_TOGGLE
+	bool "LPTimer0 Output Toggle"
+	default y
+	depends on !LPTIMER0_CLOCK_SOURCE_EXT
+	help
+	  Enable output toggle for lptimer 0.
+
+config LPTIMER1_OUTPUT_TOGGLE
+	bool "LPTimer1 Output Toggle"
+	default y
+	depends on !LPTIMER1_CLOCK_SOURCE_EXT
+	help
+	  Enable output toggle for lptimer 1.
+
+config LPTIMER2_OUTPUT_TOGGLE
+	bool "LPTimer2 Output Toggle"
+	default y
+	depends on !LPTIMER2_CLOCK_SOURCE_EXT
+	help
+	  Enable output toggle for lptimer 2.
+
+config LPTIMER3_OUTPUT_TOGGLE
+	bool "LPTimer3 Output Toggle"
+	default y
+	depends on !LPTIMER3_CLOCK_SOURCE_EXT
+	help
+	  Enable output toggle for lptimer 3.
+
+endif # COUNTER_SNPS_DW

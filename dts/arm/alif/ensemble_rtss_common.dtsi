@@ -60,6 +60,39 @@
 			interrupt-names = "tx";
 		};
 	};
+
+	timer0: timer@42001000 {
+		compatible = "snps,dw-timers";
+		reg = <0x42001000 0x14>;
+		interrupts = < 60 3 >;
+		clock-frequency = <32768>;
+		status = "disabled";
+	};
+
+	timer1: timer@42001014 {
+		compatible = "snps,dw-timers";
+		reg = <0x42001014 0x14>;
+		interrupts = < 61 3 >;
+		clock-frequency = <32768>;
+		status = "disabled";
+	};
+
+	timer2: timer@42001028 {
+		compatible = "snps,dw-timers";
+		reg = <0x42001028 0x14>;
+		interrupts = < 62 3 >;
+		clock-frequency = <32768>;
+		status = "disabled";
+	};
+
+	timer3: timer@4200103c {
+		compatible = "snps,dw-timers";
+		reg = <0x4200103C 0x14>;
+		interrupts = < 63 3 >;
+		clock-frequency = <32768>;
+		status = "disabled";
+	};
+
 	hwsem0: hwsem@4902e000 {
 		compatible = "alif,hwsem";
 		reg = <0x4902E000 0x10>;
