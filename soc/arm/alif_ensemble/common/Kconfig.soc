@@ -170,3 +170,22 @@ config LPTIMER3_OUTPUT_TOGGLE
 	  Enable output toggle for lptimer 3.
 
 endif # COUNTER_SNPS_DW
+
+config XIP_MRAM
+	bool "Config to run application from MRAM in XiP mode"
+	depends on XIP
+	default n
+	help
+	  Config to run application from MRAM in XiP mode.
+
+if XIP_MRAM
+config FLASH_SIZE
+	int
+	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_hp@80000000,0) if RTSS_HP
+	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_he@80080000,0) if RTSS_HE
+
+config FLASH_BASE_ADDRESS
+	hex
+	default $(dt_node_reg_addr_hex,/soc/mram_flash@80000000/xip_rtss_hp@80000000,0) if RTSS_HP
+	default $(dt_node_reg_addr_hex,/soc/mram_flash@80000000/xip_rtss_he@80080000,0) if RTSS_HE
+endif

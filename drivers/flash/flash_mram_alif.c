@@ -15,7 +15,7 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(flash_mram_alif);
 
-#define SOC_NV_FLASH_NODE      DT_INST(0, soc_nv_flash)
+#define SOC_NV_FLASH_NODE      DT_NODELABEL(mram_storage)
 #define FLASH_MRAM_BASE_OFFSET DT_REG_ADDR(SOC_NV_FLASH_NODE)
 #define FLASH_MRAM_ERASE_UNIT  DT_PROP(SOC_NV_FLASH_NODE, erase_block_size)
 #define FLASH_MRAM_PROG_UNIT   DT_PROP(SOC_NV_FLASH_NODE, write_block_size)
