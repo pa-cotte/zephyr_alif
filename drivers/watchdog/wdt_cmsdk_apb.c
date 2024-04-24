@@ -11,6 +11,7 @@
  */
 
 #include <errno.h>
+#include <stdint.h>
 #include <soc.h>
 #include <zephyr/arch/arm/nmi.h>
 #include <zephyr/drivers/watchdog.h>
