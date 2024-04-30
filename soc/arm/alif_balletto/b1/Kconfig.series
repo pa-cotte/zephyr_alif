@@ -6,5 +6,6 @@ config SOC_SERIES_BALLETTO_B1
 	bool "Alif Balletto B1 MCU Series"
 	select ARM
 	select SOC_FAMILY_BALLETTO
+	select BUILTIN_STACK_GUARD
 	help
 	  Enable support for Alif Balletto MCU series
