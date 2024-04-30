@@ -14,6 +14,9 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(uart_nus, CONFIG_UART_LOG_LEVEL);
 
+K_THREAD_STACK_DEFINE(nus_work_queue_stack, CONFIG_UART_BT_WORKQUEUE_STACK_SIZE);
+static struct k_work_q nus_work_queue;
+
 struct uart_bt_data {
 	struct {
 		struct bt_nus_inst *inst;
@@ -266,6 +269,19 @@ static const struct uart_driver_api uart_bt_driver_api = {
 	.irq_update = uart_bt_irq_update,
 	.irq_callback_set = uart_bt_irq_callback_set,
 };
+
+static int uart_bt_workqueue_init(void)
+{
+	k_work_queue_init(&nus_work_queue);
+	k_work_queue_start(&nus_work_queue, nus_work_queue_stack,
+			   K_THREAD_STACK_SIZEOF(nus_work_queue_stack),
+			   CONFIG_UART_BT_WORKQUEUE_PRIORITY, NULL);
+
+	return 0;
+}
+
+/** The work-queue is shared across all instances, hence we initialize it separatedly */
+SYS_INIT(uart_bt_workqueue_init, POST_KERNEL, CONFIG_SERIAL_INIT_PRIORITY);
 
 static int uart_bt_init(const struct device *dev)
 {
