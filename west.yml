@@ -23,6 +23,8 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: babblesim
       url-base: https://github.com/BabbleSim
+    - name: alif
+      url-base: org-115832732@github.com:AlifSemiDev
 
   group-filter: [-babblesim, -optional]
 
@@ -136,6 +138,12 @@ manifest:
       path: modules/fs/fatfs
       groups:
         - fs
+    - name: hal_alif
+      revision: main
+      path: modules/hal/alif
+      remote: alif
+      groups:
+        - hal
     - name: hal_altera
       revision: 0d225ddd314379b32355a00fb669eacf911e750d
       path: modules/hal/altera
