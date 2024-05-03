@@ -2,6 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+config RTSS_HE
+	bool "RTSS_HE core"
+	help
+	  Enable RTSS_HE core.
+
 config HAVE_BLE_802154_LINK_LAYER
 	bool
 	default y
@@ -65,3 +70,20 @@ endchoice
 choice CSPRNG_GENERATOR_CHOICE
 	default CTR_DRBG_CSPRNG_GENERATOR
 endchoice
+
+config XIP_MRAM
+	bool "Config to run application from MRAM in XiP mode"
+	depends on XIP
+	default n
+	help
+	  Config to run application from MRAM in XiP mode.
+
+if XIP_MRAM
+config FLASH_SIZE
+	int
+	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_he@80000000,0) if RTSS_HE
+
+config FLASH_BASE_ADDRESS
+	hex
+	default $(dt_node_reg_addr_hex,/soc/mram_flash@80000000/xip_rtss_he@80000000,0) if RTSS_HE
+endif

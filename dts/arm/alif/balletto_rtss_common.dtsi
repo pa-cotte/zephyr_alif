@@ -238,6 +238,24 @@
 			mhuv2-recv-node = <&seservice0r>;
 			status = "okay";
 		};
+		mram_flash: mram_flash@80000000 {
+			compatible = "alif,mram-flash-controller";
+			/* Usable MRAM size for applications is 1536 KB */
+			reg = <0x80000000 DT_SIZE_K(1536)>;
+
+			#address-cells = <1>;
+			#size-cells = <1>;
+			xip_rtss_he: xip_rtss_he@80000000 {
+				compatible = "soc-nv-flash";
+				reg = <0x80000000 DT_SIZE_K(1024)>;
+			};
+			mram_storage: mram_storage@8017d800 {
+				compatible = "soc-nv-flash";
+				reg = <0x8017d800 DT_SIZE_K(10)>;
+				erase-block-size = <1024>;
+				write-block-size = <16>;
+			};
+		};
 	};
 	clocks {
 		syst_hclk: ahb_clk {
@@ -249,19 +267,6 @@
 			compatible = "fixed-clock";
 			clock-frequency = <160000000>;
 			#clock-cells = <0>;
-		};
-	};
-	mram_flash: mram_flash@80100000 {
-		compatible = "alif,mram-flash-controller";
-		reg = <0x80100000 DT_SIZE_K(10)>;
-
-		#address-cells = <1>;
-		#size-cells = <1>;
-		mram_storage: mram_storage@80100000 {
-			compatible = "soc-nv-flash";
-			reg = <0x80100000 DT_SIZE_K(10)>;
-			erase-block-size = <1024>;
-			write-block-size = <16>;
 		};
 	};
 	chosen {
