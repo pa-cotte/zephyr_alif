@@ -180,9 +180,9 @@ config XIP_MRAM
 
 if XIP_MRAM
 config FLASH_SIZE
-	int
-	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_hp@80000000,0) if RTSS_HP
-	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_he@80080000,0) if RTSS_HE
+	int "Flash Size in kB"
+	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_hp@80000000,0,K) if RTSS_HP
+	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_he@80080000,0,K) if RTSS_HE
 
 config FLASH_BASE_ADDRESS
 	hex
