@@ -99,6 +99,25 @@
 		};
 	};
 
+	pinctrl_i2c0: pinctrl_i2c0 {
+		group0 {
+			pinmux = < PIN_P3_5__I2C0_SDA_B >,
+				 < PIN_P3_4__I2C0_SCL_B >;
+
+			read_enable = < 0x1 >;
+			driver_state_control = < 0x1 >;
+		};
+	};
+	pinctrl_i2c1: pinctrl_i2c1 {
+		group0 {
+			pinmux = < PIN_P7_2__I2C1_SDA_C >,
+				 < PIN_P7_3__I2C1_SCL_C >;
+			read_enable = < 0x1 >;
+			driver_state_control = < 0x1 >;
+		};
+	};
+
+
 	pinctrl_gpio0:pinctrl_gpio0 {
 		group0 {
 			/*comment out based on requirement  */

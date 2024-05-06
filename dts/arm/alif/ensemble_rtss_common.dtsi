@@ -4,6 +4,7 @@
  */
 #include <arm/armv8.1-m.dtsi>
 #include <mem.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
 #include <zephyr/dt-bindings/gpio/gpio.h>
 &{/soc} {
 	peripheral@40000000 {
@@ -505,6 +506,30 @@
 		blend-factor2-l2 = <5>;
 		const-alpha-l2 = <0xaf>;
 	};
+	i2c0: i2c0@49010000 {
+		compatible = "snps,designware-i2c";
+		clock-frequency = <I2C_BITRATE_STANDARD>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x49010000 0x1000>;
+		pinctrl-0 = < &pinctrl_i2c0 >;
+		pinctrl-names = "default";
+		interrupt-parent = <&nvic>;
+		interrupts = <132 3>;
+		status = "okay";
+	};
+	i2c1: i2c1@49011000 {
+		compatible = "snps,designware-i2c";
+		clock-frequency = <I2C_BITRATE_STANDARD>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x49011000 0x1000>;
+		pinctrl-0 = < &pinctrl_i2c1 >;
+		pinctrl-names = "default";
+		interrupt-parent = <&nvic>;
+		interrupts = <133 3>;
+		status = "okay";
+	};
 
 	se_service: se_service {
 		compatible = "alif,secure-enclave-services";
@@ -534,6 +559,7 @@
 			write-block-size = <16>;
 		};
 	};
+
 };
 &mram_storage {
 	partitions {
