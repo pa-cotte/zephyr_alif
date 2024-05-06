@@ -3,6 +3,7 @@
 /*
  * Copyright (c) 2015 Intel Corporation
  * Copyright (c) 2022 Andrei-Edward Popa
+ * Copyright (c) 2024 Alif Semiconductor
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -752,8 +753,8 @@ static int i2c_dw_runtime_configure(const struct device *dev, uint32_t config)
 		/* Following the directions on DW spec page 59, IC_SS_SCL_LCNT
 		 * must have register values larger than IC_FS_SPKLEN + 7
 		 */
-		if (I2C_STD_LCNT <= (read_fs_spklen(reg_base) + 7)) {
-			value = read_fs_spklen(reg_base) + 8;
+		if (I2C_STD_LCNT <= (read_fs_spklen(reg_base) + I2C_SCL_LCNT_MIN)) {
+			value = read_fs_spklen(reg_base) + I2C_SCL_LCNT_MIN_PLUS_ONE;
 		} else {
 			value = I2C_STD_LCNT;
 		}
@@ -763,8 +764,8 @@ static int i2c_dw_runtime_configure(const struct device *dev, uint32_t config)
 		/* Following the directions on DW spec page 59, IC_SS_SCL_HCNT
 		 * must have register values larger than IC_FS_SPKLEN + 5
 		 */
-		if (I2C_STD_HCNT <= (read_fs_spklen(reg_base) + 5)) {
-			value = read_fs_spklen(reg_base) + 6;
+		if (I2C_STD_HCNT <= (read_fs_spklen(reg_base) + I2C_SCL_HCNT_MIN)) {
+			value = read_fs_spklen(reg_base) + I2C_SCL_HCNT_MIN_PLUS_ONE;
 		} else {
 			value = I2C_STD_HCNT;
 		}
@@ -772,14 +773,12 @@ static int i2c_dw_runtime_configure(const struct device *dev, uint32_t config)
 		dw->hcnt = value;
 		break;
 	case I2C_SPEED_FAST:
-		__fallthrough;
-	case I2C_SPEED_FAST_PLUS:
 		/*
 		 * Following the directions on DW spec page 59, IC_FS_SCL_LCNT
 		 * must have register values larger than IC_FS_SPKLEN + 7
 		 */
-		if (I2C_FS_LCNT <= (read_fs_spklen(reg_base) + 7)) {
-			value = read_fs_spklen(reg_base) + 8;
+		if (I2C_FS_LCNT <= (read_fs_spklen(reg_base) + I2C_SCL_LCNT_MIN)) {
+			value = read_fs_spklen(reg_base) + I2C_SCL_LCNT_MIN_PLUS_ONE;
 		} else {
 			value = I2C_FS_LCNT;
 		}
@@ -790,26 +789,51 @@ static int i2c_dw_runtime_configure(const struct device *dev, uint32_t config)
 		 * Following the directions on DW spec page 59, IC_FS_SCL_HCNT
 		 * must have register values larger than IC_FS_SPKLEN + 5
 		 */
-		if (I2C_FS_HCNT <= (read_fs_spklen(reg_base) + 5)) {
-			value = read_fs_spklen(reg_base) + 6;
+		if (I2C_FS_HCNT <= (read_fs_spklen(reg_base) + I2C_SCL_HCNT_MIN)) {
+			value = read_fs_spklen(reg_base) + I2C_SCL_HCNT_MIN_PLUS_ONE;
 		} else {
 			value = I2C_FS_HCNT;
 		}
 
 		dw->hcnt = value;
 		break;
+	case I2C_SPEED_FAST_PLUS:
+		/*
+		 * Following the directions on DW spec page 59, IC_FSP_SCL_LCNT
+		 * must have register values larger than IC_FS_SPKLEN + 7
+		 */
+		if (I2C_FSP_LCNT <= (read_fs_spklen(reg_base) + I2C_SCL_LCNT_MIN)) {
+			value = read_fs_spklen(reg_base) + I2C_SCL_LCNT_MIN_PLUS_ONE;
+		} else {
+			value = I2C_FSP_LCNT;
+		}
+
+		dw->lcnt = value;
+
+		/*
+		 * Following the directions on DW spec page 59, IC_FSP_SCL_HCNT
+		 * must have register values larger than IC_FS_SPKLEN + 5
+		 */
+		if (I2C_FSP_HCNT <= (read_fs_spklen(reg_base) + I2C_SCL_HCNT_MIN)) {
+			value = read_fs_spklen(reg_base) + I2C_SCL_HCNT_MIN_PLUS_ONE;
+		} else {
+			value = I2C_FSP_HCNT;
+		}
+
+		dw->hcnt = value;
+		break;
 	case I2C_SPEED_HIGH:
 		if (dw->support_hs_mode) {
-			if (I2C_HS_LCNT <= (read_hs_spklen(reg_base) + 7)) {
-				value = read_hs_spklen(reg_base) + 8;
+			if (I2C_HS_LCNT <= (read_hs_spklen(reg_base) + I2C_SCL_LCNT_MIN)) {
+				value = read_hs_spklen(reg_base) + I2C_SCL_LCNT_MIN_PLUS_ONE;
 			} else {
 				value = I2C_HS_LCNT;
 			}
 
 			dw->lcnt = value;
 
-			if (I2C_HS_HCNT <= (read_hs_spklen(reg_base) + 5)) {
-				value = read_hs_spklen(reg_base) + 6;
+			if (I2C_HS_HCNT <= (read_hs_spklen(reg_base) + I2C_SCL_HCNT_MIN)) {
+				value = read_hs_spklen(reg_base) + I2C_SCL_HCNT_MIN_PLUS_ONE;
 			} else {
 				value = I2C_HS_HCNT;
 			}
@@ -885,7 +909,7 @@ static int i2c_dw_set_master_mode(const struct device *dev)
 	return 0;
 }
 
-static int i2c_dw_set_slave_mode(const struct device *dev, uint8_t addr)
+static int i2c_dw_set_slave_mode(const struct device *dev, uint8_t addr, uint8_t flags)
 {
 	uint32_t reg_base = get_regs(dev);
 	union ic_con_register ic_con;
@@ -899,6 +923,12 @@ static int i2c_dw_set_slave_mode(const struct device *dev, uint8_t addr)
 	ic_con.bits.rx_fifo_full = 1U;
 	ic_con.bits.restart_en = 1U;
 	ic_con.bits.stop_det = 1U;
+
+	if (flags & I2C_TARGET_FLAGS_ADDR_10_BITS) {
+		ic_con.bits.addr_slave_10bit = 1U;
+	} else {
+		ic_con.bits.addr_slave_10bit = 0U;
+	}
 
 	write_con(ic_con.raw, reg_base);
 	write_sar(addr, reg_base);
@@ -922,7 +952,7 @@ static int i2c_dw_slave_register(const struct device *dev,
 	int ret;
 
 	dw->slave_cfg = cfg;
-	ret = i2c_dw_set_slave_mode(dev, cfg->address);
+	ret = i2c_dw_set_slave_mode(dev, cfg->address, cfg->flags);
 	write_intr_mask(DW_INTR_MASK_RX_FULL |
 			DW_INTR_MASK_RD_REQ |
 			DW_INTR_MASK_TX_ABRT |

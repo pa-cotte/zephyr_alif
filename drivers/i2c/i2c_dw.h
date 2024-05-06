@@ -2,6 +2,7 @@
 
 /*
  * Copyright (c) 2015 Intel Corporation
+ * Copyright (c) 2024 Alif Semiconductor
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -27,7 +28,10 @@ extern "C" {
 #endif
 
 #define I2C_DW_MAGIC_KEY			0x44570140
-
+#define I2C_SCL_LCNT_MIN			7
+#define I2C_SCL_LCNT_MIN_PLUS_ONE		8
+#define I2C_SCL_HCNT_MIN			5
+#define I2C_SCL_HCNT_MIN_PLUS_ONE		6
 
 typedef void (*i2c_isr_cb_t)(const struct device *port);
 
@@ -62,14 +66,21 @@ typedef void (*i2c_isr_cb_t)(const struct device *port);
 #define DW_DISABLE_ALL_I2C_INT		0x00000000
 
 
-/* IC_CON Low count and high count default values */
-/* TODO verify values for high and fast speed */
+/* IC_CON Low count and high count default values
+ * Verified values for high and fast speeds.
+ * Added Fast speed plus mode.
+ * Calculations are done based on DesignWare DW_apb_i2c Databook
+ * 2.15.4.3.1 session, page 71
+ * CONFIG_I2C_DW_CLOCK_SPEED is considered as 100Mhz for calculations
+ */
 #define I2C_STD_HCNT			(CONFIG_I2C_DW_CLOCK_SPEED * 4)
 #define I2C_STD_LCNT			(CONFIG_I2C_DW_CLOCK_SPEED * 5)
-#define I2C_FS_HCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 6) / 8)
-#define I2C_FS_LCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 7) / 8)
-#define I2C_HS_HCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 6) / 8)
-#define I2C_HS_LCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 7) / 8)
+#define I2C_FS_HCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 9) / 8)
+#define I2C_FS_LCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 11) / 8)
+#define I2C_FSP_HCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 3) / 8)
+#define I2C_FSP_LCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 5) / 8)
+#define I2C_HS_HCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 16) / 1000)
+#define I2C_HS_LCNT			((CONFIG_I2C_DW_CLOCK_SPEED * 18) / 1000)
 
 /*
  * DesignWare speed values don't directly translate from the Zephyr speed
