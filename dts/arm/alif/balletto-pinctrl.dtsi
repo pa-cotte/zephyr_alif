@@ -46,10 +46,42 @@
 		};
 	};
 
+	pinctrl_ut0: pinctrl_utimer0 {
+		group0 {
+			pinmux = < PIN_P4_0__UT0_T0_A >,
+				 < PIN_P4_1__UT0_T1_A >;
+			read_enable = < 0x0 >;
+		};
+	};
+
+	pinctrl_ut1: pinctrl_utimer1 {
+		group0 {
+			pinmux = < PIN_P4_2__UT1_T0_A >,
+				 < PIN_P4_3__UT1_T1_A >;
+			read_enable = < 0x0 >;
+		};
+	};
+
+	pinctrl_ut2: pinctrl_utimer2 {
+		group0 {
+			pinmux = < PIN_P4_4__UT2_T0_A >,
+				 < PIN_P4_5__UT2_T1_A >;
+			read_enable = < 0x0 >;
+		};
+	};
+
+	pinctrl_ut3: pinctrl_utimer3 {
+		group0 {
+			pinmux = < PIN_P4_6__UT3_T0_A >,
+				 < PIN_P4_7__UT3_T1_A >;
+			read_enable = < 0x0 >;
+		};
+	};
+
 	pinctrl_uart2: pinctrl_uart2 {
 		group0 {
-			pinmux = < PIN_P1_0__UART2_RX_A >,
-				 < PIN_P1_1__UART2_TX_A >;
+			pinmux = < PIN_P1_6__UART2_RX_A >,
+				 < PIN_P1_6__UART2_RX_A >;
 		};
 	};
 

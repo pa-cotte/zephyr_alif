@@ -19,13 +19,25 @@
 
 &{/} {
 	chosen {
-		zephyr,console = &uart4;
-		zephyr,shell-uart = &uart4;
+		zephyr,console = &uart2;
+		zephyr,shell-uart = &uart2;
 		zephyr,bt-uart = &uart_hci;
+	};
+
+	aliases {
+		led0 = &aled0;
+		pwm-led0 = &pwm_ut2;
+	};
+	pwmleds {
+		compatible = "pwm-leds";
+		pwm_ut2: pwm_ut2 {
+			pwms = <&pwm2 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+			label = "UT2 PWM";
+		};
 	};
 };
 
-&uart4 {
+&uart2 {
 	status = "okay";
 };
 
@@ -45,4 +57,15 @@
 	dlf = <8>;
 	pinctrl-0 = < &pinctrl_ahi_trace >;
 	pinctrl-names = "default";
+};
+
+&utimer2 {
+	driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+	status = "okay";
+
+	pwm2: pwm {
+		pinctrl-0 = < &pinctrl_ut2 >;
+		pinctrl-names = "default";
+		status = "okay";
+	};
 };

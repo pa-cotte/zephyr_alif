@@ -23,6 +23,7 @@
 
 	aliases {
 		led0 = &aled0;
+		pwm-led0 = &pwm_led0_green;
 		apssmhu0r = &apss_rtsshe_mhu0_r;
 		apssmhu0s = &rtsshe_apss_mhu0_s;
 		apssmhu1r = &apss_rtsshe_mhu1_r;
@@ -38,6 +39,13 @@
 		aled0: led_0 {
 			gpios = <&gpio6 2 0>;
 			label = "LED1_R";
+		};
+	};
+	pwmleds {
+		compatible = "pwm-leds";
+		pwm_led0_green: pwm_led_0 {
+			pwms = <&pwm10 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+			label = "RED PWM GREEN 0";
 		};
 	};
 };
@@ -75,5 +83,16 @@
 			label = "storage";
 			reg = <0x00240000 DT_SIZE_K(10)>;
 		};
+	};
+};
+
+&utimer10 {
+	driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+	status = "okay";
+
+	pwm10: pwm {
+		pinctrl-0 = < &pinctrl_ut10 >;
+		pinctrl-names = "default";
+		status = "okay";
 	};
 };

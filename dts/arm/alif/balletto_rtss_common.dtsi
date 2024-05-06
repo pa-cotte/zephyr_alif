@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 #include <arm/armv8.1-m.dtsi>
+#include <zephyr/dt-bindings/timer/alif_utimer.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
 #include <mem.h>
 / {
 	soc {
@@ -49,6 +51,74 @@
 				interrupt-names = "tx";
 			};
 		};
+
+	utimer0: utimer@48001000 {
+		compatible = "alif,utimer";
+		reg = <0x48001000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <0>;
+		clock-frequency = <24000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer1: utimer@48002000 {
+		compatible = "alif,utimer";
+		reg = <0x48002000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <1>;
+		clock-frequency = <24000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer2: utimer@48003000 {
+		compatible = "alif,utimer";
+		reg = <0x48003000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <2>;
+		clock-frequency = <24000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer3: utimer@48004000 {
+		compatible = "alif,utimer";
+		reg = <0x48004000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <3>;
+		clock-frequency = <24000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
 
 		uart2: uart@4901a000 {
 			compatible = "ns16550";

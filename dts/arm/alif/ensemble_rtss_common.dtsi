@@ -6,6 +6,8 @@
 #include <mem.h>
 #include <zephyr/dt-bindings/i2c/i2c.h>
 #include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/timer/alif_utimer.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
 &{/soc} {
 	peripheral@40000000 {
 		#address-cells = < 0x1 >;
@@ -92,6 +94,210 @@
 		interrupts = < 63 3 >;
 		clock-frequency = <32768>;
 		status = "disabled";
+	};
+
+	utimer0: utimer@48001000 {
+		compatible = "alif,utimer";
+		reg = <0x48001000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <0>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer1: utimer@48002000 {
+		compatible = "alif,utimer";
+		reg = <0x48002000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <1>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer2: utimer@48003000 {
+		compatible = "alif,utimer";
+		reg = <0x48003000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <2>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer3: utimer@48004000 {
+		compatible = "alif,utimer";
+		reg = <0x48004000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <3>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer4: utimer@48005000 {
+		compatible = "alif,utimer";
+		reg = <0x48005000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <4>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer5: utimer@48006000 {
+		compatible = "alif,utimer";
+		reg = <0x48006000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <5>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer6: utimer@48007000 {
+		compatible = "alif,utimer";
+		reg = <0x48007000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <6>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer7: utimer@48008000 {
+		compatible = "alif,utimer";
+		reg = <0x48008000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <7>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer8: utimer@48009000 {
+		compatible = "alif,utimer";
+		reg = <0x48009000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <8>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer9: utimer@4800a000 {
+		compatible = "alif,utimer";
+		reg = <0x4800A000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <9>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer10: utimer@4800b000 {
+		compatible = "alif,utimer";
+		reg = <0x4800B000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <10>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
+	};
+
+	utimer11: utimer@4800c000 {
+		compatible = "alif,utimer";
+		reg = <0x4800C000 0x1000 0x48000000 0x24>;
+		reg-names = "timer", "global";
+		timer-id = <11>;
+		clock-frequency = <400000000>;
+		counter-direction = < ALIF_UTIMER_COUNTER_DIRECTION_UP >;
+		driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+		status = "disabled";
+
+		pwm {
+			compatible = "alif,pwm";
+			#pwm-cells = <3>;
+			status = "disabled";
+		};
 	};
 
 	hwsem0: hwsem@4902e000 {
