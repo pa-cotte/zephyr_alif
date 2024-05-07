@@ -4,4 +4,6 @@
 zephyr_sources_ifdef(CONFIG_SOC_E7_DK_RTSS_HE soc_e7_dk_rtss_he.c)
 zephyr_sources_ifdef(CONFIG_SOC_E7_DK_RTSS_HP soc_e7_dk_rtss_hp.c)
 
+zephyr_linker_sources_ifdef(CONFIG_DISPLAY SECTIONS alif_sram.ld)
+
 set(SOC_LINKER_SCRIPT ${ZEPHYR_BASE}/include/zephyr/arch/arm/cortex_m/scripts/linker.ld CACHE INTERNAL "")

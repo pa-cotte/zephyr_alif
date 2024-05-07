@@ -17,6 +17,16 @@
 		dtcm_global_base = <0x50800000>;
 		zephyr,memory-region = "DTCM";
 	};
+	sram0: sram@2000000 {
+		compatible = "zephyr,memory-region","mmio-sram";
+		reg = <0x02000000 DT_SIZE_K(4096)>;
+		zephyr,memory-region = "SRAM0";
+	};
+	sram1: sram@8000000 {
+		compatible = "zephyr,memory-region","mmio-sram";
+		reg = <0x08000000 DT_SIZE_K(2560)>;
+		zephyr,memory-region = "SRAM1";
+	};
 	clocks {
 		rtss_hp_clk: rtss_hp_clk {
 			compatible = "fixed-clock";

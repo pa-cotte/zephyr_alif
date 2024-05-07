@@ -16,6 +16,8 @@ config SOC_E7_DK_RTSS_HE
 	select ARMV8_M_DSP
 	select ARMV8_1_M_MVEI
 	select ARMV8_1_M_MVEF
+	select BUILD_NO_GAP_FILL
+	select CPU_HAS_ARM_SAU
 
 config SOC_E7_DK_RTSS_HP
 	bool "SOC_E7_DK_RTSS_HP"
@@ -27,6 +29,8 @@ config SOC_E7_DK_RTSS_HP
 	select ARMV8_M_DSP
 	select ARMV8_1_M_MVEI
 	select ARMV8_1_M_MVEF
+	select BUILD_NO_GAP_FILL
+	select CPU_HAS_ARM_SAU
 
 endchoice
 

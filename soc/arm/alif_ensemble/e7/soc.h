@@ -6,9 +6,65 @@
 #ifndef _SOC_H_
 #define _SOC_H_
 
-#define __NVIC_PRIO_BITS          NUM_IRQ_PRIO_BITS
+#define __MPU_PRESENT 1
 
+/* CGU registers. */
+#define CGU_BASE		0x1A602000
+#define CGU_PLL_CLK_SEL		(CGU_BASE + 0x8)
+#define CGU_CLK_ENA		(CGU_BASE + 0x14)
+
+/* VBAT registers. */
+#define VBAT_BASE		0x1A609000
+#define VBAT_PWR_CTRL		(VBAT_BASE + 0x8)
+#define VBAT_RTC_CLK_EN		(VBAT_BASE + 0x10)
+
+/* Expansion Slave registers. */
+#define EXPSLV_BASE		0x4902F000
+#define EXPSLV_EXPMST0_CTRL	(EXPSLV_BASE)
+#define EXPSLV_UART_CTRL	(EXPSLV_BASE + 0x8)
+#define EXPSLV_SSI_CTRL		(EXPSLV_BASE + 0x28)
+
+#define EVTRTR0_BASE			0x49035000
+#define EVTRTR0_DMA_CTRL0		(EVTRTR0_BASE)
+#define EVTRTR0_DMA_REQ_CTRL		(EVTRTR0_BASE + 0x80)
+#define EVTRTR0_DMA_ACK_TYPE0		(EVTRTR0_BASE + 0x90)
+
+#define EVTRTRLOCAL_BASE			0x400E2000
+#define EVTRTRLOCAL_DMA_CTRL0			(EVTRTRLOCAL_BASE)
+#define EVTRTRLOCAL_DMA_REQ_CTRL		(EVTRTRLOCAL_BASE + 0x80)
+#define EVTRTRLOCAL_DMA_ACK_TYPE0		(EVTRTRLOCAL_BASE + 0x90)
+
+/* Expansion Master-0 registers. */
+#define EXPMST_BASE			0x4903F000
+#define EXPMST_CAMERA_PIXCLK_CTRL	(EXPMST_BASE)
+#define EXPMST_CDC200_PIXCLK_CTRL	(EXPMST_BASE + 0x4)
+#define EXPMST_CSI_PIXCLK_CTRL		(EXPMST_BASE + 0x8)
+#define EXPMST_PERIPH_CLK_EN		(EXPMST_BASE + 0xC)
+#define EXPMST_MIPI_CKEN		(EXPMST_BASE + 0x40)
+#define EXPMST_DMA_CTRL			(EXPMST_BASE + 0x70)
+#define EXPMST_DMA_IRQ			(EXPMST_BASE + 0x74)
+#define EXPMST_DMA_PERIPH		(EXPMST_BASE + 0x78)
+
+/* M55-HE Config registers. */
+#define M55HE_CFG_HE_CFG_BASE		0x43007000
+#define M55HE_CFG_HE_DMA_CTRL		(M55HE_CFG_HE_CFG_BASE)
+#define M55HE_CFG_HE_DMA_IRQ		(M55HE_CFG_HE_CFG_BASE + 0x4)
+#define M55HE_CFG_HE_DMA_PERIPH		(M55HE_CFG_HE_CFG_BASE + 0x8)
+#define M55HE_CFG_HE_DMA_SEL		(M55HE_CFG_HE_CFG_BASE + 0xC)
+#define M55HE_CFG_HE_CLK_ENA		(M55HE_CFG_HE_CFG_BASE + 0x10)
+#define M55HE_CFG_HE_CAMERA_PIXCLK	(M55HE_CFG_HE_CFG_BASE + 0x20)
+
+#if !defined(CONFIG_SOC_E7_DK_APSS)
+
+#define __SAUREGION_PRESENT       1U        /* SAU regions present */
+#define __FPU_PRESENT             CONFIG_CPU_HAS_FPU
+#define __DSP_PRESENT             1U        /* DSP extension present */
+#define __MVE_PRESENT             1U        /* MVE extensions present */
 #define __MVE_FP                  1U        /* MVE floating point present */
+#define __ICACHE_PRESENT          1U        /* ICACHE present */
+#define __DCACHE_PRESENT          1U        /* DCACHE present */
+
+#define __NVIC_PRIO_BITS          NUM_IRQ_PRIO_BITS
 
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.
@@ -488,6 +544,9 @@ typedef enum IRQn {
 } CMSIS_IRQn_Type;
 
 #define __Vendor_SysTickConfig         0 /* Default to standard SysTick */
+
+#endif /* CONFIG_SOC_E7_DK_APSS */
+
 #include <cmsis_core_m_defaults.h>
 
 #endif /* _SOC_H_ */

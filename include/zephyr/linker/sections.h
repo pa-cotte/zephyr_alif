@@ -39,11 +39,6 @@
 #define _SW_ISR_TABLE_SECTION_NAME	.gnu.linkonce.sw_isr_table
 #define _SW_ISR_TABLE_SECTION_SYMS	.gnu.linkonce.sw_isr_table*
 
-#ifdef CONFIG_SHARED_INTERRUPTS
-#define _SHARED_SW_ISR_TABLE_SECTION_NAME	.gnu.linkonce.shared_sw_isr_table
-#define _SHARED_SW_ISR_TABLE_SECTION_SYMS	.gnu.linkonce.shared_sw_isr_table*
-#endif /* CONFIG_SHARED_INTERRUPTS */
-
 /* Architecture-specific sections */
 #if defined(CONFIG_ARM)
 #define _KINETIS_FLASH_CONFIG_SECTION_NAME  kinetis_flash_config
@@ -72,6 +67,9 @@
 #define _STM32_SDRAM2_SECTION_NAME	.stm32_sdram2
 
 #define _STM32_BACKUP_SRAM_SECTION_NAME	.stm32_backup_sram
+
+#define _ALIF_SRAM0_SECTION_NAME	.alif_sram0
+#define _ALIF_SRAM1_SECTION_NAME	.alif_sram1
 
 #ifdef CONFIG_NOCACHE_MEMORY
 #define _NOCACHE_SECTION_NAME nocache
