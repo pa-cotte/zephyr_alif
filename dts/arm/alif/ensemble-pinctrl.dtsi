@@ -95,7 +95,7 @@
 				 < PIN_P13_7__CDC_D23_B >,
 				 < PIN_P5_4__CDC_DE_A >,
 				 < PIN_P4_1__CDC_HSYNC_B >,
-				 < PIN_P5_6__CDC_VSYNC_A >;
+				 < PIN_P4_0__CDC_VSYNC_B >;
 		};
 	};
 
