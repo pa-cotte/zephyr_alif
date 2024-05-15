@@ -544,35 +544,12 @@
 
 		#address-cells = <1>;
 		#size-cells = <1>;
-		xip_rtss_hp: xip_rtss_hp@80000000 {
+		mram_storage: mram_storage@80000000 {
 			compatible = "soc-nv-flash";
-			reg = <0x80000000 DT_SIZE_K(512)>;
-		};
-		xip_rtss_he: xip_rtss_he@80080000 {
-			compatible = "soc-nv-flash";
-			reg = <0x80080000 DT_SIZE_K(512)>;
-		};
-		mram_storage: mram_storage@80500000 {
-			compatible = "soc-nv-flash";
-			reg = <0x80500000 DT_SIZE_K(10)>;
+			reg = <0x80000000 DT_SIZE_K(5632)>;
 			erase-block-size = <1024>;
 			write-block-size = <16>;
 		};
-	};
-
-};
-&mram_storage {
-	partitions {
-		compatible = "fixed-partitions";
-		#address-cells = <1>;
-		#size-cells = <1>;
-		storage_partition: partition@0 {
-			label = "storage";
-			reg = <0x0 DT_SIZE_K(10)>;
-		};
-	};
-	aliases {
-		watchdog0 = &wdog0;
 	};
 };
 
@@ -597,5 +574,6 @@
 	chosen {
 		zephyr,entropy = &rng;
 		zephyr,display = &cdc200;
+		zephyr,flash-controller = &mram_flash;
 	};
 };

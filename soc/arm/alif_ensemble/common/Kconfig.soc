@@ -171,21 +171,21 @@ config LPTIMER3_OUTPUT_TOGGLE
 
 endif # COUNTER_SNPS_DW
 
-config XIP_MRAM
-	bool "Config to run application from MRAM in XiP mode"
-	depends on XIP
-	default n
+config  ROM_ITCM
+	bool "Link code into internal instruction tightly coupled memory (ITCM)"
+	default y
 	help
-	  Config to run application from MRAM in XiP mode.
+	  Enable this to build applications to run from the ITCM.
 
-if XIP_MRAM
+if ROM_ITCM
 config FLASH_SIZE
-	int "Flash Size in kB"
-	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_hp@80000000,0,K) if RTSS_HP
-	default $(dt_node_reg_size_int,/soc/mram_flash@80000000/xip_rtss_he@80080000,0,K) if RTSS_HE
+	default $(dt_node_reg_size_int,/soc/itcm@0,0,K)
 
 config FLASH_BASE_ADDRESS
-	hex
-	default $(dt_node_reg_addr_hex,/soc/mram_flash@80000000/xip_rtss_hp@80000000,0) if RTSS_HP
-	default $(dt_node_reg_addr_hex,/soc/mram_flash@80000000/xip_rtss_he@80080000,0) if RTSS_HE
+	default $(dt_node_reg_addr_hex,/soc/itcm@0)
+endif # ROM_ITCM
+
+if !ROM_ITCM && RTSS_HP && !USE_DT_CODE_PARTITION
+config FLASH_LOAD_OFFSET
+	default 0x200000
 endif
