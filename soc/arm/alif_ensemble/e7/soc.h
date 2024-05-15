@@ -66,6 +66,32 @@
 
 #define __NVIC_PRIO_BITS          NUM_IRQ_PRIO_BITS
 
+#define CGU_BASE        0x1A602000
+#define CGU_CLK_ENA     (CGU_BASE + 0x14)
+
+/* ANA Register */
+#define ANA_BASE            0x1A60A000
+#define ANA_VBAT_REG2       (ANA_BASE + 0x3C)
+
+
+/* Expansion Slave registers. */
+#define EXPSLV_BASE     0x4902F000
+#define EXPSLV_ADC_CTRL     (EXPSLV_BASE + 0x30)
+#define EXPSLV_CMP_CTRL     (EXPSLV_BASE + 0x38)
+
+#define CGU_BASE        0x1A602000
+#define CGU_CLK_ENA     (CGU_BASE + 0x14)
+
+/* ANA Register */
+#define ANA_BASE            0x1A60A000
+#define ANA_VBAT_REG2       (ANA_BASE + 0x3C)
+
+
+/* Expansion Slave registers. */
+#define EXPSLV_BASE     0x4902F000
+#define EXPSLV_ADC_CTRL     (EXPSLV_BASE + 0x30)
+#define EXPSLV_CMP_CTRL     (EXPSLV_BASE + 0x38)
+
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.
  *
