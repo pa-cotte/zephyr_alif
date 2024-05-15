@@ -150,15 +150,40 @@ static int ensemble_e7_dk_rtss_he_init(void)
 		/* Enable CDC200 peripheral clock. */
 		sys_set_bits(EXPMST_PERIPH_CLK_EN, BIT(1));
 
-		/*
-		 * CDC200 clock Pixel clock for parallel display.
+		if (IS_ENABLED(CONFIG_MIPI_DSI)) {
+			/*
+			 * CDC200 clock enablement for serial display.
+			 *  Pixclk control register:
+			 *	clk_divisor[24:16] - 0x10 (16)
+			 * Pixel clock observed = (400 / 16) MHz = 25 MHz
+			 * Serial display has recommended FPS of 54-66 FPS,
+			 * and tested at 60 FPS.
+			 */
+			sys_write32(0x100001, EXPMST_CDC200_PIXCLK_CTRL);
+		} else {
+			/*
+			 * CDC200 clock Pixel clock for parallel display.
+			 *  Pixclk control register:
+			 *	clk_divisor[24:16] - 0x90 (144)
+			 * Pixel clock observed = (400 / 144) MHz = 2.77 MHz
+			 * Parallel display tested at 5 FPS.
+			 */
+			sys_write32(0x900001, EXPMST_CDC200_PIXCLK_CTRL);
+		}
+	}
+	if (IS_ENABLED(CONFIG_MIPI_DSI)) {
+		/* Enable DSI controller peripheral clock. */
+		sys_set_bits(EXPMST_PERIPH_CLK_EN, BIT(28));
 
-		 *  Pixclk control register:
-		 *	clk_divisor[24:16] - 0x90 (144)
-		 * Pixel clock observed = (400 / 144) MHz = 2.77 MHz
-		 * Parallel display tested at 5 FPS.
-		 */
-		sys_write32(0x900001, EXPMST_CDC200_PIXCLK_CTRL);
+		/* Enable TX-DPHY and PLL ref clock.*/
+		sys_set_bits(EXPMST_MIPI_CKEN, BIT(0) | BIT(8));
+
+		/* Enable TX-DPHY and D-PLL Power and Disable Isolation.*/
+		sys_clear_bits(VBAT_PWR_CTRL, BIT(0) | BIT(1) | BIT(8) |
+				BIT(9) | BIT(12));
+
+		/* Enable HFOSC (38.4 MHz) and CFG (100 MHz) clock.*/
+		sys_set_bits(CGU_CLK_ENA, BIT(21) | BIT(23));
 	}
 
 	return 0;

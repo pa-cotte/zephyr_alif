@@ -5,6 +5,7 @@
 #include <arm/armv8.1-m.dtsi>
 #include <mem.h>
 #include <zephyr/dt-bindings/i2c/i2c.h>
+#include <zephyr/dt-bindings/mipi_dsi/mipi_dsi.h>
 #include <zephyr/dt-bindings/gpio/gpio.h>
 #include <zephyr/dt-bindings/timer/alif_utimer.h>
 #include <zephyr/dt-bindings/pwm/pwm.h>
@@ -637,6 +638,17 @@
 		gpio-controller;
 		#gpio-cells = <2>;
 	};
+	lpgpio: gpio@42002000 {
+		compatible = "snps,designware-gpio";
+		reg = <0x42002000 0x1000>;
+		ngpios = <8>;
+		interrupts =	<171 3>, <172 3>,
+				<173 3>, <174 3>,
+				<175 3>, <176 3>,
+				<177 3>, <178 3>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
 
 	crc: crc@48107000 {
 		compatible = "alif,alif-crc";
@@ -736,6 +748,50 @@
 		interrupts = <133 3>;
 		status = "okay";
 	};
+	dphy: d-phy@4903f000{
+		compatible = "alif,ensemble-dphy";
+		reg = <0x4903f000 0x40>,
+		      <0x49032000 0x1000>,
+		      <0x49033000 0x1000>;
+		reg-names = "expmst_reg", "dsi_reg", "csi_reg";
+		ref-frequency = <38400000>;
+		cfg-clk-frequency = <25000000>;
+		status = "okay";
+	};
+
+	mipi_dsi: mipi-dsi@49032000 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "alif,ensemble-dsi";
+		reg = <0x49032000 0x1000>;
+		interrupts = <343 3>;
+		cdc-if = <&cdc200>;
+		phy-if = <&dphy>;
+
+		dpi-shutdn-active = <1>;
+		dpi-colorm-active = <1>;
+		vid-pkt-size = <480>;
+		ecc-recv-en;
+		crc-recv-en;
+		frame-ack-en;
+		//dpi-video-pattern-gen = "horizontal-color-bar";
+		status = "okay";
+
+		mw405: mw405@0 {
+			status = "okay";
+			compatible = "focuslcd,mw405";
+			reg = <0>;
+			reset-gpios = <&lpgpio 5 GPIO_ACTIVE_HIGH>;
+			bl-gpios = <&gpio6 1 GPIO_ACTIVE_HIGH>;
+			data-lanes = <2>;
+			width = <480>;
+			height = <800>;
+			video-mode = "burst";
+			command-tx-mode = "high-speed";
+			pixel-format = <MIPI_DSI_PIXFMT_RGB888>;
+			status = "okay";
+		};
+	};
 
 	se_service: se_service {
 		compatible = "alif,secure-enclave-services";
@@ -781,5 +837,10 @@
 		zephyr,entropy = &rng;
 		zephyr,display = &cdc200;
 		zephyr,flash-controller = &mram_flash;
+	};
+
+	aliases {
+		mipi-dsi = &mipi_dsi;
+		panel = &mw405;
 	};
 };
