@@ -18,6 +18,10 @@
 #define VBAT_PWR_CTRL		(VBAT_BASE + 0x8)
 #define VBAT_RTC_CLK_EN		(VBAT_BASE + 0x10)
 
+/* AON registers. */
+#define AON_BASE                     0x1A604000UL
+#define AON_RTSS_HE_LPUART_CKEN      (AON_BASE + 0x1C)
+
 /* Expansion Slave registers. */
 #define EXPSLV_BASE		0x4902F000
 #define EXPSLV_EXPMST0_CTRL	(EXPSLV_BASE)

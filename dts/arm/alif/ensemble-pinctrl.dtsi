@@ -40,6 +40,13 @@
 		};
 	};
 
+	pinctrl_lpuart: pinctrl_lpuart {
+		group0 {
+			pinmux = < PIN_P7_6__LPUART_RX_A >,
+				 < PIN_P7_7__LPUART_TX_A >;
+		};
+	};
+
 	pinctrl_hsuart0: pinctrl_hsuart0 {
 		group0 {
 			pinmux = < PIN_P10_1__HSUART0_RX_A >,

@@ -186,6 +186,12 @@ static int ensemble_e7_dk_rtss_he_init(void)
 		sys_set_bits(CGU_CLK_ENA, BIT(21) | BIT(23));
 	}
 
+	/* LPUART settings */
+	if (IS_ENABLED(CONFIG_SERIAL)) {
+		/* Enable clock supply for LPUART */
+		sys_write32(0x1, AON_RTSS_HE_LPUART_CKEN);
+	}
+
 	return 0;
 }
 
