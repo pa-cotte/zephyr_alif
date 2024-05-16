@@ -310,18 +310,14 @@
 		};
 		mram_flash: mram_flash@80000000 {
 			compatible = "alif,mram-flash-controller";
-			/* Usable MRAM size for applications is 1536 KB */
-			reg = <0x80000000 DT_SIZE_K(1536)>;
+			/* Usable MRAM size for applications is 1824 KB */
+			reg = <0x80000000 DT_SIZE_K(1824)>;
 
 			#address-cells = <1>;
 			#size-cells = <1>;
-			xip_rtss_he: xip_rtss_he@80000000 {
+			mram_storage: mram_storage@80000000 {
 				compatible = "soc-nv-flash";
-				reg = <0x80000000 DT_SIZE_K(1024)>;
-			};
-			mram_storage: mram_storage@8017d800 {
-				compatible = "soc-nv-flash";
-				reg = <0x8017d800 DT_SIZE_K(10)>;
+				reg = <0x80000000 DT_SIZE_K(1824)>;
 				erase-block-size = <1024>;
 				write-block-size = <16>;
 			};
@@ -340,7 +336,9 @@
 		};
 	};
 	chosen {
-		zephyr,flash = &itcm;
+		zephyr,flash-controller = &mram_flash;
+		zephyr,flash = &mram_storage;
+		zephyr,code-partition = &slot0_partition;
 		zephyr,sram = &dtcm;
 		zephyr,ieee802154 = &ieee802154;
 		zephyr,hci-uart = &uart_hci;
@@ -382,9 +380,31 @@
 		compatible = "fixed-partitions";
 		#address-cells = <1>;
 		#size-cells = <1>;
-		storage_partition: partition@0 {
+
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x00000000 DT_SIZE_K(64)>;
+			read-only;
+		};
+
+		slot0_partition: partition@10000 {
+			label = "image-0";
+			reg = <0x00010000 DT_SIZE_K(843)>;
+		};
+
+		slot1_partition: partition@E2C00 {
+			label = "image-1";
+			reg = <0x000E2C00 DT_SIZE_K(843)>;
+		};
+
+		scratch_partition: partition@1B5800 {
+			label = "image-scratch";
+			reg = <0x001B5800 DT_SIZE_K(64)>;
+		};
+
+		storage_partition: partition@1C5800 {
 			label = "storage";
-			reg = <0x0 DT_SIZE_K(10)>;
+			reg = <0x001C5800 DT_SIZE_K(10)>;
 		};
 	};
 };
