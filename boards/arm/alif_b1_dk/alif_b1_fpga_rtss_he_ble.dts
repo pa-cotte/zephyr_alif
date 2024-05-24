@@ -46,3 +46,14 @@
 	};
 };
 
+/ {
+	chosen {
+		zephyr,console = &uart4;
+		zephyr,shell-uart = &uart4;
+	};
+};
+
+&uart4 {
+	status = "okay";
+};
+
