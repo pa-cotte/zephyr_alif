@@ -579,6 +579,21 @@ void video_buffer_release(struct video_buffer *buf);
 #define video_fourcc(a, b, c, d)\
 	((uint32_t)(a) | ((uint32_t)(b) << 8) | ((uint32_t)(c) << 16) | ((uint32_t)(d) << 24))
 
+/* Greyscale formats */
+/* 6-bit Greyscale, MIPI RAW6 packed */
+#define VIDEO_PIX_FMT_Y6P   video_fourcc('Y', '0', '6', 'P')
+/* 7-bit Greyscale, MIPI RAW7 packed */
+#define VIDEO_PIX_FMT_Y7P   video_fourcc('Y', '0', '7', 'P')
+/* 8-bit Greyscale, MIPI RAW8 packed */
+#define VIDEO_PIX_FMT_GREY   video_fourcc('G', 'R', 'E', 'Y')
+/* 10-bit Greyscale, MIPI RAW10 packed */
+#define VIDEO_PIX_FMT_Y10P   video_fourcc('Y', '1', '0', 'P')
+/* 12-bit Greyscale MIPI RAW12 packed */
+#define VIDEO_PIX_FMT_Y12P   video_fourcc('Y', '1', '2', 'P')
+/* 14-bit Greyscale MIPI RAW14 packed */
+#define VIDEO_PIX_FMT_Y14P   video_fourcc('Y', '1', '4', 'P')
+/* 16-bit Greyscale MIPI RAW16 packed */
+#define VIDEO_PIX_FMT_Y16   video_fourcc('Y', '1', '6', ' ')
 
 /**
  * @defgroup video_pixel_formats Video pixel formats

@@ -762,6 +762,21 @@
 		interrupt-parent = <&nvic>;
 		interrupts = <133 3>;
 		status = "okay";
+
+		arx3a0: arx3a0@36 {
+			compatible = "onnn,arx3a0";
+			reg = <0x36>;
+			reset-gpios = <&gpio9 1 GPIO_ACTIVE_HIGH>;
+			power-gpios = <&gpio7 5 GPIO_ACTIVE_HIGH>;
+
+			status = "okay";
+
+			port {
+				arx3a0_csi2_ep_out: endpoint {
+					remote-endpoint = <&csi2_ep_in>;
+				};
+			};
+		};
 	};
 	dphy: d-phy@4903f000{
 		compatible = "alif,ensemble-dphy";
@@ -808,6 +823,67 @@
 		};
 	};
 
+	cam: cam@49030000 {
+		compatible = "alif,ensemble-cam";
+		reg = <0x49030000 0x1000>;
+		interrupts = <345 3>;
+
+		pinctrl-0 = < &pinctrl_csicam >;
+		pinctrl-names = "default";
+
+		fifo-wr-wmark = <0x18>;
+		fifo-rd-wmark = <0x08>;
+		sensor = <&arx3a0>;
+		csi-bus-if = <&csi>;
+		wait-vsync;
+		//csi-halt-en;
+		status = "okay";
+
+		port {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			/* MIPI CSI-2 bus endpoint. */
+			cam_csi2_ep_in: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&csi2_ep_out>;
+			};
+		};
+	};
+
+	csi: csi@49033000 {
+		compatible = "alif,ensemble-csi";
+		reg = <0x49033000 0x1000>;
+		interrupts = <344 3>;
+
+		data-lanes = <2>;
+		ipi-mode = "Camera";
+		phy-if = <&dphy>;
+
+		csi-hsa = <5>;
+		csi-hbp = <10>;
+		csi-hsd = <280>;
+		csi-hact = <560>;
+		csi-vsa = <4>;
+		csi-vbp = <4>;
+		csi-vfp = <4>;
+		csi-vact = <560>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@1 {
+			reg = <1>;
+			csi2_ep_in: endpoint {
+				remote-endpoint = <&arx3a0_csi2_ep_out>;
+			};
+		};
+		port@2 {
+			reg = <2>;
+			csi2_ep_out: endpoint {
+				remote-endpoint = <&cam_csi2_ep_in>;
+			};
+		};
+	};
 	adc0: adc0@49020000{
 		compatible = "alif,adc";
 		reg =	<0x49020000 0x1000>,

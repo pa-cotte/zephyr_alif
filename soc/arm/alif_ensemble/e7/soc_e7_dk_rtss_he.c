@@ -171,6 +171,13 @@ static int ensemble_e7_dk_rtss_he_init(void)
 			sys_write32(0x900001, EXPMST_CDC200_PIXCLK_CTRL);
 		}
 	}
+	if (IS_ENABLED(CONFIG_VIDEO)) {
+		/* Enable CAM controller peripheral clock. */
+		sys_set_bits(EXPMST_PERIPH_CLK_EN, BIT(0));
+
+		/* CPI Pixel clock - Generate XVCLK. Used by ARX3A0 */
+		sys_write32(0x140001, EXPMST_CAMERA_PIXCLK_CTRL);
+	}
 	if (IS_ENABLED(CONFIG_MIPI_DSI)) {
 		/* Enable DSI controller peripheral clock. */
 		sys_set_bits(EXPMST_PERIPH_CLK_EN, BIT(28));
@@ -184,6 +191,22 @@ static int ensemble_e7_dk_rtss_he_init(void)
 
 		/* Enable HFOSC (38.4 MHz) and CFG (100 MHz) clock.*/
 		sys_set_bits(CGU_CLK_ENA, BIT(21) | BIT(23));
+	}
+	if (IS_ENABLED(CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2)) {
+		/* Enable CSI2 controller peripheral clock. */
+		sys_set_bits(EXPMST_PERIPH_CLK_EN, BIT(24));
+
+		/* CSI Pixel clock. */
+		sys_write32(0x20001, EXPMST_CSI_PIXCLK_CTRL);
+
+		/* Enable RX-DPHY.*/
+		sys_set_bits(EXPMST_MIPI_CKEN, BIT(4));
+
+		/* Enable RX-DPHY Power and Disable Isolation.*/
+		sys_clear_bits(VBAT_PWR_CTRL, BIT(4) | BIT(5));
+
+		/* Enable CFG clock - 100 MHz used by RX-DPHY*/
+		sys_set_bits(CGU_CLK_ENA, BIT(21));
 	}
 
 	/* LPUART settings */
