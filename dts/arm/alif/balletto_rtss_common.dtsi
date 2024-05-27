@@ -9,14 +9,14 @@
 / {
 	soc {
 		itcm: itcm@0 {
-			compatible = "alif,itcm";
+			compatible = "alif,itcm", "zephyr,memory-region";
 			reg = <0x0 DT_SIZE_K(512)>;
 			itcm_global_base = <0x58000000>;
 			zephyr,memory-region = "ITCM";
 		};
 
 		dtcm: dtcm@20000000 {
-			compatible = "alif,dtcm";
+			compatible = "alif,dtcm", "zephyr,memory-region";
 			dtcm_global_base = <0x58800000>;
 			reg = <0x20000000 DT_SIZE_K(1536)>;
 			zephyr,memory-region = "DTCM";
@@ -339,7 +339,9 @@
 		zephyr,flash-controller = &mram_flash;
 		zephyr,flash = &mram_storage;
 		zephyr,code-partition = &slot0_partition;
-		zephyr,sram = &dtcm;
+		zephyr,sram = &itcm;
+		zephyr,dtcm = &dtcm;
+		zephyr,itcm = &itcm;
 		zephyr,ieee802154 = &ieee802154;
 		zephyr,hci-uart = &uart_hci;
 		zephyr,ahi-uart = &uart_ahi;
