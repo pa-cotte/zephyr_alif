@@ -993,7 +993,15 @@
 					  "comparator_b_intr";
 		status = "disabled";
 	};
-
+	rtc0: lprtc@42000000 {
+		compatible = "snps,dw-apb-rtc";
+		reg = <0x42000000 0x1000>;
+		interrupts = <58 3>;
+		clock-frequency = <32768>;
+		prescaler = <0>;
+		load-value = <0>;
+		status = "disabled";
+	};
 	se_service: se_service {
 		compatible = "alif,secure-enclave-services";
 		mhuv2-send-node = <&seservice0s>;
