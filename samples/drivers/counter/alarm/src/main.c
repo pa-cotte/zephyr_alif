@@ -51,6 +51,8 @@ struct counter_alarm_cfg alarm_cfg;
 #define TIMER DT_NODELABEL(counter0)
 #elif defined(CONFIG_COUNTER_SNPS_DW)
 #define TIMER DT_NODELABEL(timer0)
+#elif defined(CONFIG_COUNTER_RTC_SNPS_DW)
+#define TIMER DT_NODELABEL(rtc0)
 #elif defined(CONFIG_COUNTER_TIMER_RPI_PICO)
 #define TIMER DT_NODELABEL(timer)
 #endif
