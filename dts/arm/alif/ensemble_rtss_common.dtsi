@@ -780,6 +780,53 @@
 			};
 		};
 	};
+
+	i2s0: i2s0@49014000 {
+		compatible = "snps,designware-i2s";
+		clock-frequency = <76800000>;
+		driver_instance	= "I2S_INSTANCE_0";
+		reg = <0x49014000 0x1000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_i2s0>;
+		interrupts = <141 3>;
+	};
+	i2s1: i2s1@49015000 {
+		compatible = "snps,designware-i2s";
+		clock-frequency = <76800000>;
+		driver_instance	= "I2S_INSTANCE_1";
+		reg = <0x49015000 0x1000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_i2s1>;
+		interrupts = <142 3>;
+	};
+	i2s2: i2s2@49016000 {
+		compatible = "snps,designware-i2s";
+		clock-frequency = <76800000>;
+		driver_instance	= "I2S_INSTANCE_2";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_i2s2>;
+		reg = <0x49016000 0x1000>;
+		interrupts = <143 3>;
+	};
+	i2s3: i2s3@49017000 {
+		compatible = "snps,designware-i2s";
+		clock-frequency = <76800000>;
+		driver_instance	= "I2S_INSTANCE_3";
+		reg = <0x49017000 0x1000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_i2s3>;
+		interrupts = <144 3>;
+	};
+	i2s4: lpi2s@43001000 {
+		compatible = "snps,designware-i2s";
+		clock-frequency = <76800000>;
+		driver_instance	= "I2S_INSTANCE_4";
+		reg = <0x43001000 0x1000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_i2s4>;
+		interrupts = <48 3>;
+	};
+
 	dphy: d-phy@4903f000{
 		compatible = "snps,designware-dphy";
 		reg = <0x4903f000 0x40>,

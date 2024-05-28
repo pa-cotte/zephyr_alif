@@ -124,6 +124,49 @@
 		};
 	};
 
+	pinctrl_i2s0:pinctrl_i2s0 {
+		group0 {
+			pinmux = < PIN_P1_6__I2S0_SDI_A >,
+				 < PIN_P1_7__I2S0_SDO_A >,
+				 < PIN_P3_0__I2S0_SCLK_A >,
+				 < PIN_P3_1__I2S0_WS_A >;
+		};
+	};
+	pinctrl_i2s1:pinctrl_i2s1 {
+		group0 {
+			pinmux = < PIN_P3_2__I2S1_SDI_A >,
+				 < PIN_P3_3__I2S1_SDO_A >,
+				 < PIN_P3_4__I2S1_SCLK_A >,
+				 < PIN_P4_0__I2S1_WS_A >;
+		};
+	};
+	pinctrl_i2s2:pinctrl_i2s2 {
+		group0 {
+			pinmux = < PIN_P8_1__I2S2_SDI_A >,
+				 < PIN_P8_2__I2S2_SDO_A >,
+				 < PIN_P8_3__I2S2_SCLK_A >,
+				 < PIN_P8_4__I2S2_WS_A >;
+		};
+	};
+	pinctrl_i2s3:pinctrl_i2s3 {
+		group0 {
+			pinmux = < PIN_P9_0__I2S3_SDI_B >;
+			read_enable = <0x1>;
+		};
+		group1 {
+			pinmux = < PIN_P9_1__I2S3_SDO_B >,
+				 < PIN_P8_6__I2S3_SCLK_B >,
+				 < PIN_P8_7__I2S3_WS_B >;
+		};
+	};
+	pinctrl_i2s4:pinctrl_lpi2s {
+		group0 {
+			pinmux = < PIN_P13_4__LPI2S_SDI_C >,
+				 < PIN_P13_5__LPI2S_SDO_C >,
+				 < PIN_P13_6__LPI2S_SCLK_C >,
+				 < PIN_P13_7__LPI2S_WS_C >;
+		};
+	};
 
 	pinctrl_gpio0:pinctrl_gpio0 {
 		group0 {
