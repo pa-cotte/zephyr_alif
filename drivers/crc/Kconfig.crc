@@ -1,6 +1,0 @@
-config CRC
-	bool "Alif CRC"
-	default y
-	depends on DT_HAS_ALIF_ALIF_CRC_ENABLED
-	help
-	  Enable driver for Alif CRC

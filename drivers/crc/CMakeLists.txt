@@ -3,5 +3,5 @@
 
 zephyr_library()
 
-zephyr_library_sources_ifdef(CONFIG_CRC             alif_crc.c)
+zephyr_library_sources_ifdef(CONFIG_CRC_ALIF             alif_crc.c)
 
