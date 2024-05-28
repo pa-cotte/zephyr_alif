@@ -5,4 +5,4 @@ config ADC_ALIF
 	bool "Enable ADC for Alif Boards"
 	default y
 	help
-	  Enable ADC module ofr Alif Boards
+	  Enable ADC module of Alif Boards

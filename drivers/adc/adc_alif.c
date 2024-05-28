@@ -46,6 +46,8 @@ struct adc_config {
 	uint32_t comparator_threshold_b;
 	uint8_t conv_mode;
 	uint8_t comparator_threshold_comparasion;
+	uint8_t adc24_output_rate;
+	uint8_t adc24_bias;
 };
 
 struct adc_data {
@@ -66,6 +68,7 @@ struct adc_data {
 };
 
 enum ADC_INSTANCE {
+	ADC_INSTANCE_ADC24_0,
 	ADC_INSTANCE_ADC12_0,
 	ADC_INSTANCE_ADC12_1,
 	ADC_INSTANCE_ADC12_2,
@@ -174,20 +177,33 @@ enum ADC_INSTANCE {
 #define ADC122_VCM_DIV_Pos         (17)
 
 /* PMU_PERIPH offset */
-#define PMU_PERIPH_OFFSET (0X04)
+#define PMU_PERIPH_OFFSET (0X40)
 
 /* PMU_PERIPH field definitions */
-#define PMU_PERIPH_ADC1_PGA_EN       (1U << 0)
-#define PMU_PERIPH_ADC1_PGA_GAIN_Pos (1)
-#define PMU_PERIPH_ADC1_PGA_GAIN_Msk (0x7)
-#define PMU_PERIPH_ADC2_PGA_EN       (1U << 4)
-#define PMU_PERIPH_ADC2_PGA_GAIN_Pos (5)
-#define PMU_PERIPH_ADC2_PGA_GAIN_Msk (0x7)
-#define PMU_PERIPH_ADC3_PGA_EN       (1U << 8)
-#define PMU_PERIPH_ADC3_PGA_GAIN_Pos (9)
-#define PMU_PERIPH_ADC3_PGA_GAIN_Msk (0x7)
+#define PMU_PERIPH_ADC1_PGA_EN           (1U << 0)
+#define PMU_PERIPH_ADC1_PGA_GAIN_Pos     (1)
+#define PMU_PERIPH_ADC1_PGA_GAIN_Msk     (0x7)
+#define PMU_PERIPH_ADC2_PGA_EN           (1U << 4)
+#define PMU_PERIPH_ADC2_PGA_GAIN_Pos     (5)
+#define PMU_PERIPH_ADC2_PGA_GAIN_Msk     (0xE0)
+#define PMU_PERIPH_ADC3_PGA_EN           (1U << 8)
+#define PMU_PERIPH_ADC3_PGA_GAIN_Pos     (9)
+#define PMU_PERIPH_ADC3_PGA_GAIN_Msk     (0xE00)
+#define PMU_PERIPH_ADC24_EN              (1U << 12)
+#define PMU_PERIPH_ADC24_OUTPUT_RATE_Pos (13)
+#define PMU_PERIPH_ADC24_OUTPUT_RATE_Msk (0xE000)
+#define PMU_PERIPH_ADC24_PGA_EN          (1U << 16)
+#define PMU_PERIPH_ADC24_PGA_GAIN_Pos    (17)
+#define PMU_PERIPH_ADC24_PGA_GAIN_Msk    (0xE0000)
+#define PMU_PERIPH_ADC24_BIAS_Pos        (20)
+#define PMU_PERIPH_ADC24_BIAS_Msk        (0x700000)
 
-#define COMP_REG2_OFFSET (0X4)
+#define COMP_REG2_OFFSET (0X04)
+
+/* channels limit */
+#define ADC24_MAX_DIFFERENTIAL_CHANNEL   (0x04)
+#define ADC12_MAX_DIFFERENTIAL_CHANNEL   (0x03)
+#define ADC12_MAX_CHANNELS               (0X08)
 
 /**
  * enum _ADC_SCAN_MODE.
@@ -400,6 +416,36 @@ static inline void adc_set_single_ch_scan_mode(uintptr_t adc)
 	sys_write32(data, adc + ADC_SEQUENCER_CTRL);
 }
 
+static inline void enable_adc24(const struct device *dev)
+{
+	uintptr_t aon_ctrl = DEVICE_MMIO_NAMED_GET(dev, aon_regs);
+	uint32_t data = 0;
+
+	data = sys_read32(aon_ctrl + PMU_PERIPH_OFFSET);
+	data |= PMU_PERIPH_ADC24_EN;
+	sys_write32(data, (aon_ctrl + PMU_PERIPH_OFFSET));
+}
+
+static inline void set_adc24_bias(const struct device *dev, uint32_t bias)
+{
+	uintptr_t aon_ctrl = DEVICE_MMIO_NAMED_GET(dev, aon_regs);
+	uint32_t data;
+
+	data = sys_read32(aon_ctrl + PMU_PERIPH_OFFSET);
+	data |= ((bias << PMU_PERIPH_ADC24_BIAS_Pos) & PMU_PERIPH_ADC24_BIAS_Msk);
+	sys_write32(data, aon_ctrl + PMU_PERIPH_OFFSET);
+}
+
+static inline void set_adc24_output_rate(const struct device *dev, uint32_t rate)
+{
+	uintptr_t aon_ctrl = DEVICE_MMIO_NAMED_GET(dev, aon_regs);
+	uint32_t data;
+
+	data = sys_read32(aon_ctrl + PMU_PERIPH_OFFSET);
+	data |= ((rate << PMU_PERIPH_ADC24_OUTPUT_RATE_Pos) & PMU_PERIPH_ADC24_OUTPUT_RATE_Msk);
+	sys_write32(data, aon_ctrl + PMU_PERIPH_OFFSET);
+}
+
 void adc_analog_config(const struct device *dev)
 {
 	uintptr_t comp_regs = DEVICE_MMIO_NAMED_GET(dev, comp_reg);
@@ -463,7 +509,7 @@ void adc_done1_irq_handler(const struct device *dev)
 		*(data->buffer + channel) = sys_read32(channel_sample_reg);
 
 		/* check for the operation reached number of number to be read */
-		if (data->curr_cnt++ >= data->channels_count) {
+		if (++data->curr_cnt >= data->channels_count) {
 			data->curr_cnt = 0U;
 			/*disable the interrupt */
 			adc_mask_interrupt(regs);
@@ -734,24 +780,31 @@ static inline void enable_adc_pga_gain(const struct device *dev, uint8_t instanc
 	uint32_t value = 0;
 
 	switch (instance) {
+	case ADC_INSTANCE_ADC24_0: {
+		sys_clear_bits((aon_ctrl + PMU_PERIPH_OFFSET), PMU_PERIPH_ADC24_PGA_GAIN_Msk);
+		data = sys_read32(aon_ctrl + PMU_PERIPH_OFFSET);
+		data |= (PMU_PERIPH_ADC24_PGA_EN | gain << PMU_PERIPH_ADC24_PGA_GAIN_Pos);
+		sys_write32(data, aon_ctrl + PMU_PERIPH_OFFSET);
+		break;
+	}
 	case ADC_INSTANCE_ADC12_0: {
 		sys_clear_bits((aon_ctrl + PMU_PERIPH_OFFSET), PMU_PERIPH_ADC1_PGA_GAIN_Msk);
 		data = sys_read32(aon_ctrl + PMU_PERIPH_OFFSET);
-		data = (PMU_PERIPH_ADC1_PGA_EN | gain << PMU_PERIPH_ADC1_PGA_GAIN_Pos);
+		data |= (PMU_PERIPH_ADC1_PGA_EN | gain << PMU_PERIPH_ADC1_PGA_GAIN_Pos);
 		sys_write32(data, aon_ctrl + PMU_PERIPH_OFFSET);
 		break;
 	}
 	case ADC_INSTANCE_ADC12_1: {
 		sys_clear_bits((aon_ctrl + PMU_PERIPH_OFFSET), PMU_PERIPH_ADC2_PGA_GAIN_Msk);
 		data = sys_read32(aon_ctrl + PMU_PERIPH_OFFSET);
-		data = (PMU_PERIPH_ADC2_PGA_EN | gain << PMU_PERIPH_ADC2_PGA_GAIN_Pos);
+		data |= (PMU_PERIPH_ADC2_PGA_EN | gain << PMU_PERIPH_ADC2_PGA_GAIN_Pos);
 		sys_write32(data, aon_ctrl + PMU_PERIPH_OFFSET);
 		break;
 	}
 	case ADC_INSTANCE_ADC12_2: {
 		sys_clear_bits((aon_ctrl + PMU_PERIPH_OFFSET), PMU_PERIPH_ADC3_PGA_GAIN_Msk);
 		data = sys_read32(aon_ctrl + PMU_PERIPH_OFFSET);
-		data = (PMU_PERIPH_ADC3_PGA_EN | gain << PMU_PERIPH_ADC3_PGA_GAIN_Pos);
+		data |= (PMU_PERIPH_ADC3_PGA_EN | gain << PMU_PERIPH_ADC3_PGA_GAIN_Pos);
 		sys_write32(data, aon_ctrl + PMU_PERIPH_OFFSET);
 		break;
 	}
@@ -767,15 +820,29 @@ static int adc_channel_select(const struct device *dev, const struct adc_channel
 	const struct adc_config *config = dev->config;
 	uintptr_t regs = DEVICE_MMIO_NAMED_GET(dev, adc_reg);
 
-	/* set differential control for ADC12 */
-	adc_set_differential_ctrl(dev, config->drv_inst, channel_cf->differential);
+	if (config->drv_inst != ADC_INSTANCE_ADC24_0) {
+		/* set differential control for ADC12 */
+		adc_set_differential_ctrl(dev, config->drv_inst, channel_cf->differential);
 
-	adc_set_comparator_ctrl(dev, config->drv_inst);
+		adc_set_comparator_ctrl(dev, config->drv_inst);
+	}
 
 	if (channel_cf->differential) {
 		enable_adc_pga_gain(dev, config->drv_inst, config->pga_gain);
 	}
 
+	if (config->drv_inst == ADC_INSTANCE_ADC24_0) {
+		if (channel_cf->channel_id > ADC24_MAX_DIFFERENTIAL_CHANNEL)
+			return -EINVAL;
+	} else {
+		if (channel_cf->differential) {
+			if (channel_cf->channel_id > ADC12_MAX_DIFFERENTIAL_CHANNEL)
+				return -EINVAL;
+		} else {
+			if (channel_cf->channel_id > ADC12_MAX_CHANNELS)
+				return -EINVAL;
+		}
+	}
 	/* set the channel to operate */
 	adc_init_channel_select(regs, channel_cf->channel_id);
 
@@ -808,7 +875,18 @@ static int adc_init(const struct device *dev)
 	/* Vref setting */
 	adc_analog_config(dev);
 
-	/* set Sample width value for ADC12 */
+	if (config->drv_inst == ADC_INSTANCE_ADC24_0) {
+		/* enable adc24 from control register */
+		enable_adc24(dev);
+
+		/* set output rate from control register */
+		set_adc24_output_rate(dev, config->adc24_output_rate);
+
+		/* Set adc24 bias from control register */
+		set_adc24_bias(dev, config->adc24_bias);
+	}
+
+	/* set Sample width value for ADC12/24 */
 	adc_set_sample_width(regs, config->sample_width);
 
 	/* set the clock divisor */
@@ -848,6 +926,13 @@ struct adc_driver_api alif_adc_api = {
 	.read = &adc_alif_read,
 };
 
+#define ADC24_BIAS_GAIN_0 0
+#define ADC24_BIAS_GAIN_1 1
+#define ADC24_BIAS_GAIN_2 3
+#define ADC24_BIAS_GAIN_3 7
+
+#define ADC24_BIAS(inst) UTIL_CAT(ADC24_BIAS_GAIN_, DT_INST_ENUM_IDX_OR(inst, adc24_bias, 0))
+
 #define ADC_ALIF_INIT(inst)                                                                        \
 	static void adc_config_func_##inst(const struct device *dev);                              \
 	IF_ENABLED(DT_INST_NODE_HAS_PROP(inst, pinctrl_0), (PINCTRL_DT_INST_DEFINE(inst)));        \
@@ -857,12 +942,15 @@ struct adc_driver_api alif_adc_api = {
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(adc_reg, DT_DRV_INST(inst)),                    \
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(aon_regs, DT_DRV_INST(inst)),                   \
 		.irq_config_func = adc_config_func_##inst,                                         \
-		.sample_width = DT_INST_PROP(inst, sample_width),                                  \
+		.sample_width = COND_CODE_0(DT_INST_ENUM_IDX(inst, driver_instance), (BIT(16)),    \
+					    DT_INST_ENUM_IDX(i, sample_width)),                    \
 		.clock_div = DT_INST_PROP(inst, clock_div),                                        \
 		.shift_n_bits = DT_INST_PROP(inst, shift_n_bits),                                  \
 		.shift_direction = DT_INST_ENUM_IDX(inst, shift_direction),                        \
-		.comparator_en = DT_INST_PROP(inst, comparator_en),                                \
-		.comparator_bias = DT_INST_ENUM_IDX(inst, comparator_bias),                        \
+		.comparator_en = COND_CODE_0(DT_INST_ENUM_IDX(inst, driver_instance), (0),         \
+					     DT_INST_ENUM_IDX(i, comparator_en)),                  \
+		.comparator_bias = COND_CODE_0(DT_INST_ENUM_IDX(inst, driver_instance), (0),       \
+					       DT_INST_ENUM_IDX(i, comparator_bias)),              \
 		.avg_sample_num = DT_INST_PROP(inst, avg_sample_num),                              \
 		.drv_inst = DT_INST_ENUM_IDX(inst, driver_instance),                               \
 		.pga_enable = DT_INST_PROP(inst, pga_enable),                                      \
@@ -872,8 +960,10 @@ struct adc_driver_api alif_adc_api = {
 		.comparator_threshold_b = DT_INST_PROP(inst, comparator_threshold_b),              \
 		.comparator_threshold_comparasion =                                                \
 			DT_INST_ENUM_IDX(inst, comparator_threshold_comparasion),                  \
+		.adc24_output_rate = DT_INST_ENUM_IDX(inst, adc24_output_rate),                    \
+		.adc24_bias = ADC24_BIAS(inst),                                                    \
 		IF_ENABLED(DT_INST_NODE_HAS_PROP(inst, pinctrl_0),                                 \
-			   (.pcfg = PINCTRL_DT_DEV_CONFIG_GET(DT_DRV_INST(inst)),))};              \
+				(.pcfg = PINCTRL_DT_DEV_CONFIG_GET(DT_DRV_INST(inst)),))};         \
 	struct adc_data data_##inst = {                                                            \
 		ADC_CONTEXT_INIT_LOCK(data_##inst, ctx),                                           \
 		ADC_CONTEXT_INIT_SYNC(data_##inst, ctx),                                           \

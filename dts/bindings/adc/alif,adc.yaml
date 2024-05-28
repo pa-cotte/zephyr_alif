@@ -66,8 +66,7 @@ properties:
 
   comparator_bias:
     type: string
-    description: set conversion sampling rate
-    required: true
+    description: set conversion sampling rate for adc12
     enum:
       - "0.5_MS/s"
       - "1_MS/s"
@@ -79,6 +78,7 @@ properties:
     description: Operating channel
     required: true
     enum:
+      -  "ADC_INSTANCE_ADC24_0"
       -  "ADC_INSTANCE_ADC12_0"
       -  "ADC_INSTANCE_ADC12_1"
       -  "ADC_INSTANCE_ADC12_2"
@@ -116,3 +116,21 @@ properties:
     enum:
       -  "CONTINUOUS_CONVERSION"
       -  "SINGLE_SHOT_CONVERSION"
+
+  adc24_output_rate:
+    type: string
+    description: setting the sampling rate of adc24
+    enum:
+      -  "1KS/s"
+      -  "2KS/s"
+      -  "4KS/s"
+      -  "8KS/s"
+      -  "16KS/s"
+  adc24_bias:
+    type: string
+    description: Bias setting for adc24
+    enum:
+      -  "5uA"
+      -  "6.25uA"
+      -  "7.5uA"
+      -  "8.75uA"

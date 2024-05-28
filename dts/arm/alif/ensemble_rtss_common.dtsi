@@ -1033,7 +1033,43 @@
 		interrupts		= <153 3>,
 					  <156 3>,
 					  <159 3>,
-					  <163 3>;
+					  <162 3>;
+		interrupt-names		= "continuous_intr",
+					  "single_shot_intr",
+					  "comparator_a_intr",
+					  "comparator_b_intr";
+		status = "disabled";
+	};
+
+	adc24: adc24@49027000{
+		compatible = "alif,adc";
+		reg =	<0x49027000 0x1000>,
+			<0x49020000 0x100>,
+			<0x49023000 0x100>,
+			<0x1A604000 0x100>;
+		reg-names = "adc_reg", "analog_reg", "comp_reg", "aon_regs";
+
+		comparator_threshold_a = <0x01>;
+		comparator_threshold_b = <0x01>;
+		comparator_threshold_comparasion = "ABOVE_THRESHOLD_A_AND_B";
+
+		clock_div		= <2>;
+		avg_sample_num		= <256>;
+		shift_n_bits		= <8>;
+		shift_direction		= "RIGHT_SHIFT";
+		adc24_output_rate	= "1KS/s";
+		adc24_bias		= "8.75uA";
+		driver_instance		= "ADC_INSTANCE_ADC24_0";
+		adc_channel_scan	= "SINGLE_CHANNEL_SCAN";
+		adc_conversion_mode	= "SINGLE_SHOT_CONVERSION";
+		/* pga_enable; */       /* This property is valid in differential mode only */
+		pga_gain		= "ADC_PGA_GAIN_0_DB";
+		pinctrl-0		= < &pinctrl_adc24 >;
+		pinctrl-names		= "default";
+		interrupts		= <163 3>,
+					  <164 3>,
+					  <165 3>,
+					  <166 3>;
 		interrupt-names		= "continuous_intr",
 					  "single_shot_intr",
 					  "comparator_a_intr",
