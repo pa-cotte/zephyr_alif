@@ -968,5 +968,6 @@
 	aliases {
 		mipi-dsi = &mipi_dsi;
 		panel = &mw405;
+		watchdog0 = &wdog0;
 	};
 };
