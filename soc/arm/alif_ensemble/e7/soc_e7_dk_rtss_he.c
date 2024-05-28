@@ -215,6 +215,9 @@ static int ensemble_e7_dk_rtss_he_init(void)
 		sys_write32(0x1, AON_RTSS_HE_LPUART_CKEN);
 	}
 
+	/* Enable LPRTC Clock via VBAT registers */
+	sys_set_bits(VBAT_RTC_CLK_EN, BIT(0));
+
 	return 0;
 }
 

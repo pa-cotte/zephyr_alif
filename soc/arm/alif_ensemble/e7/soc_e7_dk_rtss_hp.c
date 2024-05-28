@@ -209,6 +209,9 @@ static int ensemble_e7_dk_rtss_hp_init(void)
 		sys_set_bits(CGU_CLK_ENA, BIT(21));
 	}
 
+	/* Enable LPRTC clock via VBAT registers */
+	sys_set_bits(VBAT_RTC_CLK_EN, BIT(0));
+
 	return 0;
 }
 
