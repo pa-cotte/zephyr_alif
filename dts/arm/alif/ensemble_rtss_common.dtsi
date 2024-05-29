@@ -657,10 +657,12 @@
 		compatible = "snps,designware-gpio";
 		reg = <0x42002000 0x1000>;
 		ngpios = <8>;
-		interrupts =	<171 3>, <172 3>,
-				<173 3>, <174 3>,
-				<175 3>, <176 3>,
-				<177 3>, <178 3>;
+		interrupts = <171 3>, <172 3>,
+			     <173 3>, <174 3>,
+			     <175 3>, <176 3>,
+			     <177 3>, <178 3>;
+		pinctrl-0 = < &pinctrl_lpgpio >;
+		pinctrl-names = "default";
 		gpio-controller;
 		#gpio-cells = <2>;
 	};

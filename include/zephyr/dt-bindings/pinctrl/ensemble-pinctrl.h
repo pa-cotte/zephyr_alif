@@ -1133,3 +1133,33 @@
 #define	PIN_P14_7__CMP0_OUT_B		PINMUX_PIN(PIN_P14_7, 1)
 #define	PIN_P14_7__SPI1_SS0_C		PINMUX_PIN(PIN_P14_7, 2)
 #define	PIN_P14_7__FAULT3_C		PINMUX_PIN(PIN_P14_7, 3)
+
+/*
+ * LPGPIO Port(P15) PinMux Control
+ * - LPGPIO port has separate pinmux in which
+ *    there are only LPGPIO pins (no other pin multiplexing)
+ *    with pin-pad control.
+ * - Used "PINMUX_PIN" macro as below:
+ *    bits 0...2 denote LPGPIO port pin number and
+ *    bits 3...9 denote LPGPIO port(P15).
+ */
+#define	PORT_P15			120
+#define	LPGPIO_PORT			PORT_P15
+
+#define	PIN_P15_0			0
+#define	PIN_P15_1			1
+#define	PIN_P15_2			2
+#define	PIN_P15_3			3
+#define	PIN_P15_4			4
+#define	PIN_P15_5			5
+#define	PIN_P15_6			6
+#define	PIN_P15_7			7
+
+#define	PIN_P15_0__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_0)
+#define	PIN_P15_1__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_1)
+#define	PIN_P15_2__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_2)
+#define	PIN_P15_3__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_3)
+#define	PIN_P15_4__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_4)
+#define	PIN_P15_5__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_5)
+#define	PIN_P15_6__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_6)
+#define	PIN_P15_7__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_7)
