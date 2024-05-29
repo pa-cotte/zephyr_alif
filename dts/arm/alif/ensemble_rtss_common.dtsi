@@ -766,6 +766,8 @@
 		arx3a0: arx3a0@36 {
 			compatible = "onnn,arx3a0";
 			reg = <0x36>;
+			pinctrl-0 = < &pinctrl_cam_xvclk >;
+			pinctrl-names = "default";
 			reset-gpios = <&gpio9 1 GPIO_ACTIVE_HIGH>;
 			power-gpios = <&gpio7 5 GPIO_ACTIVE_HIGH>;
 
@@ -827,9 +829,6 @@
 		compatible = "alif,ensemble-cam";
 		reg = <0x49030000 0x1000>;
 		interrupts = <345 3>;
-
-		pinctrl-0 = < &pinctrl_csicam >;
-		pinctrl-names = "default";
 
 		fifo-wr-wmark = <0x18>;
 		fifo-rd-wmark = <0x08>;

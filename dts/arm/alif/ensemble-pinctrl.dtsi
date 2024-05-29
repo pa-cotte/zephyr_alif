@@ -397,8 +397,8 @@
 				 < PIN_P9_7__CAM_D15_B >;
 		};
 	};
-	pinctrl_csicam: pinctrl_csicam {
-		/* CSI CAM interface. */
+	pinctrl_cam_xvclk: pinctrl_cam_xvclk {
+		/* CAM XVCLK */
 		group0 {
 			pinmux = < PIN_P0_3__CAM_XVCLK_A >;
 		};

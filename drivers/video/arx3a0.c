@@ -6,6 +6,7 @@
 #define DT_DRV_COMPAT onnn_arx3a0
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
+#include <zephyr/drivers/pinctrl.h>
 
 #include <zephyr/sys/byteorder.h>
 
@@ -1203,6 +1204,17 @@ static int arx3a0_init(const struct device *dev)
 	struct arx3a0_data *data = dev->data;
 	uint16_t val;
 	int ret;
+	const struct pinctrl_dev_config *pcfg;
+
+	PINCTRL_DT_INST_DEFINE(0);
+
+	pcfg = PINCTRL_DT_INST_DEV_CONFIG_GET(0);
+
+	ret = pinctrl_apply_state(pcfg, PINCTRL_STATE_DEFAULT);
+	if (ret) {
+		LOG_ERR("Failed to apply Pinctrl.");
+		return ret;
+	}
 
 	ret = arx3a0_hard_reseten(dev);
 	if (ret) {
