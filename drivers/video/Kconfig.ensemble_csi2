@@ -8,9 +8,9 @@ config VIDEO_ENSEMBLE_MIPI_CSI2
 	default y
 	select MIPI_DPHY
 	select MIPI_DSI
-	depends on DT_HAS_ALIF_ENSEMBLE_DPHY_ENABLED
+	depends on DT_HAS_SNPS_DESIGNWARE_DPHY_ENABLED
 	depends on DT_HAS_ALIF_ENSEMBLE_CSI_ENABLED
-	depends on DT_HAS_ALIF_ENSEMBLE_DSI_ENABLED
+	depends on DT_HAS_SNPS_DESIGNWARE_DSI_ENABLED
 	help
 	  Enable Alif MIPI CSI2 Host controller driver
 

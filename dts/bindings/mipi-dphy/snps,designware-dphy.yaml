@@ -3,7 +3,7 @@
 
 description: ALIF Devkit MIPI D-PHY
 
-compatible: "alif,ensemble-dphy"
+compatible: "snps,designware-dphy"
 
 include: base.yaml
 

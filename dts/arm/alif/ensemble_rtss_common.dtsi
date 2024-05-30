@@ -781,7 +781,7 @@
 		};
 	};
 	dphy: d-phy@4903f000{
-		compatible = "alif,ensemble-dphy";
+		compatible = "snps,designware-dphy";
 		reg = <0x4903f000 0x40>,
 		      <0x49032000 0x1000>,
 		      <0x49033000 0x1000>;
@@ -794,7 +794,7 @@
 	mipi_dsi: mipi-dsi@49032000 {
 		#address-cells = <1>;
 		#size-cells = <0>;
-		compatible = "alif,ensemble-dsi";
+		compatible = "snps,designware-dsi";
 		reg = <0x49032000 0x1000>;
 		interrupts = <343 3>;
 		cdc-if = <&cdc200>;

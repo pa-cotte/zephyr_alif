@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef __ZEPHYR_INCLUDE_DRIVERS_ENSEMBLE_DPHY_H__
-#define __ZEPHYR_INCLUDE_DRIVERS_ENSEMBLE_DPHY_H__
+#ifndef __ZEPHYR_INCLUDE_DRIVERS_DPHY_DW_H__
+#define __ZEPHYR_INCLUDE_DRIVERS_DPHY_DW_H__
 
 #include <zephyr/device.h>
 #include <zephyr/kernel.h>
@@ -18,7 +18,6 @@ extern "C" {
 /* Utility functions. */
 #define CEIL(x) ((x) > (uint32_t)(x) ? (uint32_t) (x+1) : (uint32_t) (x))
 #define ROUND(x) (uint32_t)((x) + 0.5f)
-#define DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
 
 struct dphy_dsi_settings {
 	/* Number of lanes in D-PHY. */
@@ -43,16 +42,16 @@ struct dphy_csi2_settings {
 /*
  * Setup the D-PHY as TX-PHY.
  */
-int dphy_master_setup(const struct device *dev,
+int dphy_dw_master_setup(const struct device *dev,
 		struct dphy_dsi_settings *phy);
 
 /*
  * Setup the D-PHY as RX-PHY.
  */
-int dphy_slave_setup(const struct device *dev,
+int dphy_dw_slave_setup(const struct device *dev,
 		struct dphy_csi2_settings *phy);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-#endif /* __ZEPHYR_INCLUDE_DRIVERS_ENSEMBLE_DPHY_H__ */
+#endif /* __ZEPHYR_INCLUDE_DRIVERS_DPHY_DW_H__ */

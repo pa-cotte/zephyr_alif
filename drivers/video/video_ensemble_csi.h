@@ -9,7 +9,7 @@
 #include <zephyr/device.h>
 #include <zephyr/sys/util.h>
 
-#include <zephyr/drivers/mipi_dphy/ensemble_dphy.h>
+#include <zephyr/drivers/mipi_dphy/dphy_dw.h>
 
 /* CSI-2 Registers */
 #define CSI_VERSION                     0x00  /* HW Version */

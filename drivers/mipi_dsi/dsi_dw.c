@@ -2,18 +2,18 @@
  * Copyright (C) 2024 Alif Semiconductor.
  * SPDX-License-Identifier: Apache-2.0
  */
-#define DT_DRV_COMPAT alif_ensemble_dsi
+#define DT_DRV_COMPAT snps_designware_dsi
 
 #include <zephyr/devicetree.h>
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(ensemble_dsi, CONFIG_MIPI_DSI_LOG_LEVEL);
+LOG_MODULE_REGISTER(dsi_dw, CONFIG_MIPI_DSI_LOG_LEVEL);
 
 #include <zephyr/sys/device_mmio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/mipi_dsi.h>
-#include <zephyr/drivers/mipi_dsi/ensemble_dsi.h>
-#include <zephyr/drivers/mipi_dphy/ensemble_dphy.h>
-#include "ensemble_dsi.h"
+#include <zephyr/drivers/mipi_dsi/dsi_dw.h>
+#include <zephyr/drivers/mipi_dphy/dphy_dw.h>
+#include "dsi_dw.h"
 
 /* Utility functions. */
 static int dsi_format_to_bpp(uint8_t color_coding)
@@ -42,17 +42,17 @@ static void reg_write_part(uintptr_t reg, uint32_t data,
 }
 
 /* Helper functions */
-void ensemble_dsi_pwr_down(uintptr_t regs)
+void dsi_dw_pwr_down(uintptr_t regs)
 {
 	sys_clear_bits(regs + DSI_PWR_UP, DSI_PWR_UP_SHUTDOWNZ);
 }
 
-void ensemble_dsi_pwr_up(uintptr_t regs)
+void dsi_dw_pwr_up(uintptr_t regs)
 {
 	sys_set_bits(regs + DSI_PWR_UP, DSI_PWR_UP_SHUTDOWNZ);
 }
 
-void ensemble_dsi_wait_2_frames(uint32_t pixclk,
+void dsi_dw_wait_2_frames(uint32_t pixclk,
 		const struct mipi_dsi_timings *timings)
 {
 	uint32_t htotal = timings->hactive + timings->hfp + timings->hbp +
@@ -66,7 +66,7 @@ void ensemble_dsi_wait_2_frames(uint32_t pixclk,
 	k_sleep(K_MSEC(tmp));
 }
 
-void ensemble_dsi_intr_en(uintptr_t regs)
+void dsi_dw_intr_en(uintptr_t regs)
 {
 	sys_read32(regs + DSI_INT_ST0);
 	sys_read32(regs + DSI_INT_ST1);
@@ -109,7 +109,7 @@ void ensemble_dsi_intr_en(uintptr_t regs)
 }
 
 /* Setup functions */
-void ensemble_dsi_phy_clk_timer_setup(uintptr_t regs,
+void dsi_dw_phy_clk_timer_setup(uintptr_t regs,
 		struct dphy_dsi_settings *phy)
 {
 	reg_write_part(regs + DSI_PHY_TMR_LPCLK_CFG,
@@ -123,7 +123,7 @@ void ensemble_dsi_phy_clk_timer_setup(uintptr_t regs,
 			DSI_PHY_TMR_LPCLK_CFG_LP2HS_SHIFT);
 }
 
-void ensemble_dsi_phy_data_timer_setup(uintptr_t regs,
+void dsi_dw_phy_data_timer_setup(uintptr_t regs,
 		struct dphy_dsi_settings *phy)
 {
 	reg_write_part(regs + DSI_PHY_TMR_CFG,
@@ -137,42 +137,42 @@ void ensemble_dsi_phy_data_timer_setup(uintptr_t regs,
 			DSI_PHY_TMR_CFG_LP2HS_SHIFT);
 }
 
-void ensemble_dsi_setup_phy_timings(const struct device *dev)
+void dsi_dw_setup_phy_timings(const struct device *dev)
 {
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	struct dphy_dsi_settings *phy = &data->phy;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	/* Setup D-PHY Clk and Data lane configuration. */
-	ensemble_dsi_phy_clk_timer_setup(regs, phy);
-	ensemble_dsi_phy_data_timer_setup(regs, phy);
+	dsi_dw_phy_clk_timer_setup(regs, phy);
+	dsi_dw_phy_data_timer_setup(regs, phy);
 }
 
-int ensemble_dsi_phy_config(const struct device *dev,
+int dsi_dw_phy_config(const struct device *dev,
 		const struct mipi_dsi_device *mdev)
 {
-	const struct ensemble_dsi_config *config = dev->config;
-	struct ensemble_dsi_data *data = dev->data;
+	const struct dsi_dw_config *config = dev->config;
+	struct dsi_dw_data *data = dev->data;
 	struct dphy_dsi_settings *phy = &data->phy;
 	int ret;
 
 	/* Do the D-PHY configuration here. */
-	ret = dphy_master_setup(config->tx_dphy, phy);
+	ret = dphy_dw_master_setup(config->tx_dphy, phy);
 	if (ret) {
 		LOG_ERR("Failed to set-up D-PHY TX");
 		return ret;
 	}
 
-	ensemble_dsi_setup_phy_timings(dev);
+	dsi_dw_setup_phy_timings(dev);
 
 	return 0;
 }
 
-int ensemble_calc_clocks(const struct device *dev,
+int dw_calc_clocks(const struct device *dev,
 	const struct mipi_dsi_device *mdev)
 {
 	const struct mipi_dsi_timings *timings = &mdev->timings;
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	struct dphy_dsi_settings *phy = &data->phy;
 
 	uint32_t dpi_pix_clk;
@@ -235,7 +235,7 @@ int ensemble_calc_clocks(const struct device *dev,
 	LOG_DBG("PLL Fout requested - %d", phy->pll_fout);
 
 	/* Setup the PLL frequency. */
-	ret = ensemble_dsi_phy_config(dev, mdev);
+	ret = dsi_dw_phy_config(dev, mdev);
 	if (ret) {
 		LOG_ERR("Phy configuration failed.");
 		return ret;
@@ -293,9 +293,9 @@ int ensemble_calc_clocks(const struct device *dev,
 	return 0;
 }
 
-void ensemble_setup_txesc_clk(const struct device *dev)
+void dw_setup_txesc_clk(const struct device *dev)
 {
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	reg_write_part(regs + DSI_CLKMGR_CFG,
@@ -305,11 +305,11 @@ void ensemble_setup_txesc_clk(const struct device *dev)
 
 }
 
-void ensemble_calc_lpcmd_time(const struct device *dev,
+void dw_calc_lpcmd_time(const struct device *dev,
 		const struct mipi_dsi_device *mdev)
 {
 	const struct mipi_dsi_timings *timings = &mdev->timings;
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	struct dphy_dsi_settings *phy = &data->phy;
 
 	uint32_t max_rd_time;
@@ -384,11 +384,11 @@ void ensemble_calc_lpcmd_time(const struct device *dev,
 			data->outvact, data->invact, data->max_rd_time);
 }
 
-void ensemble_setup_timeout(const struct device *dev,
+void dw_setup_timeout(const struct device *dev,
 		const struct mipi_dsi_device *mdev)
 {
 	const struct mipi_dsi_timings *timings = &mdev->timings;
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	uint32_t hstx_to;
@@ -427,7 +427,7 @@ void ensemble_setup_timeout(const struct device *dev,
 			regs + DSI_BTA_TO_CNT);
 }
 
-void ensemble_dsi_dpi_color_code(uintptr_t regs,
+void dsi_dw_dpi_color_code(uintptr_t regs,
 		uint32_t pixfmt)
 {
 	switch (pixfmt) {
@@ -455,12 +455,12 @@ void ensemble_dsi_dpi_color_code(uintptr_t regs,
 	}
 }
 
-int ensemble_dsi_burst_mode_setup(uintptr_t regs,
+int dsi_dw_burst_mode_setup(uintptr_t regs,
 		const struct device *dev,
 		const struct mipi_dsi_device *mdev)
 {
 	const struct mipi_dsi_timings *timings = &mdev->timings;
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	uint32_t pkt_size;
 	uint32_t num_chunks;
 	uint32_t null_size;
@@ -516,7 +516,7 @@ int ensemble_dsi_burst_mode_setup(uintptr_t regs,
 	return 0;
 }
 
-void ensemble_dsi_dpi_frame_ack(uintptr_t regs, uint8_t flag)
+void dsi_dw_dpi_frame_ack(uintptr_t regs, uint8_t flag)
 {
 	uint32_t tmp = sys_read32(regs + DSI_VID_MODE_CFG);
 
@@ -528,9 +528,9 @@ void ensemble_dsi_dpi_frame_ack(uintptr_t regs, uint8_t flag)
 	sys_write32(tmp, regs + DSI_VID_MODE_CFG);
 }
 
-void ensemble_dsi_setup_lp_cmd(const struct device *dev)
+void dsi_dw_setup_lp_cmd(const struct device *dev)
 {
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	if (data->mode_flags & MIPI_DSI_MODE_LPM) {
@@ -557,10 +557,10 @@ void ensemble_dsi_setup_lp_cmd(const struct device *dev)
 	}
 }
 
-void ensemble_dsi_packet_handler_config(const struct device *dev)
+void dsi_dw_packet_handler_config(const struct device *dev)
 {
-	const struct ensemble_dsi_config *config = dev->config;
-	struct ensemble_dsi_data *data = dev->data;
+	const struct dsi_dw_config *config = dev->config;
+	struct dsi_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	uint32_t tmp;
 
@@ -580,10 +580,10 @@ void ensemble_dsi_packet_handler_config(const struct device *dev)
 	sys_write32(tmp, regs + DSI_PCKHDL_CFG);
 }
 
-void ensemble_dsi_panel_timings_setup(const struct device *dev,
+void dsi_dw_panel_timings_setup(const struct device *dev,
 		const struct mipi_dsi_timings *timings)
 {
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	uint32_t tmp = timings->hsync + timings->hbp + timings->hfp +
 		timings->hactive;
@@ -617,12 +617,12 @@ void ensemble_dsi_panel_timings_setup(const struct device *dev,
 			DSI_VID_VACTIVE_LINES_SHIFT);
 }
 
-int ensemble_dsi_dpi_config(const struct device *dev,
+int dsi_dw_dpi_config(const struct device *dev,
 		uint8_t channel,
 		const struct mipi_dsi_device *mdev)
 {
-	const struct ensemble_dsi_config *config = dev->config;
-	const struct ensemble_dpi_config *dpi = &(config->dpi);
+	const struct dsi_dw_config *config = dev->config;
+	const struct dpi_config *dpi = &(config->dpi);
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	if (channel > 4) {
@@ -635,18 +635,18 @@ int ensemble_dsi_dpi_config(const struct device *dev,
 	sys_write32(dpi->polarity, regs + DSI_DPI_CFG_POL);
 
 	/* Setup the color-coding. */
-	ensemble_dsi_dpi_color_code(regs, mdev->pixfmt);
+	dsi_dw_dpi_color_code(regs, mdev->pixfmt);
 
 	/* Burst mode settings. */
-	ensemble_dsi_burst_mode_setup(regs, dev, mdev);
+	dsi_dw_burst_mode_setup(regs, dev, mdev);
 
 	/* DPI panel timings setup. */
-	ensemble_dsi_panel_timings_setup(dev, &mdev->timings);
+	dsi_dw_panel_timings_setup(dev, &mdev->timings);
 
 	return 0;
 }
 
-void ensemble_dsi_msg_config(uintptr_t regs, uint32_t mode_flags)
+void dsi_dw_msg_config(uintptr_t regs, uint32_t mode_flags)
 {
 	uint32_t cmd_mode_cfg = 0;
 	bool lpm = mode_flags & MIPI_DSI_MODE_LPM;
@@ -675,26 +675,26 @@ void ensemble_dsi_msg_config(uintptr_t regs, uint32_t mode_flags)
 				DSI_LPCLK_CTRL_AUTO_CLKLN_CTRL);
 }
 
-void ensemble_dsi_cmd_mode_config(const struct device *dev)
+void dsi_dw_cmd_mode_config(const struct device *dev)
 {
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	/* Enable Transmission of commands in LP mode. */
-	ensemble_dsi_setup_lp_cmd(dev);
+	dsi_dw_setup_lp_cmd(dev);
 
-	ensemble_dsi_msg_config(regs, data->mode_flags);
+	dsi_dw_msg_config(regs, data->mode_flags);
 
 	/* Setup the DSI as Command mode. */
 	sys_write32(DSI_MODE_CFG_CMD_MODE, regs + DSI_MODE_CFG);
 
-	data->curr_mode = ENSEMBLE_DSI_COMMAND_MODE;
+	data->curr_mode = DSI_DW_COMMAND_MODE;
 }
 
-int ensemble_dsi_video_mode_config(const struct device *dev)
+int dsi_dw_video_mode_config(const struct device *dev)
 {
-	const struct ensemble_dsi_config *config = dev->config;
-	struct ensemble_dsi_data *data = dev->data;
+	const struct dsi_dw_config *config = dev->config;
+	struct dsi_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	uint32_t tmp;
 
@@ -705,7 +705,7 @@ int ensemble_dsi_video_mode_config(const struct device *dev)
 		DSI_VID_MODE_CFG_LP_VBP_EN | DSI_VID_MODE_CFG_LP_VSA_EN);
 
 	/* Setup request for Peripheral ACK at the end of frame. */
-	ensemble_dsi_dpi_frame_ack(regs, config->frame_ack_en);
+	dsi_dw_dpi_frame_ack(regs, config->frame_ack_en);
 
 	tmp = sys_read32(regs + DSI_LPCLK_CTRL);
 	if (data->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
@@ -718,41 +718,41 @@ int ensemble_dsi_video_mode_config(const struct device *dev)
 	/* Setup the DSI as Video mode. */
 	sys_write32(DSI_MODE_CFG_VID_MODE, regs + DSI_MODE_CFG);
 
-	data->curr_mode = ENSEMBLE_DSI_VIDEO_MODE;
+	data->curr_mode = DSI_DW_VIDEO_MODE;
 	return 0;
 }
 
 /* API functions */
 /* Device Specific APIs. */
-int ensemble_dsi_set_mode(const struct device *dev,
-		enum ensemble_dsi_mode mode)
+int dsi_dw_set_mode(const struct device *dev,
+		enum dsi_dw_mode mode)
 {
-	struct ensemble_dsi_data *data = dev->data;
+	struct dsi_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	if (mode == data->curr_mode)
 		return 0;
 
-	ensemble_dsi_pwr_down(regs);
-	if (mode == ENSEMBLE_DSI_VIDEO_MODE) {
+	dsi_dw_pwr_down(regs);
+	if (mode == DSI_DW_VIDEO_MODE) {
 		/* Setup the DSI as Video mode. */
-		ensemble_dsi_video_mode_config(dev);
+		dsi_dw_video_mode_config(dev);
 	} else {
 		/* Setup the DSI as Command mode. */
 		sys_write32(DSI_MODE_CFG_CMD_MODE, regs + DSI_MODE_CFG);
 	}
-	ensemble_dsi_pwr_up(regs);
+	dsi_dw_pwr_up(regs);
 	return 0;
 }
 
 /* Generic APIs */
-static int ensemble_dsi_attach(const struct device *dev,
+static int dsi_dw_attach(const struct device *dev,
 		uint8_t channel,
 		const struct mipi_dsi_device *mdev)
 {
-	const struct ensemble_dsi_config *config = dev->config;
-	const struct ensemble_dpi_config *dpi = &config->dpi;
-	struct ensemble_dsi_data *data = dev->data;
+	const struct dsi_dw_config *config = dev->config;
+	const struct dpi_config *dpi = &config->dpi;
+	struct dsi_dw_data *data = dev->data;
 	struct dphy_dsi_settings *phy = &data->phy;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	int ret;
@@ -791,18 +791,18 @@ static int ensemble_dsi_attach(const struct device *dev,
 	phy->num_lanes = mdev->data_lanes;
 	data->mode_flags = mdev->mode_flags;
 
-	ensemble_dsi_pwr_down(regs);
-	ret = ensemble_calc_clocks(dev, mdev);
+	dsi_dw_pwr_down(regs);
+	ret = dw_calc_clocks(dev, mdev);
 	if (ret)
 		return ret;
-	ensemble_calc_lpcmd_time(dev, mdev);
-	ensemble_setup_txesc_clk(dev);
-	ensemble_setup_timeout(dev, mdev);
-	ret = ensemble_dsi_dpi_config(dev, channel, mdev);
+	dw_calc_lpcmd_time(dev, mdev);
+	dw_setup_txesc_clk(dev);
+	dw_setup_timeout(dev, mdev);
+	ret = dsi_dw_dpi_config(dev, channel, mdev);
 	if (ret)
 		return ret;
-	ensemble_dsi_packet_handler_config(dev);
-	ensemble_dsi_cmd_mode_config(dev);
+	dsi_dw_packet_handler_config(dev);
+	dsi_dw_cmd_mode_config(dev);
 
 	/*
 	 * Setup as Video Mode at the end of attach only if VPG is active.
@@ -837,9 +837,9 @@ static int ensemble_dsi_attach(const struct device *dev,
 	}
 
 	/* DSI must wait for 2 frames time after setup. */
-	ensemble_dsi_wait_2_frames(data->dpi_pix_clk, &mdev->timings);
-	ensemble_dsi_intr_en(regs);
-	ensemble_dsi_pwr_up(regs);
+	dsi_dw_wait_2_frames(data->dpi_pix_clk, &mdev->timings);
+	dsi_dw_intr_en(regs);
+	dsi_dw_pwr_up(regs);
 	return 0;
 }
 
@@ -851,7 +851,7 @@ static int ensemble_dsi_attach(const struct device *dev,
 	(((data1) & DSI_GEN_HDR_WC_MSBYTE_MASK) <<			\
 		DSI_GEN_HDR_WC_MSBYTE_SHIFT))
 
-int ensemble_dsi_read_payload(uintptr_t regs, uint8_t *rx, ssize_t len)
+int dsi_dw_read_payload(uintptr_t regs, uint8_t *rx, ssize_t len)
 {
 	uint32_t tmp;
 	int i;
@@ -892,7 +892,7 @@ int ensemble_dsi_read_payload(uintptr_t regs, uint8_t *rx, ssize_t len)
 	return 0;
 }
 
-int ensemble_dsi_write_payload(uintptr_t regs, uint8_t byte0, const uint8_t *tx,
+int dsi_dw_write_payload(uintptr_t regs, uint8_t byte0, const uint8_t *tx,
 		ssize_t len)
 {
 	uint8_t tmp = (len < 3) ? len : 3;
@@ -922,7 +922,7 @@ int ensemble_dsi_write_payload(uintptr_t regs, uint8_t byte0, const uint8_t *tx,
 	return 0;
 }
 
-int ensemble_dsi_write_hdr(uintptr_t regs, uint32_t header)
+int dsi_dw_write_hdr(uintptr_t regs, uint32_t header)
 {
 	uint32_t mask = 0;
 	int j;
@@ -949,7 +949,7 @@ int ensemble_dsi_write_hdr(uintptr_t regs, uint32_t header)
 	return 0;
 }
 
-int ensemble_dsi_send_max_return_packet_size(uintptr_t regs, uint8_t channel,
+int dsi_dw_send_max_return_packet_size(uintptr_t regs, uint8_t channel,
 		uint16_t value)
 {
 	uint32_t mask;
@@ -974,7 +974,7 @@ int ensemble_dsi_send_max_return_packet_size(uintptr_t regs, uint8_t channel,
 	return 0;
 }
 
-static ssize_t ensemble_dsi_transfer(const struct device *dev,
+static ssize_t dsi_dw_transfer(const struct device *dev,
 		uint8_t channel,
 		struct mipi_dsi_msg *msg)
 {
@@ -1004,7 +1004,7 @@ static ssize_t ensemble_dsi_transfer(const struct device *dev,
 		 * Send a maximum return packet size packet to
 		 * configure the return response of peripheral.
 		 */
-		ret = ensemble_dsi_send_max_return_packet_size(regs,
+		ret = dsi_dw_send_max_return_packet_size(regs,
 			channel, msg->rx_len);
 		if (ret)
 			return ret;
@@ -1012,7 +1012,7 @@ static ssize_t ensemble_dsi_transfer(const struct device *dev,
 		param0 = msg->cmd;
 		param1 = 0;
 		header = HEADER(channel, msg->type, param0, param1);
-		ret = ensemble_dsi_write_hdr(regs, header);
+		ret = dsi_dw_write_hdr(regs, header);
 		if (ret)
 			return ret;
 		break;
@@ -1021,12 +1021,12 @@ static ssize_t ensemble_dsi_transfer(const struct device *dev,
 		param0 = msg->cmd;
 		param1 = (msg->tx_len > 0) ? tx[0] : 0;
 		header = HEADER(channel, msg->type, param0, param1);
-		ret = ensemble_dsi_write_hdr(regs, header);
+		ret = dsi_dw_write_hdr(regs, header);
 		if (ret)
 			return ret;
 		break;
 	case MIPI_DSI_DCS_LONG_WRITE:
-		ret = ensemble_dsi_write_payload(regs, msg->cmd, tx,
+		ret = dsi_dw_write_payload(regs, msg->cmd, tx,
 				msg->tx_len);
 		if (ret)
 			return ret;
@@ -1034,7 +1034,7 @@ static ssize_t ensemble_dsi_transfer(const struct device *dev,
 		param1 = (msg->tx_len + 1) >> 8;
 
 		header = HEADER(channel, msg->type, param0, param1);
-		ret = ensemble_dsi_write_hdr(regs, header);
+		ret = dsi_dw_write_hdr(regs, header);
 		if (ret)
 			return ret;
 		break;
@@ -1045,7 +1045,7 @@ static ssize_t ensemble_dsi_transfer(const struct device *dev,
 		 * Send a maximum return packet size packet to
 		 * configure the return response of peripheral.
 		 */
-		ret = ensemble_dsi_send_max_return_packet_size(regs,
+		ret = dsi_dw_send_max_return_packet_size(regs,
 			channel, msg->rx_len);
 		if (ret)
 			return ret;
@@ -1055,13 +1055,13 @@ static ssize_t ensemble_dsi_transfer(const struct device *dev,
 		param0 = (msg->tx_len > 0) ? tx[0] : 0;
 		param1 = (msg->tx_len > 1) ? tx[1] : 0;
 		header = HEADER(channel, msg->type, param0, param1);
-		ret = ensemble_dsi_write_hdr(regs, header);
+		ret = dsi_dw_write_hdr(regs, header);
 		if (ret)
 			return ret;
 		break;
 	case MIPI_DSI_GENERIC_LONG_WRITE:
 		if (msg->tx_len >= 1) {
-			ret = ensemble_dsi_write_payload(regs, tx[0],
+			ret = dsi_dw_write_payload(regs, tx[0],
 					tx + 1, msg->tx_len - 1);
 			if (ret)
 				return ret;
@@ -1069,7 +1069,7 @@ static ssize_t ensemble_dsi_transfer(const struct device *dev,
 		param0 = msg->tx_len;
 		param1 = msg->tx_len >> 8;
 		header = HEADER(channel, msg->type, param0, param1);
-		ret = ensemble_dsi_write_hdr(regs, header);
+		ret = dsi_dw_write_hdr(regs, header);
 		if (ret)
 			return ret;
 		break;
@@ -1079,13 +1079,13 @@ static ssize_t ensemble_dsi_transfer(const struct device *dev,
 	}
 
 	if (msg->rx_buf && msg->rx_len)
-		ensemble_dsi_read_payload(regs, msg->rx_buf, msg->rx_len);
+		dsi_dw_read_payload(regs, msg->rx_buf, msg->rx_len);
 
 	return 0;
 }
 
 /* ISR Function */
-static void ensemble_dsi_irq(const struct device *dev)
+static void dsi_dw_irq(const struct device *dev)
 {
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	uint32_t irq_st0;
@@ -1126,10 +1126,10 @@ static void ensemble_dsi_irq(const struct device *dev)
 		LOG_ERR("DSI DPI Error Event");
 }
 
-static int ensemble_dsi_init(const struct device *dev)
+static int dsi_dw_init(const struct device *dev)
 {
-	const struct ensemble_dsi_config *config = dev->config;
-	struct ensemble_dsi_data *data = dev->data;
+	const struct dsi_dw_config *config = dev->config;
+	struct dsi_dw_data *data = dev->data;
 
 	DEVICE_MMIO_MAP(dev, K_MEM_CACHE_NONE);
 
@@ -1144,19 +1144,19 @@ static int ensemble_dsi_init(const struct device *dev)
 	return 0;
 }
 
-static struct mipi_dsi_driver_api ensemble_dsi_api = {
-	.attach = ensemble_dsi_attach,
-	.transfer = ensemble_dsi_transfer,
+static struct mipi_dsi_driver_api dsi_dw_api = {
+	.attach = dsi_dw_attach,
+	.transfer = dsi_dw_transfer,
 };
 
 #define ALIF_MIPI_DSI_DEVICE(i)									\
-	static void ensemble_dsi_config_func_##i(const struct device *dev);			\
-	static const struct ensemble_dsi_config config_##i = {					\
+	static void dsi_dw_config_func_##i(const struct device *dev);				\
+	static const struct dsi_dw_config config_##i = {					\
 		DEVICE_MMIO_ROM_INIT(DT_DRV_INST(i)),						\
 												\
 		.tx_dphy = DEVICE_DT_GET_OR_NULL(DT_INST_PHANDLE(i, phy_if)),			\
 		.irq = DT_INST_IRQN(i),								\
-		.irq_config_func = ensemble_dsi_config_func_##i,				\
+		.irq_config_func = dsi_dw_config_func_##i,					\
 												\
 		.dpi = {									\
 			.polarity = COND_CODE_0(DT_INST_PROP_BY_PHANDLE(i, cdc_if,		\
@@ -1185,7 +1185,7 @@ static struct mipi_dsi_driver_api ensemble_dsi_api = {
 		.crc_recv_en = DT_INST_PROP(i, crc_recv_en),					\
 		.frame_ack_en = DT_INST_PROP(i, frame_ack_en),					\
 	};											\
-	static struct ensemble_dsi_data data_##i = {						\
+	static struct dsi_dw_data data_##i = {							\
 		.pkt_size = COND_CODE_1(DT_INST_NODE_HAS_PROP(i, vid_pkt_size),			\
 					(DT_INST_PROP(i, vid_pkt_size)),			\
 					(DT_INST_PROP_BY_PHANDLE(i, cdc_if, width))),		\
@@ -1193,19 +1193,19 @@ static struct mipi_dsi_driver_api ensemble_dsi_api = {
 		.null_size = 0,									\
 	};											\
 	DEVICE_DT_INST_DEFINE(i,								\
-			&ensemble_dsi_init,							\
+			&dsi_dw_init,								\
 			NULL,									\
 			&data_##i,								\
 			&config_##i,								\
 			POST_KERNEL,								\
 			CONFIG_MIPI_DSI_INIT_PRIORITY,						\
-			&ensemble_dsi_api);							\
+			&dsi_dw_api);								\
 												\
-	static void ensemble_dsi_config_func_##i(const struct device *dev)			\
+	static void dsi_dw_config_func_##i(const struct device *dev)				\
 	{											\
 		IRQ_CONNECT(DT_INST_IRQN(i),							\
 			DT_INST_IRQ(i, priority),						\
-			ensemble_dsi_irq,							\
+			dsi_dw_irq,								\
 			DEVICE_DT_INST_GET(i),							\
 			0);									\
 		irq_enable(DT_INST_IRQN(i));							\

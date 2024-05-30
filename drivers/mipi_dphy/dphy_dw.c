@@ -2,21 +2,21 @@
  * Copyright (C) 2024 Alif Semiconductor.
  * SPDX-License-Identifier: Apache-2.0
  */
-#define DT_DRV_COMPAT alif_ensemble_dphy
+#define DT_DRV_COMPAT snps_designware_dphy
 
 #include <zephyr/devicetree.h>
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(ensemble_dphy, CONFIG_MIPI_DPHY_LOG_LEVEL);
+LOG_MODULE_REGISTER(dphy_dw, CONFIG_MIPI_DPHY_LOG_LEVEL);
 
 #include <zephyr/sys/device_mmio.h>
 #include <stdlib.h>
 #include <zephyr/kernel.h>
 
-#include <zephyr/drivers/mipi_dphy/ensemble_dphy.h>
-#include "ensemble_dphy.h"
+#include <zephyr/drivers/mipi_dphy/dphy_dw.h>
+#include "dphy_dw.h"
 
-#define DEV_DATA(dev) ((struct ensemble_dphy_data *)((dev)->data))
-#define DEV_CFG(dev)  ((struct ensemble_dphy_config *)((dev)->config))
+#define DEV_DATA(dev) ((struct dphy_dw_data *)((dev)->data))
+#define DEV_CFG(dev)  ((struct dphy_dw_config *)((dev)->config))
 
 static const struct dphy_freq_range frequency_range[] = {
 	{80, 0x00, 0x1e9, 21, 17, 15, 10},      {90, 0x10, 0x1e9, 23, 17, 16, 10},
@@ -139,7 +139,7 @@ void mipi_dphy_mask_write_register(uintptr_t test_ctrl0, uintptr_t test_ctrl1, u
 	mipi_dphy_write_register(test_ctrl0, test_ctrl1, address, tmp);
 }
 
-static int dphy_pll_calculate_mnp(const struct ensemble_dphy_config *config, uint32_t pll_fout,
+static int dphy_pll_calculate_mnp(const struct dphy_dw_config *config, uint32_t pll_fout,
 				  uint16_t *pll_m, uint16_t *pll_n, uint8_t *pll_p,
 				  uint8_t *vco_ctrl)
 {
@@ -194,9 +194,9 @@ static int dphy_pll_calculate_mnp(const struct ensemble_dphy_config *config, uin
 	return 0;
 }
 
-static int dphy_config_pll(const struct device *dev, struct dphy_dsi_settings *phy)
+static int dphy_dw_config_pll(const struct device *dev, struct dphy_dsi_settings *phy)
 {
-	const struct ensemble_dphy_config *config = dev->config;
+	const struct dphy_dw_config *config = dev->config;
 	uintptr_t dsi_regs = DEVICE_MMIO_NAMED_GET(dev, dsi_reg);
 	uintptr_t regs = DEVICE_MMIO_NAMED_GET(dev, expmst_reg);
 	uintptr_t test_ctrl0 = dsi_regs + DSI_PHY_TST_CTRL0;
@@ -295,15 +295,15 @@ static int dphy_config_pll(const struct device *dev, struct dphy_dsi_settings *p
 	return 0;
 }
 
-int dphy_master_setup(const struct device *dev, struct dphy_dsi_settings *phy)
+int dphy_dw_master_setup(const struct device *dev, struct dphy_dsi_settings *phy)
 {
 	uintptr_t dsi_regs = DEVICE_MMIO_NAMED_GET(dev, dsi_reg);
 	uintptr_t regs = DEVICE_MMIO_NAMED_GET(dev, expmst_reg);
-	const struct ensemble_dphy_config *config = dev->config;
+	const struct dphy_dw_config *config = dev->config;
 	uint32_t bitrate_mbps = (phy->pll_fout / MHZ(1)) << 1;
 	uintptr_t test_ctrl0 = dsi_regs + DSI_PHY_TST_CTRL0;
 	uintptr_t test_ctrl1 = dsi_regs + DSI_PHY_TST_CTRL1;
-	struct ensemble_dphy_data *data = dev->data;
+	struct dphy_dw_data *data = dev->data;
 	uint8_t cfgclkfreqrange = 0;
 	uint8_t hsfreq = 0;
 	uint32_t tmp = 0;
@@ -436,7 +436,7 @@ int dphy_master_setup(const struct device *dev, struct dphy_dsi_settings *phy)
 		       DPHY_CTRL0_CFG_CLK_FREQ_RANGE_SHIFT);
 
 	/* Configure the PLL */
-	ret = dphy_config_pll(dev, phy);
+	ret = dphy_dw_config_pll(dev, phy);
 	if (ret) {
 		LOG_ERR("PLL configuration failed.");
 		return ret;
@@ -493,11 +493,11 @@ int dphy_master_setup(const struct device *dev, struct dphy_dsi_settings *phy)
 	return 0;
 }
 
-int dphy_slave_setup(const struct device *dev, struct dphy_csi2_settings *phy)
+int dphy_dw_slave_setup(const struct device *dev, struct dphy_csi2_settings *phy)
 {
 	uintptr_t csi_regs = DEVICE_MMIO_NAMED_GET(dev, csi_reg);
 	uintptr_t regs = DEVICE_MMIO_NAMED_GET(dev, expmst_reg);
-	const struct ensemble_dphy_config *config = dev->config;
+	const struct dphy_dw_config *config = dev->config;
 	uint32_t bitrate_mbps = (phy->pll_fin / MHZ(1)) << 1;
 	uintptr_t test_ctrl0 = csi_regs + CSI_PHY_TEST_CTRL0;
 	uintptr_t test_ctrl1 = csi_regs + CSI_PHY_TEST_CTRL1;
@@ -624,9 +624,9 @@ int dphy_slave_setup(const struct device *dev, struct dphy_csi2_settings *phy)
 	return 0;
 }
 
-static int ensemble_dphy_init(const struct device *dev)
+static int dphy_dw_init(const struct device *dev)
 {
-	const struct ensemble_dphy_config *config = dev->config;
+	const struct dphy_dw_config *config = dev->config;
 
 	DEVICE_MMIO_NAMED_MAP(dev, expmst_reg, K_MEM_CACHE_NONE);
 	DEVICE_MMIO_NAMED_MAP(dev, dsi_reg, K_MEM_CACHE_NONE);
@@ -641,7 +641,7 @@ static int ensemble_dphy_init(const struct device *dev)
 }
 
 #define ALIF_MIPI_DPHY_DEVICE(i)                                                                   \
-	static const struct ensemble_dphy_config config_##i = {                                    \
+	static const struct dphy_dw_config config_##i = {                                          \
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(expmst_reg, DT_DRV_INST(i)),                    \
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(dsi_reg, DT_DRV_INST(i)),                       \
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(csi_reg, DT_DRV_INST(i)),                       \
@@ -650,11 +650,11 @@ static int ensemble_dphy_init(const struct device *dev)
 		.cfg_clk_frequency = DT_INST_PROP(i, cfg_clk_frequency),                           \
 	};                                                                                         \
                                                                                                    \
-	static struct ensemble_dphy_data data_##i = {                                              \
+	static struct dphy_dw_data data_##i = {                                                    \
 		.is_dsi_initialized = false,                                                       \
 	};                                                                                         \
                                                                                                    \
-	DEVICE_DT_INST_DEFINE(i, &ensemble_dphy_init, NULL, &data_##i, &config_##i, POST_KERNEL,   \
+	DEVICE_DT_INST_DEFINE(i, &dphy_dw_init, NULL, &data_##i, &config_##i, POST_KERNEL,         \
 			      CONFIG_MIPI_DPHY_INIT_PRIORITY, NULL);
 
 DT_INST_FOREACH_STATUS_OKAY(ALIF_MIPI_DPHY_DEVICE)

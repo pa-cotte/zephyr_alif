@@ -21,6 +21,6 @@ config MIPI_DPHY_INIT_PRIORITY
 	help
 	  MIPI-DPHY Host Controllers initialization priority.
 
-source "drivers/mipi_dphy/Kconfig.ensemble"
+source "drivers/mipi_dphy/Kconfig.dw"
 
 endif

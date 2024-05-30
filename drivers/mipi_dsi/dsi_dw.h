@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef _DSI_DWC_H_
-#define _DSI_DWC_H_
+#ifndef _DSI_DW_H_
+#define _DSI_DW_H_
 
 #include <zephyr/device.h>
 
@@ -435,7 +435,7 @@ enum dpi_vid_mode_type {
 	DPI_VID_MODE_BURST_1 = 3,
 };
 
-struct ensemble_dpi_config {
+struct dpi_config {
 	/* Video signals polarity */
 	uint32_t polarity;
 
@@ -443,14 +443,14 @@ struct ensemble_dpi_config {
 	enum dpi_vid_pattern_gen vpg_pattern;
 };
 
-struct ensemble_dsi_config {
+struct dsi_dw_config {
 	DEVICE_MMIO_ROM;
 
 	const struct device *tx_dphy;
 	void (*irq_config_func)(const struct device *dev);
 
 	uint32_t irq;
-	struct ensemble_dpi_config dpi;
+	struct dpi_config dpi;
 
 	/* Allow EoTp Transmission/Reception in HS/LP mode. */
 	uint32_t eotp_lp_tx : 1;
@@ -463,7 +463,7 @@ struct ensemble_dsi_config {
 	uint32_t frame_ack_en : 1;
 };
 
-struct ensemble_dsi_data {
+struct dsi_dw_data {
 	DEVICE_MMIO_RAM;
 	struct dphy_dsi_settings phy;
 
@@ -477,7 +477,7 @@ struct ensemble_dsi_data {
 	uint32_t outvact;
 	uint32_t invact;
 	uint32_t max_rd_time;
-	enum ensemble_dsi_mode curr_mode;
+	enum dsi_dw_mode curr_mode;
 
 	/* null packet config */
 	uint32_t num_chunks;
@@ -487,4 +487,4 @@ struct ensemble_dsi_data {
 	uint32_t mode_flags;
 };
 
-#endif /* _DSI_DWC_H_ */
+#endif /* _DSI_DW_H_ */

@@ -3,7 +3,7 @@
 
 description: ALIF Devkit MIPI DSI
 
-compatible: "alif,ensemble-dsi"
+compatible: "snps,designware-dsi"
 
 include: mipi-dsi-host.yaml
 

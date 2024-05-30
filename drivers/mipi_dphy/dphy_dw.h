@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef _DPHY_H_
-#define _DPHY_H_
+#ifndef _DPHY_DW_H_
+#define _DPHY_DW_H_
 
 #include <zephyr/device.h>
 #include <zephyr/sys/util.h>
@@ -227,7 +227,7 @@ struct dphy_pll_vco_ctrl {
  */
 #define PLL_OUT_DIV_FACTOR(vco_cntrl)	(1 << ((0x7 & (vco_cntrl >> 3)) + 1))
 
-struct ensemble_dphy_config {
+struct dphy_dw_config {
 	DEVICE_MMIO_NAMED_ROM(expmst_reg);
 	DEVICE_MMIO_NAMED_ROM(dsi_reg);
 	DEVICE_MMIO_NAMED_ROM(csi_reg);
@@ -236,7 +236,7 @@ struct ensemble_dphy_config {
 	uint32_t cfg_clk_frequency;
 };
 
-struct ensemble_dphy_data {
+struct dphy_dw_data {
 	DEVICE_MMIO_NAMED_RAM(expmst_reg);
 	DEVICE_MMIO_NAMED_RAM(dsi_reg);
 	DEVICE_MMIO_NAMED_RAM(csi_reg);
@@ -244,4 +244,4 @@ struct ensemble_dphy_data {
 	bool is_dsi_initialized;
 };
 
-#endif /* _DPHY_H_ */
+#endif /* _DPHY_DW_H_ */

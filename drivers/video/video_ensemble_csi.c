@@ -13,7 +13,7 @@ LOG_MODULE_REGISTER(ensemble_csi2, CONFIG_LOG_DEFAULT_LEVEL);
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/video.h>
 #include "video_ensemble_csi.h"
-#include <zephyr/drivers/mipi_dphy/ensemble_dphy.h>
+#include <zephyr/drivers/mipi_dphy/dphy_dw.h>
 #include <zephyr/drivers/video/video_alif.h>
 
 static int csi2_is_format_supported(uint32_t fourcc)
@@ -274,13 +274,13 @@ static int ensemble_csi2_phy_config(const struct device *dev)
 
 	dsi_phy.num_lanes = data->phy.num_lanes;
 	dsi_phy.pll_fout = DSI_MINIMUM_PLL_FOUT;
-	ret = dphy_master_setup(config->rx_dphy, &dsi_phy);
+	ret = dphy_dw_master_setup(config->rx_dphy, &dsi_phy);
 	if (ret) {
 		LOG_ERR("Failed to setup D-PHY TX.");
 		return ret;
 	}
 
-	ret = dphy_slave_setup(config->rx_dphy, phy);
+	ret = dphy_dw_slave_setup(config->rx_dphy, phy);
 	if (ret) {
 		LOG_ERR("Failed to set-up D-PHY RX.");
 		return ret;

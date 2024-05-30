@@ -3,10 +3,10 @@
 # Copyright (C) 2024 Alif Semiconductor
 # SPDX-License-Identifier: Apache-2.0
 
-config MIPI_DSI_ENSEMBLE
-	bool "MIPI-DSI Host Controller for Alif Ensemble"
+config MIPI_DSI_DW
+	bool "MIPI-DSI Host Controller for Alif"
 	default y
-	depends on DT_HAS_ALIF_ENSEMBLE_DSI_ENABLED
+	depends on DT_HAS_SNPS_DESIGNWARE_DSI_ENABLED
 	select MIPI_DPHY
 	help
 	  Enable Alif MIPI DSI Host controller driver
