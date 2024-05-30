@@ -2,17 +2,17 @@
  * Copyright (C) 2024 Alif Semiconductor.
  * SPDX-License-Identifier: Apache-2.0
  */
-#define DT_DRV_COMPAT alif_ensemble_csi
+#define DT_DRV_COMPAT snps_designware_csi
 
 #include <zephyr/devicetree.h>
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(ensemble_csi2, CONFIG_LOG_DEFAULT_LEVEL);
+LOG_MODULE_REGISTER(csi2_dw, CONFIG_LOG_DEFAULT_LEVEL);
 
 #include <zephyr/sys/device_mmio.h>
 #include <stdlib.h>
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/video.h>
-#include "video_ensemble_csi.h"
+#include "video_csi_dw.h"
 #include <zephyr/drivers/mipi_dphy/dphy_dw.h>
 #include <zephyr/drivers/video/video_alif.h>
 
@@ -65,7 +65,7 @@ static void reg_write_part(uintptr_t reg, uint32_t data, uint32_t mask, uint8_t 
 	sys_write32(tmp, reg);
 }
 
-static void ensemble_csi_irq_on(uintptr_t regs)
+static void csi2_dw_irq_on(uintptr_t regs)
 {
 	sys_write32(INT_PHY_FATAL_MASK, regs + CSI_INT_MSK_PHY_FATAL);
 	sys_write32(INT_PKT_FATAL_MASK, regs + CSI_INT_MSK_PKT_FATAL);
@@ -80,7 +80,7 @@ static void ensemble_csi_irq_on(uintptr_t regs)
 	sys_write32(INT_ECC_CORRECT_MASK, regs + CSI_INT_MSK_ECC_CORRECT);
 }
 
-static void ensemble_csi2_irq(const struct device *dev)
+static void csi2_dw_irq(const struct device *dev)
 {
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	uint32_t global_st = 0;
@@ -153,7 +153,7 @@ static void ensemble_csi2_irq(const struct device *dev)
 	}
 }
 
-static int csi2_ipi_advanced_features(const struct device *dev)
+static int csi2_dw_ipi_advanced_features(const struct device *dev)
 {
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
@@ -179,9 +179,9 @@ static int csi2_ipi_advanced_features(const struct device *dev)
 	return 0;
 }
 
-static int csi2_ipi_set_timings(const struct device *dev)
+static int csi2_dw_ipi_set_timings(const struct device *dev)
 {
-	struct ensemble_csi2_data *data = dev->data;
+	struct csi2_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	uint32_t tmp;
 
@@ -202,10 +202,10 @@ static int csi2_ipi_set_timings(const struct device *dev)
 	return 0;
 }
 
-static int csi2_ipi_mode_config(const struct device *dev)
+static int csi2_dw_ipi_mode_config(const struct device *dev)
 {
-	const struct ensemble_csi2_config *config = dev->config;
-	struct ensemble_csi2_data *data = dev->data;
+	const struct csi2_dw_config *config = dev->config;
+	struct csi2_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	/* Setup IPI mode timings. */
@@ -225,9 +225,9 @@ static int csi2_ipi_mode_config(const struct device *dev)
 	return 0;
 }
 
-static int ensemble_csi_config_host(const struct device *dev)
+static int csi2_dw_config_host(const struct device *dev)
 {
-	struct ensemble_csi2_data *data = dev->data;
+	struct csi2_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	/*
@@ -237,13 +237,13 @@ static int ensemble_csi_config_host(const struct device *dev)
 	sys_write32(data->phy.num_lanes - 1, regs + CSI_N_LANES);
 
 	/* Enable Interrupts. */
-	ensemble_csi_irq_on(regs);
+	csi2_dw_irq_on(regs);
 
 	/*
 	 * Configuring IPI.
 	 */
 	/* IPI Mode Configuration. */
-	csi2_ipi_mode_config(dev);
+	csi2_dw_ipi_mode_config(dev);
 
 	/* Enable Auto memory flush of CSI by default. */
 	sys_set_bits(regs + CSI_IPI_MEM_FLUSH, CSI_IPI_MEM_FLUSH_AUTO_FLUSH);
@@ -256,18 +256,18 @@ static int ensemble_csi_config_host(const struct device *dev)
 		       CSI_IPI_DATA_TYPE_TYPE_MASK, CSI_IPI_DATA_TYPE_TYPE_SHIFT);
 
 	/* Setup IPI Advanced Features. */
-	csi2_ipi_advanced_features(dev);
+	csi2_dw_ipi_advanced_features(dev);
 
 	/* Setup IPI timings. */
-	csi2_ipi_set_timings(dev);
+	csi2_dw_ipi_set_timings(dev);
 
 	return 0;
 }
 
-static int ensemble_csi2_phy_config(const struct device *dev)
+static int csi2_dw_phy_config(const struct device *dev)
 {
-	const struct ensemble_csi2_config *config = dev->config;
-	struct ensemble_csi2_data *data = dev->data;
+	const struct csi2_dw_config *config = dev->config;
+	struct csi2_dw_data *data = dev->data;
 	struct dphy_csi2_settings *phy = &data->phy;
 	struct dphy_dsi_settings dsi_phy = {0};
 	int ret;
@@ -289,10 +289,10 @@ static int ensemble_csi2_phy_config(const struct device *dev)
 	return 0;
 }
 
-static int ensemble_csi_validate_data(const struct device *dev)
+static int csi2_dw_validate_data(const struct device *dev)
 {
-	const struct ensemble_csi2_config *config = dev->config;
-	struct ensemble_csi2_data *data = dev->data;
+	const struct csi2_dw_config *config = dev->config;
+	struct csi2_dw_data *data = dev->data;
 	float pixclock;
 	uint32_t bpp;
 
@@ -344,7 +344,7 @@ static int ensemble_csi_validate_data(const struct device *dev)
 	return 0;
 }
 
-static int csi2_configure(const struct device *dev)
+static int csi2_dw_configure(const struct device *dev)
 {
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	int ret;
@@ -352,20 +352,20 @@ static int csi2_configure(const struct device *dev)
 	/* Enter the CSI-2 reset state. */
 	sys_write32(0, regs + CSI_CSI2_RESETN);
 
-	ret = ensemble_csi_validate_data(dev);
+	ret = csi2_dw_validate_data(dev);
 	if (ret) {
 		LOG_ERR("Invalid parameters set for CSI-2");
 		return ret;
 	}
 
 	/* Setup D-PHY */
-	ret = ensemble_csi2_phy_config(dev);
+	ret = csi2_dw_phy_config(dev);
 	if (ret) {
 		LOG_ERR("Failed to configure PHY.");
 		return ret;
 	}
 
-	ret = ensemble_csi_config_host(dev);
+	ret = csi2_dw_config_host(dev);
 	if (ret) {
 		LOG_ERR("Failed to configure CSI Host.");
 		return ret;
@@ -377,9 +377,9 @@ static int csi2_configure(const struct device *dev)
 	return 0;
 }
 
-static int csi2_stream_start(const struct device *dev)
+static int csi2_dw_stream_start(const struct device *dev)
 {
-	struct ensemble_csi2_data *data = dev->data;
+	struct csi2_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	if (data->state == CSI_STATE_STREAMING) {
@@ -393,9 +393,9 @@ static int csi2_stream_start(const struct device *dev)
 	return 0;
 }
 
-static int csi2_stream_stop(const struct device *dev)
+static int csi2_dw_stream_stop(const struct device *dev)
 {
-	struct ensemble_csi2_data *data = dev->data;
+	struct csi2_dw_data *data = dev->data;
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 
 	if (data->state == CSI_STATE_STANDBY) {
@@ -409,10 +409,10 @@ static int csi2_stream_stop(const struct device *dev)
 	return 0;
 }
 
-static int csi2_set_format(const struct device *dev, enum video_endpoint_id ep,
+static int csi2_dw_set_format(const struct device *dev, enum video_endpoint_id ep,
 			   struct video_format *fmt)
 {
-	struct ensemble_csi2_data *data = dev->data;
+	struct csi2_dw_data *data = dev->data;
 	int32_t tmp;
 	int i;
 
@@ -450,26 +450,26 @@ static int csi2_set_format(const struct device *dev, enum video_endpoint_id ep,
 	data->hact = fmt->width;
 	data->vact = fmt->height;
 
-	return csi2_configure(dev);
+	return csi2_dw_configure(dev);
 }
 
-static int csi2_get_caps(const struct device *dev, enum video_endpoint_id ep,
+static int csi2_dw_get_caps(const struct device *dev, enum video_endpoint_id ep,
 			 struct video_caps *caps)
 {
 	return -ENOTSUP;
 }
 
-static const struct video_driver_api ensemble_csi2_driver_api = {
-	.set_format = csi2_set_format,
-	.stream_start = csi2_stream_start,
-	.stream_stop = csi2_stream_stop,
-	.get_caps = csi2_get_caps,
+static const struct video_driver_api csi2_dw_driver_api = {
+	.set_format = csi2_dw_set_format,
+	.stream_start = csi2_dw_stream_start,
+	.stream_stop = csi2_dw_stream_stop,
+	.get_caps = csi2_dw_get_caps,
 };
 
-static int ensemble_csi_init(const struct device *dev)
+static int csi2_dw_init(const struct device *dev)
 {
-	const struct ensemble_csi2_config *config = dev->config;
-	struct ensemble_csi2_data *data = dev->data;
+	const struct csi2_dw_config *config = dev->config;
+	struct csi2_dw_data *data = dev->data;
 
 	DEVICE_MMIO_MAP(dev, K_MEM_CACHE_NONE);
 
@@ -482,18 +482,18 @@ static int ensemble_csi_init(const struct device *dev)
 }
 
 #define ALIF_MIPI_CSI_DEVICE(i)                                                                    \
-	static void ensemble_csi2_config_func_##i(const struct device *dev);                       \
-	static const struct ensemble_csi2_config config_##i = {                                    \
+	static void csi2_dw_config_func_##i(const struct device *dev);                             \
+	static const struct csi2_dw_config config_##i = {                                          \
 		DEVICE_MMIO_ROM_INIT(DT_DRV_INST(i)),                                              \
 		.rx_dphy = DEVICE_DT_GET_OR_NULL(DT_INST_PHANDLE(i, phy_if)),                      \
                                                                                                    \
 		.irq = DT_INST_IRQN(i),                                                            \
-		.irq_config_func = ensemble_csi2_config_func_##i,                                  \
+		.irq_config_func = csi2_dw_config_func_##i,                                        \
                                                                                                    \
 		.ipi_mode = DT_INST_ENUM_IDX(i, ipi_mode),                                         \
 	};                                                                                         \
                                                                                                    \
-	static struct ensemble_csi2_data data_##i = {                                              \
+	static struct csi2_dw_data data_##i = {                                                    \
 		.phy =                                                                             \
 			{                                                                          \
 				.num_lanes = DT_INST_PROP(i, data_lanes),                          \
@@ -518,13 +518,13 @@ static int ensemble_csi_init(const struct device *dev)
 				    (DT_INST_PROP(i, csi_vact)), (0)),                             \
 	};                                                                                         \
                                                                                                    \
-	DEVICE_DT_INST_DEFINE(i, &ensemble_csi_init, NULL, &data_##i, &config_##i, POST_KERNEL,    \
-			      CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2_INIT_PRIORITY,                       \
-			      &ensemble_csi2_driver_api);                                          \
+	DEVICE_DT_INST_DEFINE(i, &csi2_dw_init, NULL, &data_##i, &config_##i, POST_KERNEL,         \
+			      CONFIG_VIDEO_MIPI_CSI2_DW_INIT_PRIORITY,                             \
+			      &csi2_dw_driver_api);                                                \
                                                                                                    \
-	static void ensemble_csi2_config_func_##i(const struct device *dev)                        \
+	static void csi2_dw_config_func_##i(const struct device *dev)                              \
 	{                                                                                          \
-		IRQ_CONNECT(DT_INST_IRQN(i), DT_INST_IRQ(i, priority), ensemble_csi2_irq,          \
+		IRQ_CONNECT(DT_INST_IRQN(i), DT_INST_IRQ(i, priority), csi2_dw_irq,                \
 			    DEVICE_DT_INST_GET(i), 0);                                             \
 		irq_enable(DT_INST_IRQN(i));                                                       \
 	}

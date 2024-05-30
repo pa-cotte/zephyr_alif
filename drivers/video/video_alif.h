@@ -2,8 +2,8 @@
  * Copyright (C) 2024 Alif Semiconductor.
  * SPDX-License-Identifier: Apache-2.0
  */
-#ifndef _VIDEO_ENSEMBLE_H_
-#define _VIDEO_ENSEMBLE_H_
+#ifndef _VIDEO_ALIF_H_
+#define _VIDEO_ALIF_H_
 
 #include <zephyr/device.h>
 
@@ -145,4 +145,4 @@ struct video_cam_data {
 	enum video_cam_device_state state;
 };
 
-#endif /* _VIDEO_ENSEMBLE_H_ */
+#endif /* _VIDEO_ALIF_H_ */

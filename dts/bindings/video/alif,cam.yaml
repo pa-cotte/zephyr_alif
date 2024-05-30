@@ -1,9 +1,9 @@
 # Copyright (C) 2024 Alif Semiconductor
 # SPDX-License-Identifier: Apache-2.0
 
-description: ALIF Ensemble Camera Parallel Interface
+description: ALIF Camera Parallel Interface
 
-compatible: "alif,ensemble-cam"
+compatible: "alif,cam"
 
 include: [base.yaml, pinctrl-device.yaml]
 

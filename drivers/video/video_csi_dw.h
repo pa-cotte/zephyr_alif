@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef _ENSEMBLE_CSI_H_
-#define _ENSEMBLE_CSI_H_
+#ifndef _CSI_DW_H_
+#define _CSI_DW_H_
 
 #include <zephyr/device.h>
 #include <zephyr/sys/util.h>
@@ -317,7 +317,7 @@
 #define DSI_MINIMUM_PLL_FOUT  MHZ(40)
 #define CSI2_BANDWIDTH_SCALER (1.2)
 
-enum ensemble_csi2_ipi_mode_timings {
+enum csi2_ipi_mode_timings {
 	CSI2_IPI_MODE_TIMINGS_CAM,
 	CSI2_IPI_MODE_TIMINGS_CTRL,
 };
@@ -329,7 +329,7 @@ enum csi_state {
 	CSI_STATE_STANDBY,
 };
 
-struct ensemble_csi2_config {
+struct csi2_dw_config {
 	DEVICE_MMIO_ROM;
 
 	const struct device *rx_dphy;
@@ -339,7 +339,7 @@ struct ensemble_csi2_config {
 	void (*irq_config_func)(const struct device *dev);
 };
 
-struct ensemble_csi2_data {
+struct csi2_dw_data {
 	DEVICE_MMIO_RAM;
 	struct dphy_csi2_settings phy;
 
@@ -352,8 +352,8 @@ struct ensemble_csi2_data {
 	uint16_t hsd;
 	uint16_t hact;
 
-	const struct ensemble_cpi_csi2_mode_settings *csi_cpi_settings;
+	const struct cpi_csi2_mode_settings *csi_cpi_settings;
 	enum csi_state state;
 };
 
-#endif /* _ENSEMBLE_CSI_H_ */
+#endif /* _CSI_DW_H_ */

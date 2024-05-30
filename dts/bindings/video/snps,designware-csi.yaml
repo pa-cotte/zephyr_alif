@@ -3,7 +3,7 @@
 
 description: MIPI CSI-2 controller IP used by Alif SoC.
 
-compatible: "alif,ensemble-csi"
+compatible: "snps,designware-csi"
 
 include: base.yaml
 

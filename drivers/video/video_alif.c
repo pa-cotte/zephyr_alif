@@ -2,7 +2,7 @@
  * Copyright (C) 2024 Alif Semiconductor.
  * SPDX-License-Identifier: Apache-2.0
  */
-#define DT_DRV_COMPAT alif_ensemble_cam
+#define DT_DRV_COMPAT alif_cam
 
 #include <zephyr/devicetree.h>
 #include <zephyr/logging/log.h>
@@ -12,7 +12,7 @@ LOG_MODULE_REGISTER(CPI, CONFIG_LOG_DEFAULT_LEVEL);
 #include <zephyr/kernel.h>
 #include <zephyr/sys/device_mmio.h>
 
-#include "video_ensemble.h"
+#include "video_alif.h"
 #include <zephyr/drivers/video/video_alif.h>
 
 #define WORKQ_STACK_SIZE 512
@@ -104,7 +104,7 @@ static inline void hw_cam_start_video_capture(const struct device *dev)
 	}
 }
 
-#ifdef CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2
+#ifdef CONFIG_VIDEO_MIPI_CSI2_DW
 static int cam_set_csi(const struct device *dev, uint32_t fourcc)
 {
 	const struct video_cam_config *config = dev->config;
@@ -165,7 +165,7 @@ static int cam_set_csi(const struct device *dev, uint32_t fourcc)
 
 	return 0;
 }
-#endif /* CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2 */
+#endif /* CONFIG_VIDEO_MIPI_CSI2_DW */
 
 /*
  * Moves the completed video buffer from IN-FIFO to the OUT-FIFO after a
@@ -253,7 +253,7 @@ static int cam_set_fmt(const struct device *dev, enum video_endpoint_id ep,
 			    ((fmt->width & CAM_VIDEO_FCFG_DATA_MASK) << CAM_VIDEO_FCFG_DATA_SHIFT),
 		    regs + CAM_VIDEO_FCFG);
 
-#ifdef CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2
+#ifdef CONFIG_VIDEO_MIPI_CSI2_DW
 	if (config->csi_bus) {
 		ret = video_set_format(config->csi_bus, ep, fmt);
 		if (ret) {
@@ -267,7 +267,7 @@ static int cam_set_fmt(const struct device *dev, enum video_endpoint_id ep,
 			return ret;
 		}
 	}
-#endif /* CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2 */
+#endif /* CONFIG_VIDEO_MIPI_CSI2_DW */
 
 	if (config->sensor) {
 		ret = video_set_format(config->sensor, ep, fmt);
@@ -299,7 +299,7 @@ static int cam_get_fmt(const struct device *dev, enum video_endpoint_id ep,
 		}
 	}
 
-#ifdef CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2
+#ifdef CONFIG_VIDEO_MIPI_CSI2_DW
 	if (config->csi_bus) {
 		ret = video_set_format(config->csi_bus, ep, fmt);
 		if (ret) {
@@ -310,7 +310,7 @@ static int cam_get_fmt(const struct device *dev, enum video_endpoint_id ep,
 			return ret;
 		}
 	}
-#endif /* CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2 */
+#endif /* CONFIG_VIDEO_MIPI_CSI2_DW */
 
 	fmt->pixelformat = data->current_format.pixelformat;
 	fmt->width = data->current_format.width;
@@ -350,13 +350,13 @@ static int cam_stream_start(const struct device *dev)
 	hw_enable_interrupts(regs, INTR_VSYNC | INTR_BRESP_ERR | INTR_OUTFIFO_OVERRUN |
 					   INTR_INFIFO_OVERRUN | INTR_STOP);
 
-#ifdef CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2
+#ifdef CONFIG_VIDEO_MIPI_CSI2_DW
 	/* Start the MIPI CSI-2 IP in case the MIPI CSI is available. */
 	if (config->csi_bus && video_stream_start(config->csi_bus)) {
 		LOG_ERR("Failed to start CSI bus!");
 		return -EIO;
 	}
-#endif /* CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2 */
+#endif /* CONFIG_VIDEO_MIPI_CSI2_DW */
 
 	if (config->sensor && video_stream_start(config->sensor)) {
 		LOG_ERR("Failed to start camera sensor!");
@@ -392,12 +392,12 @@ static int cam_stream_stop(const struct device *dev)
 		}
 	}
 
-#ifdef CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2
+#ifdef CONFIG_VIDEO_MIPI_CSI2_DW
 	if (config->csi_bus && video_stream_stop(config->csi_bus)) {
 		LOG_ERR("Failed to stop CSI Bus!");
 		return -EIO;
 	}
-#endif /* CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2 */
+#endif /* CONFIG_VIDEO_MIPI_CSI2_DW */
 
 	/* Disable Interrupts. */
 	hw_disable_interrupts(regs, INTR_VSYNC | INTR_BRESP_ERR | INTR_OUTFIFO_OVERRUN |
@@ -763,7 +763,7 @@ static int video_cam_init(const struct device *dev)
 		return -ENODEV;
 	}
 
-	if (IS_ENABLED(CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2)) {
+	if (IS_ENABLED(CONFIG_VIDEO_MIPI_CSI2_DW)) {
 		data->data_source = CPI_DATA_SOURCE_CSI;
 	} else {
 		data->data_source = CPI_DATA_SOURCE_PARALLEL;
@@ -875,7 +875,7 @@ static int video_cam_init(const struct device *dev)
                                                                                                    \
 	static struct video_cam_data data_##i;                                                     \
 	DEVICE_DT_INST_DEFINE(i, &video_cam_init, NULL, &data_##i, &config_##i, POST_KERNEL,       \
-			      CONFIG_VIDEO_ENSEMBLE_CAM_INIT_PRIORITY, &cam_driver_api);           \
+			      CONFIG_VIDEO_ALIF_CAM_INIT_PRIORITY, &cam_driver_api);               \
                                                                                                    \
 	static void cam_config_func_##i(const struct device *dev)                                  \
 	{                                                                                          \

@@ -2,8 +2,8 @@
  * Copyright (C) 2024 Alif Semiconductor.
  * SPDX-License-Identifier: Apache-2.0
  */
-#ifndef __ZEPHYR_INCLUDE_DRIVERS_ENSEMBLE_VIDEO_H__
-#define __ZEPHYR_INCLUDE_DRIVERS_ENSEMBLE_VIDEO_H__
+#ifndef __ZEPHYR_INCLUDE_DRIVERS_ALIF_VIDEO_H__
+#define __ZEPHYR_INCLUDE_DRIVERS_ALIF_VIDEO_H__
 
 #include <zephyr/device.h>
 #include <stddef.h>
@@ -73,7 +73,7 @@ enum cpi_data_mode {
 	CPI_DATA_MODE_64_BIT,
 };
 
-struct ensemble_cpi_csi2_mode_settings {
+struct cpi_csi2_mode_settings {
 	enum csi2_data_type dt;
 	enum csi2_ipi_interface ipi_ifx;
 	enum cpi_csi_color_mode col_mode;
@@ -81,7 +81,7 @@ struct ensemble_cpi_csi2_mode_settings {
 	uint32_t bits_per_pixel;
 };
 
-static const struct ensemble_cpi_csi2_mode_settings data_mode_settings[] = {
+static const struct cpi_csi2_mode_settings data_mode_settings[] = {
 	{CSI2_DT_RAW6, CSI2_IPI_MODE_16_BIT_IFX, CPI_COLOR_MODE_CONFIG_IPI16_RAW6,
 	 CPI_DATA_MODE_8_BIT, 6},
 	{CSI2_DT_RAW7, CSI2_IPI_MODE_16_BIT_IFX, CPI_COLOR_MODE_CONFIG_IPI16_RAW7,
@@ -120,4 +120,4 @@ static const struct ensemble_cpi_csi2_mode_settings data_mode_settings[] = {
 }
 #endif
 
-#endif /* __ZEPHYR_INCLUDE_DRIVERS_ENSEMBLE_VIDEO_H__ */
+#endif /* __ZEPHYR INCLUDE_DRIVERS_ALIF_VIDEO_H__ */

@@ -43,8 +43,8 @@ source "drivers/video/Kconfig.ov2640"
 
 source "drivers/video/Kconfig.arx3a0"
 
-source "drivers/video/Kconfig.ensemble"
+source "drivers/video/Kconfig.alif"
 
-source "drivers/video/Kconfig.ensemble_csi2"
+source "drivers/video/Kconfig.dw"
 
 endif # VIDEO

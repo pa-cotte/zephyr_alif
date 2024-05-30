@@ -3,20 +3,20 @@
 # Copyright (C) 2024 Alif Semiconductor
 # SPDX-License-Identifier: Apache-2.0
 
-config VIDEO_ENSEMBLE_MIPI_CSI2
-	bool "MIPI CSI-2 Host Controller for Alif Ensemble"
+config VIDEO_MIPI_CSI2_DW
+	bool "MIPI CSI-2 Host Controller for Alif"
 	default y
 	select MIPI_DPHY
 	select MIPI_DSI
 	depends on DT_HAS_SNPS_DESIGNWARE_DPHY_ENABLED
-	depends on DT_HAS_ALIF_ENSEMBLE_CSI_ENABLED
+	depends on DT_HAS_SNPS_DESIGNWARE_CSI_ENABLED
 	depends on DT_HAS_SNPS_DESIGNWARE_DSI_ENABLED
 	help
 	  Enable Alif MIPI CSI2 Host controller driver
 
-if VIDEO_ENSEMBLE_MIPI_CSI2
+if VIDEO_MIPI_CSI2_DW
 
-config VIDEO_ENSEMBLE_MIPI_CSI2_INIT_PRIORITY
+config VIDEO_MIPI_CSI2_DW_INIT_PRIORITY
 	int "Initialization priority"
 	default 41
 	help

@@ -192,7 +192,7 @@ static int ensemble_e7_dk_rtss_hp_init(void)
 		/* Enable HFOSC (38.4 MHz) and CFG (100 MHz) clock.*/
 		sys_set_bits(CGU_CLK_ENA, BIT(21) | BIT(23));
 	}
-	if (IS_ENABLED(CONFIG_VIDEO_ENSEMBLE_MIPI_CSI2)) {
+	if (IS_ENABLED(CONFIG_VIDEO_MIPI_CSI2_DW)) {
 		/* Enable CSI2 controller peripheral clock. */
 		sys_set_bits(EXPMST_PERIPH_CLK_EN, BIT(24));
 

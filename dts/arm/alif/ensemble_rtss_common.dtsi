@@ -826,7 +826,7 @@
 	};
 
 	cam: cam@49030000 {
-		compatible = "alif,ensemble-cam";
+		compatible = "alif,cam";
 		reg = <0x49030000 0x1000>;
 		interrupts = <345 3>;
 
@@ -851,7 +851,7 @@
 	};
 
 	csi: csi@49033000 {
-		compatible = "alif,ensemble-csi";
+		compatible = "snps,designware-csi";
 		reg = <0x49033000 0x1000>;
 		interrupts = <344 3>;
 
