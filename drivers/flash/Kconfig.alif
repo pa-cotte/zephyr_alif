@@ -9,3 +9,23 @@ config MRAM_FLASH_ALIF
 	select FLASH_HAS_PAGE_LAYOUT
 	help
 	 Enables MRAM flash driver on Alif SoCs.
+
+menuconfig OSPI_FLASH_IS25WX
+	bool "OSPI Flash IS25WX 128/256/512 driver for Alif DevKit"
+	default y
+	depends on DT_HAS_ISSI_XSPI_FLASH_CONTROLLER_ENABLED
+	select FLASH_HAS_DRIVER_ENABLED
+	select FLASH_HAS_PAGE_LAYOUT
+	help
+	 Enables IS25WX256/512 flash driver on Alif DevKit.
+	 Update num-of-sector@ospi_flash property value in devicetree.
+	 - 8K for 256Mb and 16K for 512Mb size support.
+
+if OSPI_FLASH_IS25WX
+	config USE_ALIF_HAL_OSPI
+	bool "OSPI driver located in HAL Module"
+	default y
+	help
+	 Enables OSPI driver on Alif SoCs.
+
+endif # OSPI_FLASH_IS25WX
