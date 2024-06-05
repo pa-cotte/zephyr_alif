@@ -339,7 +339,7 @@
 		zephyr,flash-controller = &mram_flash;
 		zephyr,flash = &mram_storage;
 		zephyr,code-partition = &slot0_partition;
-		zephyr,sram = &itcm;
+		zephyr,sram = &dtcm;
 		zephyr,dtcm = &dtcm;
 		zephyr,itcm = &itcm;
 		zephyr,ieee802154 = &ieee802154;
