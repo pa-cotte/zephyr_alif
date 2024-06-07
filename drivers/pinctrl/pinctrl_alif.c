@@ -9,7 +9,6 @@
 #include <zephyr/drivers/pinctrl.h>
 #include <soc.h>
 #include <zephyr/sys/util.h>
-#include <zephyr/dt-bindings/pinctrl/ensemble-pinctrl.h>
 
 /* Pinmux settings:
  * syntax : U  U  U  U  U  U  P  P  P  P  P  P  P  F  F  F
@@ -47,13 +46,17 @@
 #define PIN_NUM_MASK 0x7F
 #define PIN_NUM_CLR_MASK 0x3F8
 
+#define PORT_P15             120
+#define LPGPIO_PORT          PORT_P15
 #define LPGPIO_PIN_NUM_MASK  0x7
 #define LPGPIO_PIN_PAD_SHIFT 16
 #define LPGPIO_PIN_PAD_MASK  0xFF
 
 #if DT_NODE_HAS_PROP(DT_NODELABEL(pinctrl), reg)
-#define PINCTRL_BASE         DT_REG_ADDR_BY_NAME(DT_NODELABEL(pinctrl), pinctrl)
-#define LPGPIO_PINCTRL_BASE  DT_REG_ADDR_BY_NAME(DT_NODELABEL(pinctrl), lpgpio_pinctrl)
+#define PINCTRL_BASE         DT_REG_ADDR(DT_NODELABEL(pinctrl))
+#define LPGPIO_PINCTRL_BASE  COND_CODE_1(DT_REG_HAS_IDX(DT_NODELABEL(pinctrl), 1), \
+				(DT_REG_ADDR_BY_NAME(DT_NODELABEL(pinctrl), lpgpio_pinctrl)), \
+				(0))
 #endif
 
 #define GET_PINMUX_PORT(value) ((value >> PIN_FUNC_SHIFT) & PIN_NUM_MASK)
@@ -70,7 +73,7 @@ int pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 	uint32_t *pinctrl_addr;
 
 	/* is port LPGPIO? */
-	if (GET_PINMUX_PORT(pinmux_value) == LPGPIO_PORT) {
+	if (LPGPIO_PINCTRL_BASE && (GET_PINMUX_PORT(pinmux_value) == LPGPIO_PORT)) {
 
 		/* get the address of the LPGPIO pin using port value */
 		pinctrl_addr = LPGPIO_PINMUX_ADDR(pinmux_value);
