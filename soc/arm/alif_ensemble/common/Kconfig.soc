@@ -26,6 +26,14 @@ config SOC_SUPPORT_ARM_MHUV2
 	help
 	  SoC support communication through Arm MHUv2
 
+config SPI_DW_ENABLE
+	bool
+	default y
+	depends on SPI
+	help
+	  Enable Designware SPI driver.
+	select HAS_SPI_DW
+
 config ENSEMBLE_PDM
 	bool "Enable PDM in Ensemble family"
 	select AUDIO
