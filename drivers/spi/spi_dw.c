@@ -2,6 +2,7 @@
  * Copyright (c) 2015 Intel Corporation.
  * Copyright (c) 2023 Synopsys, Inc. All rights reserved.
  * Copyright (c) 2023 Meta Platforms
+ * Copyright (c) 2024 Alif Semiconductor
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -226,9 +227,18 @@ static int spi_dw_configure(const struct spi_dw_config *info,
 
 	/* Word size */
 	if (info->max_xfer_size == 32) {
-		ctrlr0 |= DW_SPI_CTRLR0_DFS_32(SPI_WORD_SIZE_GET(config->operation));
+		if (spi->dwc_ssi) {
+			ctrlr0 |= DW_SPI_CTRLR0_DFS_16(SPI_WORD_SIZE_GET(config->operation));
+		} else {
+			ctrlr0 |= DW_SPI_CTRLR0_DFS_32(SPI_WORD_SIZE_GET(config->operation));
+		}
 	} else {
 		ctrlr0 |= DW_SPI_CTRLR0_DFS_16(SPI_WORD_SIZE_GET(config->operation));
+	}
+
+	/* Setting SSI_IS_MST in CTRLR0 if it is dwc_ssi on AHB */
+	if (!(config->operation & SPI_OP_MODE_SLAVE) && spi->dwc_ssi) {
+		ctrlr0 |= DWC_SSI_SPI_IS_MST_BIT;
 	}
 
 	/* Determine how many bytes are required per-frame */
@@ -236,15 +246,15 @@ static int spi_dw_configure(const struct spi_dw_config *info,
 
 	/* SPI mode */
 	if (SPI_MODE_GET(config->operation) & SPI_MODE_CPOL) {
-		ctrlr0 |= DW_SPI_CTRLR0_SCPOL;
+		ctrlr0 |= (spi->dwc_ssi) ? DWC_SSI_SPI_CTRLR0_SCPOL : DW_SPI_CTRLR0_SCPOL;
 	}
 
 	if (SPI_MODE_GET(config->operation) & SPI_MODE_CPHA) {
-		ctrlr0 |= DW_SPI_CTRLR0_SCPH;
+		ctrlr0 |= (spi->dwc_ssi) ? DWC_SSI_SPI_CTRLR0_SCPH : DW_SPI_CTRLR0_SCPH;
 	}
 
 	if (SPI_MODE_GET(config->operation) & SPI_MODE_LOOP) {
-		ctrlr0 |= DW_SPI_CTRLR0_SRL;
+		ctrlr0 |= (spi->dwc_ssi) ? DWC_SSI_SPI_CTRLR0_SRL : DW_SPI_CTRLR0_SRL;
 	}
 
 	/* Installing the configuration */
@@ -257,6 +267,7 @@ static int spi_dw_configure(const struct spi_dw_config *info,
 		/* Baud rate and Slave select, for master only */
 		write_baudr(info, SPI_DW_CLK_DIVIDER(info->clock_frequency,
 					       config->frequency));
+		write_ser(info, 1 << config->slave);
 	}
 
 	if (spi_dw_is_slave(spi)) {
@@ -339,7 +350,7 @@ static int transceive(const struct device *dev,
 	const struct spi_dw_config *info = dev->config;
 	struct spi_dw_data *spi = dev->data;
 	uint32_t tmod = DW_SPI_CTRLR0_TMOD_TX_RX;
-	uint32_t dw_spi_rxftlr_dflt = (info->fifo_depth * 5) / 8;
+	uint32_t dw_spi_rxftlr_dflt = (info->fifo_depth * 1) / 2;
 	uint32_t reg_data;
 	int ret;
 
@@ -358,14 +369,14 @@ static int transceive(const struct device *dev,
 	}
 
 	if (!rx_bufs || !rx_bufs->buffers) {
-		tmod = DW_SPI_CTRLR0_TMOD_TX;
+		tmod = (spi->dwc_ssi) ? DWC_SSI_SPI_CTRLR0_TMOD_TX : DW_SPI_CTRLR0_TMOD_TX;
 	} else if (!tx_bufs || !tx_bufs->buffers) {
-		tmod = DW_SPI_CTRLR0_TMOD_RX;
+		tmod = (spi->dwc_ssi) ? DWC_SSI_SPI_CTRLR0_TMOD_RX : DW_SPI_CTRLR0_TMOD_RX;
 	}
 
 	/* ToDo: add a way to determine EEPROM mode */
 
-	if (tmod >= DW_SPI_CTRLR0_TMOD_RX &&
+	if (tmod >= ((spi->dwc_ssi) ? DWC_SSI_SPI_CTRLR0_TMOD_RX : DW_SPI_CTRLR0_TMOD_RX) &&
 	    !spi_dw_is_slave(spi)) {
 		reg_data = spi_dw_compute_ndf(rx_bufs->buffers,
 					      rx_bufs->count,
@@ -382,16 +393,16 @@ static int transceive(const struct device *dev,
 
 	if (spi_dw_is_slave(spi)) {
 		/* Enabling MISO line relevantly */
-		if (tmod == DW_SPI_CTRLR0_TMOD_RX) {
-			tmod |= DW_SPI_CTRLR0_SLV_OE;
+		if ((tmod == DW_SPI_CTRLR0_TMOD_RX) || (tmod == DWC_SSI_SPI_CTRLR0_TMOD_RX)) {
+			tmod |= (spi->dwc_ssi) ? DWC_SSI_SPI_CTRLR0_SLV_OE : DW_SPI_CTRLR0_SLV_OE;
 		} else {
-			tmod &= ~DW_SPI_CTRLR0_SLV_OE;
+			tmod &= (spi->dwc_ssi) ? ~DWC_SSI_SPI_CTRLR0_SLV_OE : ~DW_SPI_CTRLR0_SLV_OE;
 		}
 	}
 
 	/* Updating TMOD in CTRLR0 register */
 	reg_data = read_ctrlr0(info);
-	reg_data &= ~DW_SPI_CTRLR0_TMOD_RESET;
+	reg_data &= (spi->dwc_ssi) ? ~DWC_SSI_SPI_CTRLR0_TMOD_RESET : ~DW_SPI_CTRLR0_TMOD_RESET;
 	reg_data |= tmod;
 
 	write_ctrlr0(info, reg_data);
@@ -422,9 +433,13 @@ static int transceive(const struct device *dev,
 	write_rxftlr(info, reg_data);
 
 	/* Enable interrupts */
-	reg_data = !rx_bufs ?
-		DW_SPI_IMR_UNMASK & DW_SPI_IMR_MASK_RX :
-		DW_SPI_IMR_UNMASK;
+	reg_data = DW_SPI_IMR_UNMASK;
+	if ((!tx_bufs || !tx_bufs->buffers)) {
+		reg_data &= DW_SPI_IMR_MASK_TX;
+	}
+	if ((!rx_bufs || !rx_bufs->buffers)) {
+		reg_data &= DW_SPI_IMR_MASK_RX;
+	}
 	write_imr(info, reg_data);
 
 	if (!spi_dw_is_slave(spi)) {
@@ -438,6 +453,11 @@ static int transceive(const struct device *dev,
 
 	LOG_DBG("Enabling controller");
 	set_bit_ssienr(info);
+
+	/* Do a dummy write in case of rx only */
+	if (!spi_dw_is_slave(spi) && (!tx_bufs || !tx_bufs->buffers)) {
+		write_dr(info, 0x0);
+	}
 
 	ret = spi_context_wait_for_completion(&spi->ctx);
 
@@ -593,6 +613,7 @@ COND_CODE_1(IS_EQ(DT_NUM_IRQS(DT_DRV_INST(inst)), 1),              \
 		SPI_CONTEXT_INIT_LOCK(spi_dw_data_##inst, ctx),                             \
 		SPI_CONTEXT_INIT_SYNC(spi_dw_data_##inst, ctx),                             \
 		SPI_CONTEXT_CS_GPIOS_INITIALIZE(DT_DRV_INST(inst), ctx)                     \
+		SPI_UPDATE_DWC_SSI_FLAG(DT_DRV_INST(inst), dwc_ssi)			    \
 	};                                                                                  \
 	static const struct spi_dw_config spi_dw_config_##inst = {                          \
 		.regs = DT_INST_REG_ADDR(inst),                                             \
