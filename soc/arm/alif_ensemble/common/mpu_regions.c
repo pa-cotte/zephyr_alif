@@ -10,15 +10,8 @@
 #define ALIF_ENSEMBLE_OSPI_REG  0x83000000
 #define ALIF_ENSEMBLE_OSPI_SIZE KB(16)
 
-#define MPU_MAIR_INDEX_DEVICE 3
-
-#define REGION_DEVICE_ATTR(limit)                                                                  \
-	{                                                                                          \
-		/* AP, XN, SH */                                                                   \
-		.rbar = NOT_EXEC | P_RW_U_NA_Msk | NON_SHAREABLE_Msk, /* Cache-ability */          \
-			.mair_idx = MPU_MAIR_INDEX_DEVICE,            /* Region Limit */           \
-			.r_limit = limit - 1,                                                      \
-	}
+#define ALIF_ENSEMBLE_HOST_PERIPHERAL_BASE	0x1A000000
+#define ALIF_ENSEMBLE_HOST_PERIPHERAL_SIZE	0x1000000
 
 static const struct arm_mpu_region mpu_regions[] = {
 	/* Region 0 */
@@ -29,7 +22,11 @@ static const struct arm_mpu_region mpu_regions[] = {
 			 REGION_RAM_ATTR(CONFIG_SRAM_BASE_ADDRESS, CONFIG_SRAM_SIZE * 1024)),
 	/* Region 2 */
 	MPU_REGION_ENTRY("OSPI_CTRL", ALIF_ENSEMBLE_OSPI_REG,
-			 REGION_DEVICE_ATTR(ALIF_ENSEMBLE_OSPI_REG + ALIF_ENSEMBLE_OSPI_SIZE - 1)),
+			 REGION_DEVICE_ATTR(ALIF_ENSEMBLE_OSPI_REG, ALIF_ENSEMBLE_OSPI_SIZE)),
+	/* Region 3 */
+	MPU_REGION_ENTRY("PERIPHERALS", ALIF_ENSEMBLE_HOST_PERIPHERAL_BASE,
+			 REGION_DEVICE_ATTR(ALIF_ENSEMBLE_HOST_PERIPHERAL_BASE,
+							ALIF_ENSEMBLE_HOST_PERIPHERAL_SIZE)),
 };
 
 const struct arm_mpu_config mpu_config = {

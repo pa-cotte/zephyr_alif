@@ -8,5 +8,6 @@ config SOC_SERIES_ENSEMBLE_E7
 	select SOC_FAMILY_ENSEMBLE
 	select BUILD_NO_GAP_FILL
 	select BUILTIN_STACK_GUARD
+	select CPU_HAS_CUSTOM_FIXED_SOC_MPU_REGIONS
 	help
 	  Enable support for Alif Ensemble MCU and MPU series
