@@ -364,6 +364,7 @@ static void alif_pdm_warning_isr(void)
 	uint32_t block_size;
 	uint32_t bytes_available;
 	uint32_t i;
+	uint32_t whole;
 	uint32_t audio_ch_0_1;
 	uint32_t audio_ch_2_3;
 	uint32_t audio_ch_4_5;
@@ -439,7 +440,18 @@ static void alif_pdm_warning_isr(void)
 		if (bytes_available > 0) {
 			memcpy((pdmdata->data_buffer + pdmdata->buf_index), data, bytes_available);
 		}
+		whole = data_bytes - bytes_available;
+
 		k_msgq_put(&pdmdata->buf_queue, &pdmdata->data_buffer, K_NO_WAIT);
+
+		pdmdata->data_buffer = get_slab(pdmdata);
+
+		if (pdmdata->data_buffer) {
+			memcpy(pdmdata->data_buffer, data + bytes_available, whole);
+			pdmdata->buf_index = whole;
+		} else {
+			pdmdata->buf_index = 0;
+		}
 	}
 }
 
