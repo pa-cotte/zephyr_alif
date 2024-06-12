@@ -6,7 +6,7 @@
 
 #include <zephyr/devicetree.h>
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(csi2_dw, CONFIG_LOG_DEFAULT_LEVEL);
+LOG_MODULE_REGISTER(csi2_dw, CONFIG_VIDEO_LOG_LEVEL);
 
 #include <zephyr/sys/device_mmio.h>
 #include <stdlib.h>
@@ -85,11 +85,13 @@ static void csi2_dw_irq(const struct device *dev)
 	uintptr_t regs = DEVICE_MMIO_GET(dev);
 	uint32_t global_st = 0;
 	uint32_t event_st = 0;
+	bool reset_ipi = false;
 
 	global_st = sys_read32(regs + CSI_INT_ST_MAIN);
 	if (global_st & CSI_INT_ST_MAIN_IPI_FATAL) {
 		event_st = sys_read32(regs + CSI_INT_ST_IPI_FATAL);
 		LOG_ERR("Fatal Interrupt at IPI interface. status - 0x%x", event_st);
+		reset_ipi = true;
 	}
 	if (global_st & CSI_INT_ST_MAIN_LINE) {
 		event_st = sys_read32(regs + CSI_INT_ST_LINE);
@@ -98,8 +100,8 @@ static void csi2_dw_irq(const struct device *dev)
 			event_st);
 	}
 	if (global_st & CSI_INT_ST_MAIN_PHY) {
-		event_st = sys_read32(regs + CSI_INT_ST_PHY_FATAL);
-		LOG_ERR("Fatal Interrupt caused by PHY Packet Discard. "
+		event_st = sys_read32(regs + CSI_INT_ST_PHY);
+		LOG_ERR("Fatal Interrupt caused by PHY due to TX errors. "
 			"status - 0x%x",
 			event_st);
 	}
@@ -120,36 +122,49 @@ static void csi2_dw_irq(const struct device *dev)
 		LOG_ERR("Fatal Interrupt due to payload checksum error."
 			"status - 0x%x",
 			event_st);
+		reset_ipi = true;
 	}
 	if (global_st & CSI_INT_ST_MAIN_FRAME_CRC) {
 		event_st = sys_read32(regs + CSI_INT_ST_CRC_FRAME_FATAL);
 		LOG_ERR("Fatal Interrupt due to frames with at least one CRC "
 			"error. status - 0x%x",
 			event_st);
+		reset_ipi = true;
 	}
 	if (global_st & CSI_INT_ST_MAIN_FRAME_SEQ) {
 		event_st = sys_read32(regs + CSI_INT_ST_SEQ_FRAME_FATAL);
 		LOG_ERR("Fatal Interrupt due to incorrect frame sequence for "
 			"a specific VC. status - 0x%x",
 			event_st);
+		reset_ipi = true;
 	}
 	if (global_st & CSI_INT_ST_MAIN_FRAME_BNDRY) {
 		event_st = sys_read32(regs + CSI_INT_ST_BNDRY_FRAME_FATAL);
 		LOG_ERR("Fatal Interrupt due to mismatch of Frame Start and "
 			"Frame End for a specific VC. status - 0x%x",
 			event_st);
+		reset_ipi = true;
 	}
 	if (global_st & CSI_INT_ST_MAIN_PKT) {
 		event_st = sys_read32(regs + CSI_INT_ST_PKT_FATAL);
 		LOG_ERR("Fatal Interrupt related to Packet construction. "
 			"Packet discarded. status - 0x%x",
 			event_st);
+		reset_ipi = true;
 	}
 	if (global_st & CSI_INT_ST_MAIN_PHY_FATAL) {
 		event_st = sys_read32(regs + CSI_INT_ST_PHY_FATAL);
 		LOG_ERR("Fatal Interrupt due to PHY Packet discard. "
 			"status - 0x%x",
 			event_st);
+		reset_ipi = true;
+	}
+
+	if (reset_ipi) {
+		LOG_ERR("Review the Timings programmed to IPI. "
+			"Resetting the IPI for now.");
+		sys_clear_bits(regs + CSI_IPI_SOFTRSTN, CSI_IPI_SOFTRSTN_RSTN);
+		sys_set_bits(regs + CSI_IPI_SOFTRSTN, CSI_IPI_SOFTRSTN_RSTN);
 	}
 }
 
@@ -222,6 +237,7 @@ static int csi2_dw_ipi_mode_config(const struct device *dev)
 		sys_clear_bits(regs + CSI_IPI_MODE, CSI_IPI_MODE_COLOR_COM);
 	}
 
+	sys_set_bits(regs + CSI_IPI_MODE, CSI_IPI_MODE_CUT_THROUGH);
 	return 0;
 }
 
@@ -410,7 +426,7 @@ static int csi2_dw_stream_stop(const struct device *dev)
 }
 
 static int csi2_dw_set_format(const struct device *dev, enum video_endpoint_id ep,
-			   struct video_format *fmt)
+			      struct video_format *fmt)
 {
 	struct csi2_dw_data *data = dev->data;
 	int32_t tmp;
@@ -454,9 +470,24 @@ static int csi2_dw_set_format(const struct device *dev, enum video_endpoint_id e
 }
 
 static int csi2_dw_get_caps(const struct device *dev, enum video_endpoint_id ep,
-			 struct video_caps *caps)
+			    struct video_caps *caps)
 {
 	return -ENOTSUP;
+}
+
+static int csi2_dw_set_ctrl(const struct device *dev, unsigned int cid, void *value)
+{
+	struct csi2_dw_data *data = dev->data;
+
+	switch (cid) {
+	case VIDEO_CID_ALIF_CSI_DPHY_FREQ:
+		data->phy.pll_fin = *((uint32_t *)value);
+		LOG_DBG("DPHY New PLL Freq. %d", data->phy.pll_fin);
+		break;
+	default:
+		return -ENOTSUP;
+	}
+	return 0;
 }
 
 static const struct video_driver_api csi2_dw_driver_api = {
@@ -464,6 +495,7 @@ static const struct video_driver_api csi2_dw_driver_api = {
 	.stream_start = csi2_dw_stream_start,
 	.stream_stop = csi2_dw_stream_stop,
 	.get_caps = csi2_dw_get_caps,
+	.set_ctrl = csi2_dw_set_ctrl,
 };
 
 static int csi2_dw_init(const struct device *dev)
@@ -519,8 +551,7 @@ static int csi2_dw_init(const struct device *dev)
 	};                                                                                         \
                                                                                                    \
 	DEVICE_DT_INST_DEFINE(i, &csi2_dw_init, NULL, &data_##i, &config_##i, POST_KERNEL,         \
-			      CONFIG_VIDEO_MIPI_CSI2_DW_INIT_PRIORITY,                             \
-			      &csi2_dw_driver_api);                                                \
+			      CONFIG_VIDEO_MIPI_CSI2_DW_INIT_PRIORITY, &csi2_dw_driver_api);       \
                                                                                                    \
 	static void csi2_dw_config_func_##i(const struct device *dev)                              \
 	{                                                                                          \

@@ -10,6 +10,10 @@ config VIDEO_ALIF_CAM
 
 if VIDEO_ALIF_CAM
 
+module = VIDEO
+module-str = video
+source "subsys/logging/Kconfig.template.log_config"
+
 config VIDEO_ALIF_CAM_INIT_PRIORITY
 	int "CPI Video initialization priority"
 	default 61

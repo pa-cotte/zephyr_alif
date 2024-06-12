@@ -13,6 +13,8 @@
 extern "C" {
 #endif
 
+#define VIDEO_CID_ALIF_CSI_DPHY_FREQ (VIDEO_CTRL_CLASS_VENDOR + 0)
+
 enum csi2_data_type {
 	/* Data Type Non-Image data */
 	CSI2_DT_EMBEDDED = 0x12, /* Embedded 8-bit non-Image data */

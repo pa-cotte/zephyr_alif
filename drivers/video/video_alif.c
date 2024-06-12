@@ -6,7 +6,7 @@
 
 #include <zephyr/devicetree.h>
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(CPI, CONFIG_LOG_DEFAULT_LEVEL);
+LOG_MODULE_REGISTER(CPI, CONFIG_VIDEO_LOG_LEVEL);
 
 #include <zephyr/drivers/video.h>
 #include <zephyr/kernel.h>
@@ -153,10 +153,9 @@ static int cam_set_csi(const struct device *dev, uint32_t fourcc)
 			       CAM_CFG_DATA_SHIFT);
 		break;
 	case CSI2_DT_RAW16:
+	default:
 		reg_write_part(regs + CAM_CFG, CPI_DATA_MASK_16_BIT, CAM_CFG_DATA_MASK,
 			       CAM_CFG_DATA_SHIFT);
-		break;
-	default:
 		break;
 	}
 
@@ -537,8 +536,20 @@ static int cam_set_ctrl(const struct device *dev, unsigned int cid, void *value)
 	const struct video_cam_config *config = dev->config;
 	int ret = -ENOTSUP;
 
+	if (IS_ENABLED(CONFIG_VIDEO_MIPI_CSI2_DW) && config->csi_bus) {
+		ret = video_set_ctrl(config->csi_bus, cid, value);
+	}
+
 	if (config->sensor) {
-		ret = video_set_ctrl(config->sensor, cid, value);
+		/* If some Control ID is supported and works for CSI bus, then
+		 * carry forward that return status, else, check if the CID is
+		 * still not supported on sensor.
+		 */
+		if (ret) {
+			ret = video_set_ctrl(config->sensor, cid, value);
+		} else {
+			video_set_ctrl(config->sensor, cid, value);
+		}
 	}
 
 	return ret;
