@@ -5,6 +5,8 @@
 add_subdirectory(${SOC_SERIES})
 zephyr_include_directories(common)
 
+zephyr_sources(common/soc.c)
+
 if(CONFIG_ARM_MPU AND CONFIG_CPU_HAS_CUSTOM_FIXED_SOC_MPU_REGIONS)
 
   zephyr_library()
