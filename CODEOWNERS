@@ -179,6 +179,7 @@
 /drivers/bbram/*                          @yperess @sjg20 @jackrosenthal
 /drivers/bluetooth/                       @alwa-nordic @jhedberg @Vudentz
 /drivers/bluetooth/hci/hci_esp32.c        @sylvioalves
+/drivers/bluetooth/hci/hci_alif.c         @AnttiKauppila-AlifSemi @VeijoPesonen
 /drivers/can/*mcp2515*                    @karstenkoenig
 /drivers/can/*rcar*                       @aaillet
 /drivers/clock_control/*agilex*           @siclim @gdengi
@@ -269,6 +270,7 @@
 /drivers/ieee802154/ieee802154_nrf5*      @jciupis
 /drivers/ieee802154/ieee802154_rf2xx*     @tbursztyka @nandojve
 /drivers/ieee802154/ieee802154_cc13xx*    @bwitherspoon @cfriedt @vaishnavachath
+/drivers/ieee802154/ieee802154_alif*      @mikter
 /drivers/interrupt_controller/            @dcpleung @nashif
 /drivers/interrupt_controller/intc_gic.c  @stephanosio
 /drivers/interrupt_controller/*esp32*     @sylvioalves
