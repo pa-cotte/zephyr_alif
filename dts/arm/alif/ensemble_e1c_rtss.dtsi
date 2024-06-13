@@ -672,3 +672,25 @@
 &nvic {
 	arm,num-irq-priority-bits = <3>;
 };
+
+&{/} {
+	power-states {
+		off: off {
+			compatible = "zephyr,power-state";
+			power-state-name = "soft-off";
+			min-residency-us = < 300000000 >;
+		};
+	};
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		cpu0: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-m55";
+			d-cache-line-size = <32>;
+			i-cache-line-size = <32>;
+			reg = <0>;
+			cpu-power-states = <&off>;
+		};
+	};
+};
