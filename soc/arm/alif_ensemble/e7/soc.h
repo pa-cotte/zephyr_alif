@@ -13,14 +13,18 @@
 #define CGU_PLL_CLK_SEL		(CGU_BASE + 0x8)
 #define CGU_CLK_ENA		(CGU_BASE + 0x14)
 
+/* AON registers. */
+#define AON_BASE                     0x1A604000
+#define AON_RTSS_HP_CTRL             (AON_BASE + 0x0)
+#define AON_RTSS_HP_RESET            (AON_BASE + 0x4)
+#define AON_RTSS_HE_CTRL             (AON_BASE + 0x10)
+#define AON_RTSS_HE_RESET            (AON_BASE + 0x14)
+#define AON_RTSS_HE_LPUART_CKEN      (AON_BASE + 0x1C)
+
 /* VBAT registers. */
 #define VBAT_BASE		0x1A609000
 #define VBAT_PWR_CTRL		(VBAT_BASE + 0x8)
 #define VBAT_RTC_CLK_EN		(VBAT_BASE + 0x10)
-
-/* AON registers. */
-#define AON_BASE                     0x1A604000UL
-#define AON_RTSS_HE_LPUART_CKEN      (AON_BASE + 0x1C)
 
 /* Expansion Slave registers. */
 #define EXPSLV_BASE		0x4902F000

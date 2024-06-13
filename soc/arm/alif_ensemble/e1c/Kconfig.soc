@@ -22,3 +22,14 @@ endchoice
 
 config SOC_SERIES_ENSEMBLE
 	bool "Alif Ensemble Series"
+
+
+if PM
+
+config PM_RTSS
+	bool
+	default y if (RTSS_HE)
+	help
+		Enable Power Management for RTSS cores
+
+endif
