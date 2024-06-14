@@ -81,6 +81,7 @@
 /* Expansion Slave registers. */
 #define EXPSLV_BASE     0x4902F000
 #define EXPSLV_ADC_CTRL     (EXPSLV_BASE + 0x30)
+#define EXPSLV_CMP_CTRL     (EXPSLV_BASE + 0x38)
 
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.

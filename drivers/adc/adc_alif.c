@@ -943,14 +943,14 @@ struct adc_driver_api alif_adc_api = {
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(aon_regs, DT_DRV_INST(inst)),                   \
 		.irq_config_func = adc_config_func_##inst,                                         \
 		.sample_width = COND_CODE_0(DT_INST_ENUM_IDX(inst, driver_instance), (BIT(16)),    \
-					    DT_INST_ENUM_IDX(i, sample_width)),                    \
+					    (DT_INST_ENUM_IDX(inst, sample_width))),               \
 		.clock_div = DT_INST_PROP(inst, clock_div),                                        \
 		.shift_n_bits = DT_INST_PROP(inst, shift_n_bits),                                  \
 		.shift_direction = DT_INST_ENUM_IDX(inst, shift_direction),                        \
 		.comparator_en = COND_CODE_0(DT_INST_ENUM_IDX(inst, driver_instance), (0),         \
-					     DT_INST_ENUM_IDX(i, comparator_en)),                  \
+					     (DT_INST_PROP(inst, comparator_en))),                 \
 		.comparator_bias = COND_CODE_0(DT_INST_ENUM_IDX(inst, driver_instance), (0),       \
-					       DT_INST_ENUM_IDX(i, comparator_bias)),              \
+					       (DT_INST_ENUM_IDX(inst, comparator_bias))),         \
 		.avg_sample_num = DT_INST_PROP(inst, avg_sample_num),                              \
 		.drv_inst = DT_INST_ENUM_IDX(inst, driver_instance),                               \
 		.pga_enable = DT_INST_PROP(inst, pga_enable),                                      \
@@ -960,7 +960,9 @@ struct adc_driver_api alif_adc_api = {
 		.comparator_threshold_b = DT_INST_PROP(inst, comparator_threshold_b),              \
 		.comparator_threshold_comparasion =                                                \
 			DT_INST_ENUM_IDX(inst, comparator_threshold_comparasion),                  \
-		.adc24_output_rate = DT_INST_ENUM_IDX(inst, adc24_output_rate),                    \
+		.adc24_output_rate = COND_CODE_1(DT_INST_NODE_HAS_PROP(inst, adc24_output_rate),   \
+						(DT_INST_ENUM_IDX(inst, adc24_output_rate)),       \
+						(0)),                                              \
 		.adc24_bias = ADC24_BIAS(inst),                                                    \
 		IF_ENABLED(DT_INST_NODE_HAS_PROP(inst, pinctrl_0),                                 \
 				(.pcfg = PINCTRL_DT_DEV_CONFIG_GET(DT_DRV_INST(inst)),))};         \
