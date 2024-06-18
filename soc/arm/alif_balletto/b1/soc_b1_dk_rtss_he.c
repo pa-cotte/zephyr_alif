@@ -8,6 +8,10 @@
 #include <zephyr/init.h>
 #include <soc.h>
 #include <zephyr/linker/linker-defs.h>
+#ifdef CONFIG_REBOOT
+#include <zephyr/sys/reboot.h>
+#include <se_service.h>
+#endif
 
 /**
  * @brief Perform basic hardware initialization at boot.
@@ -37,5 +41,25 @@ static int balletto_b1_dk_rtss_he_init(void)
 
 	return 0;
 }
+
+#ifdef CONFIG_REBOOT
+void sys_arch_reboot(int type)
+{
+	switch (type) {
+	case SYS_REBOOT_WARM:
+		/* Use Cold boot until NVIC reset is fully working */
+		/* se_service_boot_reset_cpu(EXTSYS_1); */
+		se_service_boot_reset_soc();
+		break;
+	case SYS_REBOOT_COLD:
+		se_service_boot_reset_soc();
+		break;
+
+	default:
+		/* Do nothing */
+		break;
+	}
+}
+#endif
 
 SYS_INIT(balletto_b1_dk_rtss_he_init, PRE_KERNEL_1, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
