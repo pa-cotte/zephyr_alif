@@ -59,7 +59,10 @@ def verify_checkpatch() {
           echo "building 'default' branch";
         fi
 
-        if ./scripts/checkpatch.pl --ignore=GERRIT_CHANGE_ID,EMAIL_SUBJECT,COMMIT_MESSAGE,COMMIT_LOG_LONG_LINE -g alif/\${CHANGE_BRANCH}...alif/main ;
+	GIT_REMOTE=`git remote`
+	echo \$GIT_REMOTE
+
+        if ./scripts/checkpatch.pl --ignore=GERRIT_CHANGE_ID,EMAIL_SUBJECT,COMMIT_MESSAGE,COMMIT_LOG_LONG_LINE -g \${GIT_REMOTE}/\${CHANGE_BRANCH}...\${GIT_REMOTE}/main ;
             then echo 'Checkpatch OK'
         else
             echo 'ERROR:scripts/checkpatch.pl detected errors/warnings.'; echo 'CMD:Run git diff --cached | ./scripts/checkpatch.pl - before committing' ; exit 1 ;
