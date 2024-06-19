@@ -234,6 +234,24 @@ static int ensemble_e7_dk_rtss_he_init(void)
 	/* Enable LPRTC Clock via VBAT registers */
 	sys_set_bits(VBAT_RTC_CLK_EN, BIT(0));
 
+	/* Enable DMA */
+#if DT_NODE_HAS_COMPAT_STATUS(DT_NODELABEL(dma2), arm_dma_pl330, okay)
+	sys_set_bits(M55HE_CFG_HE_CLK_ENA, BIT(4));
+	sys_write32(0x1111, EVTRTRLOCAL_DMA_REQ_CTRL);
+	sys_clear_bits(M55HE_CFG_HE_DMA_CTRL, BIT(0));
+	sys_write32(0U, M55HE_CFG_HE_DMA_IRQ);
+	sys_write32(0U, M55HE_CFG_HE_DMA_PERIPH);
+	sys_set_bits(M55HE_CFG_HE_DMA_CTRL, BIT(16));
+#endif
+#if DT_NODE_HAS_COMPAT_STATUS(DT_NODELABEL(dma0), arm_dma_pl330, okay)
+	sys_set_bits(EXPMST_PERIPH_CLK_EN, BIT(4));
+	sys_write32(0x1111, EVTRTR0_DMA_REQ_CTRL);
+	sys_clear_bits(EXPMST_DMA_CTRL, BIT(0));
+	sys_write32(0U, EXPMST_DMA_IRQ);
+	sys_write32(0U, EXPMST_DMA_PERIPH);
+	sys_set_bits(EXPMST_DMA_CTRL, BIT(16));
+#endif
+
 	return 0;
 }
 
