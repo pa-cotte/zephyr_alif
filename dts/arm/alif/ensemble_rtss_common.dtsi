@@ -1052,6 +1052,20 @@
 			};
 		};
 	};
+	dma0: dma0@49080000 {
+		compatible = "arm,dma-pl330";
+		reg = <0x49080000 0x1000>;
+		reg-names = "pl330_regs";
+		dma-channels = <4>;
+		#dma-cells = <2>;
+		interrupt-parent = <&nvic>;
+		interrupts = <299 3>, <300 3>, <301 3>, <302 3>, <331 3>;
+		interrupt-names = "channel0", "channel1",
+						  "channel2", "channel3",
+						  "abort";
+		status = "disabled";
+	};
+
 	adc0: adc0@49020000{
 		compatible = "alif,adc";
 		reg =	<0x49020000 0x1000>,
