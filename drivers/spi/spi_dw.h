@@ -27,6 +27,14 @@ typedef void (*spi_dw_set_bit_t)(uint8_t bit, uint32_t addr, uint32_t off);
 typedef void (*spi_dw_clear_bit_t)(uint8_t bit, uint32_t addr, uint32_t off);
 typedef int (*spi_dw_test_bit_t)(uint8_t bit, uint32_t addr, uint32_t off);
 
+#ifdef CONFIG_SPI_DW_USE_DMA
+struct spi_dw_dma_ch {
+	bool enabled;
+	uint32_t ch;
+	uint32_t periph;
+};
+#endif
+
 /* Private structures */
 struct spi_dw_config {
 	uint32_t regs;
@@ -43,6 +51,11 @@ struct spi_dw_config {
 	spi_dw_set_bit_t set_bit_func;
 	spi_dw_clear_bit_t clear_bit_func;
 	spi_dw_test_bit_t test_bit_func;
+#ifdef CONFIG_SPI_DW_USE_DMA
+	const struct device *dma_dev;
+	const struct spi_dw_dma_ch dma_tx;
+	const struct spi_dw_dma_ch dma_rx;
+#endif /* CONFIG_SPI_DW_USE_DMA */
 };
 
 struct spi_dw_data {
@@ -51,6 +64,10 @@ struct spi_dw_data {
 	uint8_t fifo_diff;	/* cannot be bigger than FIFO depth */
 	uint8_t dwc_ssi;	/* enable it for dwc ssi operation on AHB*/
 	uint8_t _unused;
+#ifdef CONFIG_SPI_DW_USE_DMA
+	struct k_sem dma_sem;
+	int dma_cb_status;
+#endif /* CONFIG_SPI_DW_USE_DMA */
 };
 
 /* Register operation functions */
@@ -285,6 +302,13 @@ static int reg_test_bit(uint8_t bit, uint32_t addr, uint32_t off)
 #define DW_SPI_IMR_MASK_RX		(~(DW_SPI_IMR_RXUIM | \
 					   DW_SPI_IMR_RXOIM | \
 					   DW_SPI_IMR_RXFIM))
+
+/* DMA bits */
+#define DW_SPI_DMACR_RDMAE_BIT		(0)
+#define DW_SPI_DMACR_TDMAE_BIT		(1)
+/* DMA values */
+#define DW_SPI_DMACR_RDMAE		BIT(DW_SPI_DMACR_RDMAE_BIT)
+#define DW_SPI_DMACR_TDMAE		BIT(DW_SPI_DMACR_TDMAE_BIT)
 
 #define  SPI_UPDATE_DWC_SSI_FLAG(_node_id, _dwc_ssi)	\
 	._dwc_ssi = DT_PROP(_node_id, dwc_ssi) ? 1:0
