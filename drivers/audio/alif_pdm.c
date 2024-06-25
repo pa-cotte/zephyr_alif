@@ -227,7 +227,7 @@ static void enable_interrupt(const struct device *dev)
 	/* Store user enabled channel */
 	audio_ch = ctrl_value & PDM_CHANNEL_ENABLE;
 
-	irq_value |= (audio_ch | PDM_FIFO_ALMOST_FULL_IRQ | PDM_FIFO_OVERFLOW_IRQ);
+	irq_value |= (audio_ch << 8 | PDM_FIFO_ALMOST_FULL_IRQ | PDM_FIFO_OVERFLOW_IRQ);
 
 	/* Enable the Interrupt */
 	sys_write32(irq_value, cfg->meminit + PDM_INTERRUPT_REGISTER);
@@ -426,6 +426,7 @@ static void alif_pdm_warning_isr(void)
 
 		pdmdata->data_buffer = get_slab(pdmdata);
 		if (pdmdata->data_buffer == NULL) {
+			sys_write32(0, cfg->meminit + PDM_INTERRUPT_REGISTER);
 			return;
 		}
 		pdmdata->buf_index = 0;
