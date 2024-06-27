@@ -80,6 +80,25 @@
 		};
 	};
 
+	pinctrl_lppdm: pinctrl_lppdm {
+		group0 {
+			pinmux = < PIN_P3_4__LPPDM_CO_B >,
+				 < PIN_P3_6__LPPDM_C1_B >,
+				 < PIN_P11_2__LPPDM_C2_B >,
+				 < PIN_P7_6__LPPDM_C3_A >;
+
+			read_enable = < 0x0 >;
+		};
+		group1 {
+			pinmux = < PIN_P3_5__LPPDM_DO_B >,
+				 < PIN_P3_7__LPPDM_D1_B >,
+				 < PIN_P11_6__LPPDM_D2_B >,
+				 < PIN_P7_7__LPPDM_D3_A >;
+
+			read_enable = < 0x1 >;
+		};
+	};
+
 	pinctrl_cdc200: pinctrl_cdc200 {
 		group0 {
 			pinmux = < PIN_P5_3__CDC_PCLK_A >,

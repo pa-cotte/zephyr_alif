@@ -24,6 +24,9 @@ static int ensemble_e7_dk_rtss_he_init(void)
 	/* Set PLL clock of 160 MHz */
 	sys_write32(0x10000, 0x4903F00C);
 
+	/* Enable LPPDM clock */
+	sys_set_bits(M55HE_CFG_HE_CLK_ENA, BIT(8));
+
 	/* CGU_UART_CLK source to PLL */
 	data =  sys_read32(0x1A602008);
 	data |= 1U << 8;
