@@ -44,6 +44,7 @@ struct adc_config {
 	uint32_t pga_gain;
 	uint32_t comparator_threshold_a;
 	uint32_t comparator_threshold_b;
+	uint8_t scan_mode;
 	uint8_t conv_mode;
 	uint8_t comparator_threshold_comparasion;
 	uint8_t adc24_output_rate;
@@ -97,8 +98,6 @@ enum ADC_INSTANCE {
 #define ADC_START_CONTINUOUS_CONV          (1U << 6)
 #define ADC_START_ENABLE                   (1U << 7)
 #define ADC_START_SINGLE_SHOT_CONV         (1U << 0)
-#define ADC_SHIFT_CTRL_RIGHT_OR_LEFT       (1U << 16)
-#define ADC_SEQUENCER_CTRL_FIXED_OR_ROTATE (1U << 16)
 
 /****ADC Differential macros****/
 #define ADC_DIFFERENTIAL_ENABLE      (0X01)
@@ -201,8 +200,8 @@ enum ADC_INSTANCE {
 #define COMP_REG2_OFFSET (0X04)
 
 /* channels limit */
-#define ADC24_MAX_DIFFERENTIAL_CHANNEL   (0x04)
-#define ADC12_MAX_DIFFERENTIAL_CHANNEL   (0x03)
+#define ADC24_MAX_DIFFERENTIAL_CHANNEL   (0x03)
+#define ADC12_MAX_DIFFERENTIAL_CHANNEL   (0x02)
 #define ADC12_MAX_CHANNELS               (0X08)
 
 /**
@@ -407,13 +406,15 @@ static inline void adc_init_channel_select(uintptr_t adc, uint32_t channel)
 	sys_write32(data, adc + ADC_SEQUENCER_CTRL);
 }
 
-static inline void adc_set_single_ch_scan_mode(uintptr_t adc)
+static inline void adc_set_ch_scan_mode(const struct device *dev)
 {
+	uint32_t regs = DEVICE_MMIO_NAMED_GET(dev, adc_reg);
+	const struct adc_config *config = dev->config;
 	uint32_t data;
 
-	data = sys_read32(adc + ADC_SEQUENCER_CTRL);
-	data |= (ADC_SEQUENCER_CTRL_FIXED_OR_ROTATE);
-	sys_write32(data, adc + ADC_SEQUENCER_CTRL);
+	data = sys_read32(regs + ADC_SEQUENCER_CTRL);
+	data |= config->scan_mode;
+	sys_write32(data, regs + ADC_SEQUENCER_CTRL);
 }
 
 static inline void enable_adc24(const struct device *dev)
@@ -907,8 +908,8 @@ static int adc_init(const struct device *dev)
 	/* set comparator threshold operation */
 	adc_set_comparator_ctrl_bit(regs, config->comparator_threshold_comparasion);
 
-	/* set sequencer control to single channel scan */
-	adc_set_single_ch_scan_mode(regs);
+	/* set channel scan mode */
+	adc_set_ch_scan_mode(dev);
 
 	/* disabling the interrupts */
 	adc_unmask_interrupt(regs);
@@ -955,6 +956,7 @@ struct adc_driver_api alif_adc_api = {
 		.drv_inst = DT_INST_ENUM_IDX(inst, driver_instance),                               \
 		.pga_enable = DT_INST_PROP(inst, pga_enable),                                      \
 		.pga_gain = DT_INST_ENUM_IDX(inst, pga_gain),                                      \
+		.scan_mode = DT_INST_ENUM_IDX(inst, adc_channel_scan),                             \
 		.conv_mode = DT_INST_ENUM_IDX(inst, adc_conversion_mode),                          \
 		.comparator_threshold_a = DT_INST_PROP(inst, comparator_threshold_a),              \
 		.comparator_threshold_b = DT_INST_PROP(inst, comparator_threshold_b),              \
