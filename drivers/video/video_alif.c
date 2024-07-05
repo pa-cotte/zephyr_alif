@@ -11,6 +11,7 @@ LOG_MODULE_REGISTER(CPI, CONFIG_VIDEO_LOG_LEVEL);
 #include <zephyr/drivers/video.h>
 #include <zephyr/kernel.h>
 #include <zephyr/sys/device_mmio.h>
+#include <zephyr/drivers/pinctrl.h>
 
 #include "video_alif.h"
 #include <zephyr/drivers/video/video_alif.h>
@@ -769,6 +770,14 @@ static int video_cam_init(const struct device *dev)
 	DEVICE_MMIO_MAP(dev, K_MEM_CACHE_NONE);
 	LOG_DBG("MMIO Address: 0x%x", (uint32_t)DEVICE_MMIO_GET(dev));
 
+	if (config->pcfg) {
+		ret = pinctrl_apply_state(config->pcfg, PINCTRL_STATE_DEFAULT);
+		if (ret) {
+			LOG_ERR("Failed to apply Pinctrl.");
+			return ret;
+		}
+	}
+
 	if (!IS_ENABLED(CONFIG_SOC_E7_DK_RTSS_HE) && config->is_lpcam) {
 		LOG_ERR("LP-CAM only accessible from HP-core. Aborting");
 		return -ENODEV;
@@ -856,7 +865,16 @@ static int video_cam_init(const struct device *dev)
 	return 0;
 }
 
+#if defined(CONFIG_VIDEO_MIPI_CSI2_DW)
+#define CAM_PINCTRL_INIT(n)
+#define CAM_PINCTRL_GET(n) (NULL)
+#else
+#define CAM_PINCTRL_INIT(n) PINCTRL_DT_INST_DEFINE(n)
+#define CAM_PINCTRL_GET(n)  PINCTRL_DT_INST_DEV_CONFIG_GET(n)
+#endif
+
 #define CPI_DEFINE(i)                                                                              \
+	CAM_PINCTRL_INIT(i);                                                                       \
 	static void cam_config_func_##i(const struct device *dev);                                 \
                                                                                                    \
 	static const struct video_cam_config config_##i = {                                        \
@@ -867,6 +885,7 @@ static int video_cam_init(const struct device *dev)
                                                                                                    \
 		.irq = DT_INST_IRQN(i),                                                            \
 		.irq_config_func = cam_config_func_##i,                                            \
+		.pcfg = CAM_PINCTRL_GET(i),                                                        \
                                                                                                    \
 		.polarity = COND_CODE_1(DT_INST_PROP(i, inv_vsync_pol), CAM_CFG_VSYNC_POL, (0)) |  \
 			    COND_CODE_1(DT_INST_PROP(i, inv_hsync_pol), CAM_CFG_HSYNC_POL, (0)) |  \

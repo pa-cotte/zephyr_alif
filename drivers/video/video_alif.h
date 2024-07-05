@@ -106,6 +106,7 @@ struct video_cam_config {
 	void (*irq_config_func)(const struct device *dev);
 
 	uint32_t irq;
+	const struct pinctrl_dev_config *pcfg;
 
 	uint32_t polarity;
 

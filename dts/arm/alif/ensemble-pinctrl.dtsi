@@ -596,10 +596,44 @@
 				 < PIN_P9_7__CAM_D15_B >;
 		};
 	};
+	pinctrl_cam8: pinctrl_cam8 {
+		/* CAM-8 interface. */
+		group0 {
+			pinmux = < PIN_P0_0__CAM_HSYNC_A >,
+				 < PIN_P0_1__CAM_VSYNC_A >,
+				 < PIN_P0_2__CAM_PCLK_A >,
+				 < PIN_P0_3__CAM_XVCLK_A >,
+				 < PIN_P8_0__CAM_D0_B >,
+				 < PIN_P8_1__CAM_D1_B >,
+				 < PIN_P8_2__CAM_D2_B >,
+				 < PIN_P8_3__CAM_D3_B >,
+				 < PIN_P8_4__CAM_D4_B >,
+				 < PIN_P8_5__CAM_D5_B >,
+				 < PIN_P8_6__CAM_D6_B >,
+				 < PIN_P8_7__CAM_D7_B >;
+		};
+	};
 	pinctrl_cam_xvclk: pinctrl_cam_xvclk {
 		/* CAM XVCLK */
 		group0 {
 			pinmux = < PIN_P0_3__CAM_XVCLK_A >;
+		};
+	};
+	pinctrl_lpcam: pinctrl_lpcam {
+		/* LP-CAM interface. */
+		group0 {
+			pinmux = < PIN_P0_0__LPCAM_HSYNC_B >,
+				 < PIN_P0_1__LPCAM_VSYNC_B >,
+				 < PIN_P0_2__LPCAM_PCLK_B >,
+				 < PIN_P0_3__LPCAM_XVCLK_B >,
+				 < PIN_P8_0__LPCAM_D0_A >,
+				 < PIN_P8_1__LPCAM_D1_A >,
+				 < PIN_P8_2__LPCAM_D2_A >,
+				 < PIN_P8_3__LPCAM_D3_A >,
+				 < PIN_P8_4__LPCAM_D4_A >,
+				 < PIN_P8_5__LPCAM_D5_A >,
+				 < PIN_P8_6__LPCAM_D6_A >,
+				 < PIN_P8_7__LPCAM_D7_A >;
 		};
 	};
 	pinctrl_ut0:pinctrl_ut0 {

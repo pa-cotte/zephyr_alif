@@ -914,6 +914,18 @@
 		interrupts = <133 3>;
 		status = "okay";
 
+		mt9m114: mt9m114@48{
+			compatible = "aptina,mt9m114";
+			reg = <0x48>;
+			status = "disabled";
+
+			port {
+				mt9m114_ep_out: endpoint {
+					//remote-endpoint = < &cam_ep_in >;
+					//remote-endpoint = < &lpcam_ep_in >;
+				};
+			};
+		};
 		arx3a0: arx3a0@36 {
 			compatible = "onnn,arx3a0";
 			reg = <0x36>;
@@ -1027,6 +1039,8 @@
 		compatible = "alif,cam";
 		reg = <0x49030000 0x1000>;
 		interrupts = <345 3>;
+		pinctrl-0 = < &pinctrl_cam8 >;
+		pinctrl-names = "default";
 
 		fifo-wr-wmark = <0x18>;
 		fifo-rd-wmark = <0x08>;
@@ -1040,10 +1054,37 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 
+			/* Parallel Bus endpoint. */
+			cam_ep_in: endpoint@1 {
+				reg = <1>;
+				//remote-endpoint = <&mt9m114_ep_out>;
+			};
 			/* MIPI CSI-2 bus endpoint. */
 			cam_csi2_ep_in: endpoint@0 {
 				reg = <0>;
 				remote-endpoint = <&csi2_ep_out>;
+			};
+		};
+	};
+
+	lpcam: lpcam@43003000 {
+		compatible = "alif,cam";
+		reg = <0x43003000 0x1000>;
+		interrupts = <54 3>;
+
+		pinctrl-0 = < &pinctrl_lpcam >;
+		pinctrl-names = "default";
+
+		sensor = <&mt9m114>;
+		lp-cam;
+		status = "disabled";
+		port {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			lpcam_ep_in: endpoint@0 {
+				reg = <0>;
+				//remote-endpoint = <&mt9m114_ep_out>;
 			};
 		};
 	};
