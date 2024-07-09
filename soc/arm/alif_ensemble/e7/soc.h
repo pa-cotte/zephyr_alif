@@ -83,6 +83,9 @@
 #define EXPSLV_ADC_CTRL     (EXPSLV_BASE + 0x30)
 #define EXPSLV_CMP_CTRL     (EXPSLV_BASE + 0x38)
 
+/* LPGPIO Base address for LPTIMER pin config */
+#define LPGPIO_BASE     0x42002008
+
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.
  *

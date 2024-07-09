@@ -72,98 +72,51 @@ static int ensemble_e7_dk_rtss_he_init(void)
 
 	/* lptimer settings */
 #if DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers)
-	uint32_t hw_en = 0, dirn_op_enable = 0, clk_src = 0;
-
-	data = 0;
-
 	/* LPTIMER 0 settings */
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay)
-	if (IS_ENABLED(CONFIG_LPTIMER0_OUTPUT_TOGGLE)) {
-		hw_en |= (1 << 0);  /* config lpgpio pin 0 as Hardware control data */
-		dirn_op_enable = (1 << 0);  /* config pin as output */
+	if (IS_ENABLED(CONFIG_LPTIMER0_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER0_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER0 pin by config lpgpio
+		 * pin 0 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 0);
 	}
-	if (IS_ENABLED(CONFIG_LPTIMER0_CLOCK_SOURCE_32K)) {
-		clk_src = 0;
-	} else if (IS_ENABLED(CONFIG_LPTIMER0_CLOCK_SOURCE_128K)) {
-		clk_src = 1;
-	} else if (IS_ENABLED(CONFIG_LPTIMER0_CLOCK_SOURCE_EXT)) {
-		clk_src = 2;
-		hw_en |= (1 << 0);  /* config lpgpio pin 0 as Hardware control data */
-		dirn_op_enable &= ~(1 << 0);  /* config pin as input */
-		sys_write32(1, 0x42007000);
-	} else if (IS_ENABLED(CONFIG_LPTIMER0_CLOCK_SOURCE_CASCADE)) {
-		clk_src = 3;
-	}
-	data |= (clk_src & 0x3) << 0;
-#endif
-
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay) */
 	/* LPTIMER 1 settings */
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay)
-	if (IS_ENABLED(CONFIG_LPTIMER1_OUTPUT_TOGGLE)) {
-		hw_en |= (1 << 1);  /* config lpgpio pin 1 as Hardware control data */
-		dirn_op_enable |= (1 << 1);  /* config pin as output */
+	if (IS_ENABLED(CONFIG_LPTIMER1_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER1_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER1 pin by config lpgpio
+		 * pin 1 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 1);
 	}
-	if (IS_ENABLED(CONFIG_LPTIMER1_CLOCK_SOURCE_32K)) {
-		clk_src = 0;
-	} else if (IS_ENABLED(CONFIG_LPTIMER1_CLOCK_SOURCE_128K)) {
-		clk_src = 1;
-	} else if (IS_ENABLED(CONFIG_LPTIMER1_CLOCK_SOURCE_EXT)) {
-		clk_src = 2;
-		hw_en |= (1 << 1);  /* config lpgpio pin 1 as Hardware control data */
-		dirn_op_enable &= ~(1 << 1);  /* config pin as input */
-		sys_write32(1, 0x42007004);
-	} else if (IS_ENABLED(CONFIG_LPTIMER1_CLOCK_SOURCE_CASCADE)) {
-		clk_src = 3;
-	}
-	data |= (clk_src & 0x3) << 4;
-#endif
-
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay) */
 	/* LPTIMER 2 settings */
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(timer2), okay)
-	if (IS_ENABLED(CONFIG_LPTIMER2_OUTPUT_TOGGLE)) {
-		hw_en |= (1 << 2);  /* config lpgpio pin 2 as Hardware control data */
-		dirn_op_enable |= (1 << 2);  /* config pin as output */
+	if (IS_ENABLED(CONFIG_LPTIMER2_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER2_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER2 pin by config lpgpio
+		 * pin 2 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 2);
 	}
-	if (IS_ENABLED(CONFIG_LPTIMER2_CLOCK_SOURCE_32K)) {
-		clk_src = 0;
-	} else if (IS_ENABLED(CONFIG_LPTIMER2_CLOCK_SOURCE_128K)) {
-		clk_src = 1;
-	} else if (IS_ENABLED(CONFIG_LPTIMER2_CLOCK_SOURCE_EXT)) {
-		clk_src = 2;
-		hw_en |= (1 << 2);  /* config lpgpio pin 2 as Hardware control data */
-		dirn_op_enable &= ~(1 << 2);  /* config pin as input */
-		sys_write32(1, 0x42007008);
-	} else if (IS_ENABLED(CONFIG_LPTIMER2_CLOCK_SOURCE_CASCADE)) {
-		clk_src = 3;
-	}
-	data |= (clk_src & 0x3) << 8;
-#endif
-
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer2), okay) */
 	/* LPTIMER 3 settings */
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(timer3), okay)
-	if (IS_ENABLED(CONFIG_LPTIMER3_OUTPUT_TOGGLE)) {
-		hw_en |= (1 << 3);  /* config lpgpio pin 3 as Hardware control data */
-		dirn_op_enable |= (1 << 3);  /* config pin as output */
+	if (IS_ENABLED(CONFIG_LPTIMER3_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER3_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER3 pin by config lpgpio
+		 * pin 3 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 3);
 	}
-	if (IS_ENABLED(CONFIG_LPTIMER3_CLOCK_SOURCE_32K)) {
-		clk_src = 0;
-	} else if (IS_ENABLED(CONFIG_LPTIMER3_CLOCK_SOURCE_128K)) {
-		clk_src = 1;
-	} else if (IS_ENABLED(CONFIG_LPTIMER3_CLOCK_SOURCE_EXT)) {
-		clk_src = 2;
-		hw_en |= (1 << 3);  /* config lpgpio pin 3 as Hardware control data */
-		dirn_op_enable &= ~(1 << 3);  /* config pin as input */
-		sys_write32(1, 0x4200700C);
-	} else if (IS_ENABLED(CONFIG_LPTIMER3_CLOCK_SOURCE_CASCADE)) {
-		clk_src = 3;
-	}
-	data |= (clk_src & 0x3) << 12;
-#endif
-
-	sys_write32(data, 0x1A609004);
-	sys_write32(hw_en, 0x42002008);
-	sys_write32(dirn_op_enable, 0x42002004);
-#endif
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer3), okay) */
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers) */
 
 	if (IS_ENABLED(CONFIG_DISPLAY)) {
 		/* Enable CDC200 peripheral clock. */
