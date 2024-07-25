@@ -11,8 +11,17 @@
 #define __MVE_FP                  1U        /* MVE floating point present */
 
 /* AON registers. */
-#define AON_BASE                     0x1A604000UL
-#define AON_RTSS_HE_LPUART_CKEN      (AON_BASE + 0x1C)
+#define AON_BASE                        0x1A604000UL
+#define AON_RTSS_HE_LPUART_CKEN         (AON_BASE + 0x1C)
+
+/* VBAT Modules */
+#define VBAT_BASE                       0x1A609000UL
+#define LPRTC0_CLK_EN                   (VBAT_BASE + 0x10)
+#define LPRTC1_CLK_EN                   (VBAT_BASE + 0x14)
+
+/* Peripheral CLKCTRL */
+#define CLKCTRL_PER_SLV                 0X4902F000UL
+#define UART_CLK_EN                     (CLKCTRL_PER_SLV + 0x8)
 
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.

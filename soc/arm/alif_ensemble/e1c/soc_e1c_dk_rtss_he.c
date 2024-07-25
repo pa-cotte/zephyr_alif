@@ -20,15 +20,19 @@
  */
 static int ensemble_e1c_dk_rtss_he_init(void)
 {
-	/* enable all UART[5-0] modules and
-	 * select UART[5-0]_SCLK as SYST_PCLK clock. */
-	sys_write32(0xFFFF, 0x4902F008);
+	/* enable all UART[5-0] modules */
+	/* select UART[5-0]_SCLK as SYST_PCLK clock. */
+	sys_write32(0xFFFF, UART_CLK_EN);
 
 	/* LPUART settings */
 	if (IS_ENABLED(CONFIG_SERIAL)) {
 		/* Enable clock supply for LPUART */
 		sys_write32(0x1, AON_RTSS_HE_LPUART_CKEN);
 	}
+
+	/* RTC Clk Enable */
+	sys_write32(0x1, LPRTC0_CLK_EN);
+	sys_write32(0x1, LPRTC1_CLK_EN);
 
 	return 0;
 }

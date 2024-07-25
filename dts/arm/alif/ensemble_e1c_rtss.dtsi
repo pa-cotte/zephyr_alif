@@ -313,6 +313,25 @@
 			#gpio-cells = <2>;
 		};
 
+		rtc0: lprtc@42000000 {
+			compatible = "snps,dw-apb-rtc";
+			reg = <0x42000000 0x1000>;
+			interrupts = <58 3>;
+			clock-frequency = <32768>;
+			prescaler = <0>;
+			load-value = <0>;
+			status = "disabled";
+		};
+		rtc1: lprtc@42003000 {
+			compatible = "snps,dw-apb-rtc";
+			reg = <0x42003000 0x1000>;
+			interrupts = <59 3>;
+			clock-frequency = <32768>;
+			prescaler = <0>;
+			load-value = <0>;
+			status = "disabled";
+		};
+
 		rng: rng {
 			compatible = "alif,secure-enclave-trng";
 			status = "okay";
