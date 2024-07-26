@@ -24,18 +24,29 @@
 #define UART_CLK_EN                     (CLKCTRL_PER_SLV + 0x8)
 
 /* CGU Module */
-#define CGU_BASE        0x1A602000
-#define CGU_CLK_ENA     (CGU_BASE + 0x14)
+#define CGU_BASE			0x1A602000
+#define CGU_CLK_ENA			(CGU_BASE + 0x14)
 
 /* ANA Register */
-#define ANA_BASE            0x1A60A000
-#define ANA_VBAT_REG2       (ANA_BASE + 0x3C)
-
+#define ANA_BASE			0x1A60A000
+#define ANA_VBAT_REG2			(ANA_BASE + 0x3C)
 
 /* Expansion Slave registers. */
-#define EXPSLV_BASE     0x4902F000
-#define EXPSLV_ADC_CTRL     (EXPSLV_BASE + 0x30)
-#define EXPSLV_CMP_CTRL     (EXPSLV_BASE + 0x38)
+#define EXPSLV_BASE			0x4902F000
+#define EXPSLV_ADC_CTRL			(EXPSLV_BASE + 0x30)
+#define EXPSLV_CMP_CTRL			(EXPSLV_BASE + 0x38)
+
+/* Peripheral CLKCTRL */
+#define CLKCTRL_PER_SLV			0X4902F000UL
+#define SSI_CTRL_EN			(CLKCTRL_PER_SLV + 0x28)
+
+/* M55-HE Config Registers */
+#define M55HE_CFG_BASE			0x43007000UL
+#define HE_PER_CLK_EN			(M55HE_CFG_BASE + 0x10)
+
+/* VBAT Modules */
+#define VBAT_REG_BASE			0x1A609000UL
+#define VBAT_GPIO_CTRL_EN		(VBAT_REG_BASE + 0x0)
 
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.

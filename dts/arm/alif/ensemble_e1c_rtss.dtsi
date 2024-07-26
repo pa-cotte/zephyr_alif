@@ -406,6 +406,70 @@
 			status = "disabled";
 		};
 
+		spi0: spi@48103000 {
+			dwc-ssi;
+			compatible = "snps,designware-spi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			pinctrl-0 = < &pinctrl_spi0 >;
+			pinctrl-names = "default";
+			reg = <0x48103000 0x1000>;
+			interrupt-parent = <&nvic>;
+			interrupts = <137 3>;
+			cs-gpios = <&gpio5 3 0>;
+			clocks = <&syst_hclk>;
+			fifo-depth = <16>;
+			max-xfer-size = <32>;
+			status = "disabled";
+		};
+		spi1: spi@48104000 {
+			dwc-ssi;
+			compatible = "snps,designware-spi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			pinctrl-0 = < &pinctrl_spi1 >;
+			pinctrl-names = "default";
+			reg = <0x48104000 0x1000>;
+			interrupt-parent = <&nvic>;
+			interrupts = <138 3>;
+			cs-gpios = <&gpio8 7 0>;
+			clocks = <&syst_hclk>;
+			fifo-depth = <16>;
+			max-xfer-size = <32>;
+			status = "disabled";
+		};
+		spi2: spi@48105000 {
+			dwc-ssi;
+			compatible = "snps,designware-spi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			pinctrl-0 = < &pinctrl_spi2 >;
+			pinctrl-names = "default";
+			reg = <0x48105000 0x1000>;
+			interrupt-parent = <&nvic>;
+			interrupts = <139 3>;
+			cs-gpios = <&gpio4 5 0>;
+			clocks = <&syst_hclk>;
+			fifo-depth = <16>;
+			max-xfer-size = <32>;
+			status = "disabled";
+		};
+		spi3: lpspi@43000000 {
+			compatible = "snps,designware-spi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			pinctrl-0 = < &pinctrl_lpspi0 >;
+			pinctrl-names = "default";
+			reg = <0x43000000 0x1000>;
+			interrupt-parent = <&nvic>;
+			interrupts = <46 3>;
+			cs-gpios = <&gpio2 0 0>;
+			clocks = <&syst_core>;
+			fifo-depth = <16>;
+			max-xfer-size = <32>;
+			status = "disabled";
+		};
+
 		rng: rng {
 			compatible = "alif,secure-enclave-trng";
 			status = "okay";
@@ -440,6 +504,11 @@
 		syst_pclk: apb_clk {
 			compatible = "fixed-clock";
 			clock-frequency = <40000000>;
+			#clock-cells = <0>;
+		};
+		syst_core: core_clk {
+			compatible = "fixed-clock";
+			clock-frequency = <160000000>;
 			#clock-cells = <0>;
 		};
 	};
