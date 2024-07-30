@@ -22,7 +22,7 @@
 };
 
 /* Uart3 in defaults FPGA for BLE has Pin conflict with RX pin requiring clearing
- * of the P2-4 and P8-6 pinmux.
+ * of the P2-4 and P8-6 pinmux
  */
 &pinctrl_uart3 {
 	group0 {

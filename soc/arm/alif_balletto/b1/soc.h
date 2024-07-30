@@ -10,6 +10,44 @@
 
 #define __MVE_FP                  1U        /* MVE floating point present */
 
+/* AON registers. */
+#define AON_BASE                        0x1A604000UL
+#define AON_RTSS_HE_LPUART_CKEN         (AON_BASE + 0x1C)
+
+/* VBAT Modules */
+#define VBAT_BASE                       0x1A609000UL
+#define LPRTC0_CLK_EN                   (VBAT_BASE + 0x10)
+#define LPRTC1_CLK_EN                   (VBAT_BASE + 0x14)
+
+/* Peripheral CLKCTRL */
+#define CLKCTRL_PER_SLV                 0X4902F000UL
+#define UART_CLK_EN                     (CLKCTRL_PER_SLV + 0x8)
+
+/* CGU Module */
+#define CGU_BASE			0x1A602000
+#define CGU_CLK_ENA			(CGU_BASE + 0x14)
+
+/* ANA Register */
+#define ANA_BASE			0x1A60A000
+#define ANA_VBAT_REG2			(ANA_BASE + 0x3C)
+
+/* Expansion Slave registers. */
+#define EXPSLV_BASE			0x4902F000
+#define EXPSLV_ADC_CTRL		(EXPSLV_BASE + 0x30)
+#define EXPSLV_CMP_CTRL		(EXPSLV_BASE + 0x38)
+
+/* Peripheral CLKCTRL */
+#define CLKCTRL_PER_SLV		0X4902F000UL
+#define SSI_CTRL_EN			(CLKCTRL_PER_SLV + 0x28)
+
+/* M55-HE Config Registers */
+#define M55HE_CFG_BASE			0x43007000UL
+#define HE_PER_CLK_EN			(M55HE_CFG_BASE + 0x10)
+
+/* VBAT Modules */
+#define VBAT_REG_BASE			0x1A609000UL
+#define VBAT_GPIO_CTRL_EN		(VBAT_REG_BASE + 0x0)
+
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.
  *
@@ -67,18 +105,12 @@ typedef enum IRQn {
 	DMA2_IRQ30                    =   30,
 	DMA2_IRQ31                    =   31,
 	DMA2_ABORT_IRQ                =   32,
-	MHU_HES10_RX_IRQ              =   33,
-	MHU_ES1H0_TX_IRQ              =   34,
-	MHU_HES11_RX_IRQ              =   35,
-	MHU_ES1H1_TX_IRQ              =   36,
+	/* IRQs 33 to 36 are Reserved. */
 	MHU_SEES10_RX_IRQ             =   37,
 	MHU_ES1SE0_TX_IRQ             =   38,
 	MHU_SEES11_RX_IRQ             =   39,
 	MHU_ES1SE1_TX_IRQ             =   40,
-	MHU_ES0ES10_RX_IRQ            =   41,
-	MHU_ES1ES00_TX_IRQ            =   42,
-	MHU_ES0ES11_RX_IRQ            =   43,
-	MHU_ES1ES01_TX_IRQ            =   44,
+	/* IRQs 41 to 44 are Reserved. */
 	LPUART_IRQ                    =   45,
 	LPSPI_IRQ                     =   46,
 	LPI2C_IRQ                     =   47,

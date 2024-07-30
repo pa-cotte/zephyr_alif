@@ -4,11 +4,11 @@
  */
 /dts-v1/;
 
-#include <alif/balletto_fpga_rtss_common.dtsi>
-#include <alif/balletto-fpga-pinctrl.dtsi>
+#include <alif/balletto_rtss_common.dtsi>
+#include <alif/balletto-pinctrl.dtsi>
 
 / {
-	compatible = "arm,alif-b1-fpga-rtss-he";
+	compatible = "arm,alif-b1-dk-rtss-he";
 	#address-cells = <1>;
 	#size-cells = <1>;
 
@@ -42,25 +42,19 @@
 };
 
 &uart_hci {
-	/* [MV] with 24M the divisor is 1.5 to get 1M.
-	 * So use DLF=8 (0.5) and 20M clock to get integer divisor 1
-	 */
-	clock-frequency = <20000000>;
-	dlf = <8>;
+	clock-frequency = <160000000>;
+	dlf = <0>;
 };
 
 &uart_ahi {
-	/* [MV] with 24M the divisor is 1.5 to get 1M.
-	 * So use DLF=8 (0.5) and 20M clock to get integer divisor 1
-	 */
-	clock-frequency = <20000000>;
-	dlf = <8>;
+	clock-frequency = <160000000>;
+	dlf = <0>;
 	pinctrl-0 = < &pinctrl_ahi_trace >;
 	pinctrl-names = "default";
 };
 
 &utimer2 {
-	driver-enable = < ALIF_UTIMER_DRIVER_A_OUTPUT_ENABLE >;
+	driver-enable = < ALIF_UTIMER_DRIVER_B_OUTPUT_ENABLE >;
 	status = "okay";
 
 	pwm2: pwm {

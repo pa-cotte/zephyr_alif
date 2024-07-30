@@ -18,17 +18,23 @@
  *
  * @return 0
  */
-static int balletto_b1_dk_rtss_he_init(void)
+static int balletto_b1_fpga_rtss_he_init(void)
 {
-	/* enable all UART[5-0] modules */
-	/* select UART[5-0]_SCLK as SYST_PCLK clock. */
-	sys_write32(0xFFFF, 0x4902F008);
 
-	/* LPUART settings */
-	if (IS_ENABLED(CONFIG_SERIAL)) {
-		/* Enable clock supply for LPUART */
-		sys_write32(0x1, AON_RTSS_HE_LPUART_CKEN);
-	}
+	/* Might need to move later.. Just putting this here for now..*/
+	/* Enable the UART clocks and set bypass to 100Mhz clocks */
+	/* sys_write32(0x11, 0x4902F000); */
+	sys_write32(0xFFFF, 0x4902F008);
+	sys_write32(0x10000, 0x4903F00C);
+
+	/* Set the pinmux for Port 3 pins P3_1 and P3_2 to UART4 Rx/Tx */
+	/* B0 ENSEMBLE FPGA
+	 * sys_write32(0x00220002, 0x1A6030A0);
+	 * sys_write32(0x00220002, 0x1A6030A4);
+	 * B1 BLE FPGA
+	 * sys_write32(0x00220002, 0x1A60307C);
+	 *  sys_write32(0x00220002, 0x1A603078);
+	 */
 
 	/* Enable AHI Tracing */
 	sys_write32(0x00000004, 0x1a605008);
@@ -56,4 +62,4 @@ void sys_arch_reboot(int type)
 }
 #endif
 
-SYS_INIT(balletto_b1_dk_rtss_he_init, PRE_KERNEL_1, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
+SYS_INIT(balletto_b1_fpga_rtss_he_init, PRE_KERNEL_1, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
