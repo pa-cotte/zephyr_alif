@@ -20,6 +20,14 @@ LOG_MODULE_REGISTER(CPI, CONFIG_VIDEO_LOG_LEVEL);
 #define WORKQ_PRIORITY   7
 K_KERNEL_STACK_DEFINE(isr_cb_workq, WORKQ_STACK_SIZE);
 
+#ifdef CONFIG_FB_USES_DTCM_REGION
+#define DTCM_GLOBAL_BASE   DT_PROP(DT_NODELABEL(dtcm), dtcm_global_base)
+#define DTCM_LOCAL_BASE    DT_REG_ADDR(DT_NODELABEL(dtcm))
+#define LOCAL_TO_GLOBAL(x) (x - DTCM_LOCAL_BASE + DTCM_GLOBAL_BASE)
+#else
+#define LOCAL_TO_GLOBAL(x) (x)
+#endif /* CONFIG_FB_USES_DTCM_REGION */
+
 static void reg_write_part(uintptr_t reg, uint32_t data, uint32_t mask, uint8_t shift)
 {
 	uint32_t tmp = 0;
@@ -209,7 +217,7 @@ static void cam_work_helper(const struct device *dev)
 	 * Set the curr_vid_buf to the device here and restart data capture.
 	 */
 	data->curr_vid_buf = (uint32_t)vbuf->buffer;
-	sys_write32(data->curr_vid_buf, regs + CAM_FRAME_ADDR);
+	sys_write32(LOCAL_TO_GLOBAL(data->curr_vid_buf), regs + CAM_FRAME_ADDR);
 
 	/* Restart video capture. */
 	hw_cam_start_video_capture(dev);
@@ -343,8 +351,9 @@ static int cam_stream_start(const struct device *dev)
 		LOG_ERR("No empty video-buffer. Aborting!!!");
 		return -ENOBUFS;
 	}
+
 	data->curr_vid_buf = (uint32_t)vbuf->buffer;
-	sys_write32(data->curr_vid_buf, regs + CAM_FRAME_ADDR);
+	sys_write32(LOCAL_TO_GLOBAL(data->curr_vid_buf), regs + CAM_FRAME_ADDR);
 
 	/* Setup the interrupts. */
 	hw_enable_interrupts(regs, INTR_VSYNC | INTR_BRESP_ERR | INTR_OUTFIFO_OVERRUN |
@@ -778,8 +787,9 @@ static int video_cam_init(const struct device *dev)
 		}
 	}
 
-	if (!IS_ENABLED(CONFIG_SOC_E7_DK_RTSS_HE) && config->is_lpcam) {
-		LOG_ERR("LP-CAM only accessible from HP-core. Aborting");
+	if ((!IS_ENABLED(CONFIG_SOC_E7_DK_RTSS_HE) && !IS_ENABLED(CONFIG_SOC_E1C_DK_RTSS_HE))
+			&& config->is_lpcam) {
+		LOG_ERR("LP-CAM only accessible from HE-core. Aborting");
 		return -ENODEV;
 	}
 

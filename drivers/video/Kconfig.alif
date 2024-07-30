@@ -20,4 +20,7 @@ config VIDEO_ALIF_CAM_INIT_PRIORITY
 	help
 	 System initialization priority for Alif Camera Driver.
 
+config FB_USES_DTCM_REGION
+	bool "CPI uses DTCM region for buffers"
+
 endif #VIDEO_ALIF_CAM
