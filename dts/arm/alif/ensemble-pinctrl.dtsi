@@ -40,10 +40,53 @@
 			/* driver = < 0x0 >;0 for push pull,1 for open drain */
 		};
 	};
+
+	pinctrl_uart0: pinctrl_uart0 {
+		group0 {
+			pinmux = < PIN_P0_0__UART0_RX_A >,
+				 < PIN_P0_1__UART0_TX_A >;
+		};
+	};
+
+	pinctrl_uart1: pinctrl_uart1 {
+		group0 {
+			pinmux = < PIN_P0_4__UART1_RX_A >,
+				 < PIN_P0_5__UART1_TX_A >;
+		};
+	};
+
 	pinctrl_uart2: pinctrl_uart2 {
 		group0 {
 			pinmux = < PIN_P1_0__UART2_RX_A >,
 				 < PIN_P1_1__UART2_TX_A >;
+		};
+	};
+
+	pinctrl_uart3: pinctrl_uart3 {
+		group0 {
+			pinmux = < PIN_P1_2__UART3_RX_A >,
+				 < PIN_P1_3__UART3_TX_A >;
+		};
+	};
+
+	pinctrl_uart5: pinctrl_uart5 {
+		group0 {
+			pinmux = < PIN_P3_4__UART5_RX_A >,
+				 < PIN_P3_5__UART5_TX_A >;
+		};
+	};
+
+	pinctrl_uart6: pinctrl_uart6 {
+		group0 {
+			pinmux = < PIN_P10_5__UART6_RX_A >,
+				 < PIN_P10_6__UART6_TX_A >;
+		};
+	};
+
+	pinctrl_uart7: pinctrl_uart7 {
+		group0 {
+			pinmux = < PIN_P9_3__UART7_RX_B >,
+				 < PIN_P9_4__UART7_TX_B >;
 		};
 	};
 

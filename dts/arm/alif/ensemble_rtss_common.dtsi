@@ -400,6 +400,34 @@
 		interrupts = < 120 3 >;
 	};
 
+	uart0: uart@0x49018000 {
+		compatible = "ns16550";
+		reg = <0x49018000 0x100>;
+		/* 100Mhz baud clock */
+		clock-frequency = <100000000>;
+		interrupts = <124 3>;
+		reg-shift = <2>;
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_uart0 >;
+		pinctrl-names = "default";
+		fifo-size = <32>;
+		status = "disabled";
+	};
+
+	uart1: uart@0x49019000 {
+		compatible = "ns16550";
+		reg = <0x49019000 0x100>;
+		/* 100Mhz baud clock */
+		clock-frequency = <100000000>;
+		interrupts = <125 3>;
+		reg-shift = <2>;
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_uart1 >;
+		pinctrl-names = "default";
+		fifo-size = <32>;
+		status = "disabled";
+	};
+
 	uart2: uart@4901a000 {
 		compatible = "ns16550";
 		reg = <0x4901a000 0x100>;
@@ -414,6 +442,20 @@
 		status = "disabled";
 	};
 
+	uart3: uart@4901b000 {
+		compatible = "ns16550";
+		reg = <0x4901b000 0x100>;
+		/* 100Mhz baud clock */
+		clock-frequency = <100000000>;
+		interrupts = <127 3>;
+		reg-shift = <2>;
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_uart3 >;
+		pinctrl-names = "default";
+		fifo-size = <32>;
+		status = "disabled";
+	};
+
 	uart4: uart@4901c000 {
 		compatible = "ns16550";
 		reg = <0x4901c000 0x100>;
@@ -423,6 +465,48 @@
 		reg-shift = <2>;
 		current-speed = <115200>;
 		pinctrl-0 = < &pinctrl_uart4 >;
+		pinctrl-names = "default";
+		fifo-size = <32>;
+		status = "disabled";
+	};
+
+	uart5: uart@4901d000 {
+		compatible = "ns16550";
+		reg = <0x4901d000 0x100>;
+		/* 100Mhz baud clock */
+		clock-frequency = <100000000>;
+		interrupts = <129 3>;
+		reg-shift = <2>;
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_uart5 >;
+		pinctrl-names = "default";
+		fifo-size = <32>;
+		status = "disabled";
+	};
+
+	uart6: uart@4901e000 {
+		compatible = "ns16550";
+		reg = <0x4901e000 0x100>;
+		/* 100Mhz baud clock */
+		clock-frequency = <100000000>;
+		interrupts = <130 3>;
+		reg-shift = <2>;
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_uart6 >;
+		pinctrl-names = "default";
+		fifo-size = <32>;
+		status = "disabled";
+	};
+
+	uart7: uart@4901f000 {
+		compatible = "ns16550";
+		reg = <0x4901f000 0x100>;
+		/* 100Mhz baud clock */
+		clock-frequency = <100000000>;
+		interrupts = <131 3>;
+		reg-shift = <2>;
+		current-speed = <115200>;
+		pinctrl-0 = < &pinctrl_uart7 >;
 		pinctrl-names = "default";
 		fifo-size = <32>;
 		status = "disabled";
