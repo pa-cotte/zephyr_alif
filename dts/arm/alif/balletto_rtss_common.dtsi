@@ -127,6 +127,34 @@
 			};
 		};
 
+		uart0: uart@49018000 {
+			compatible = "ns16550";
+			reg = <0x49018000 0x100>;
+			/* SYST_PCLK (APB bus) 40MHz baud clock */
+			clock-frequency = <40000000>;
+			interrupts = <124 3>;
+			reg-shift = <2>;
+			current-speed = <115200>;
+			pinctrl-0 = < &pinctrl_uart0 >;
+			pinctrl-names = "default";
+			fifo-size = <32>;
+			status = "disabled";
+		};
+
+		uart1: uart@49019000 {
+			compatible = "ns16550";
+			reg = <0x49019000 0x100>;
+			/* SYST_PCLK (APB bus) 40MHz baud clock */
+			clock-frequency = <40000000>;
+			interrupts = <125 3>;
+			reg-shift = <2>;
+			current-speed = <115200>;
+			pinctrl-0 = < &pinctrl_uart1 >;
+			pinctrl-names = "default";
+			fifo-size = <32>;
+			status = "disabled";
+		};
+
 		uart2: uart@4901a000 {
 			compatible = "ns16550";
 			reg = <0x4901a000 0x100>;
@@ -154,6 +182,7 @@
 			fifo-size = <32>;
 			status = "disabled";
 		};
+
 		uart4: uart@4901c000 {
 			compatible = "ns16550";
 			reg = <0x4901c000 0x100>;
@@ -163,6 +192,20 @@
 			reg-shift = <2>;
 			current-speed = <115200>;
 			pinctrl-0 = < &pinctrl_uart4 >;
+			pinctrl-names = "default";
+			fifo-size = <32>;
+			status = "disabled";
+		};
+
+		uart5: uart@4901d000 {
+			compatible = "ns16550";
+			reg = <0x4901d000 0x100>;
+			/* SYST_PCLK (APB bus) 40MHz baud clock */
+			clock-frequency = <40000000>;
+			interrupts = <129 3>;
+			reg-shift = <2>;
+			current-speed = <115200>;
+			pinctrl-0 = < &pinctrl_uart5 >;
 			pinctrl-names = "default";
 			fifo-size = <32>;
 			status = "disabled";

@@ -13,8 +13,8 @@
 &pinctrl {
 	pinctrl_uart4: pinctrl_uart4 {
 		group0 {
-			pinmux = < PIN_P3_6__UART4_RX_B >,
-				 < PIN_P3_7__UART4_TX_B >;
+			pinmux = < PIN_P2_6__UART4_RX_A >,
+				 < PIN_P2_7__UART4_TX_A >;
 			/* pad config default values
 			 * read_enable = < 0x1 >; 0 for disable, 1 for enable
 			 * schmitt_enable = < 0x1 >; 0x0 for disable
@@ -34,15 +34,11 @@
 			 */
 		};
 	};
+
 	pinctrl_uart3: pinctrl_uart3 {
 		group0 {
-			pinmux = < PIN_P3_2__UART3_RX_B >,
-				 < PIN_P7_4__UART3_CTS_B >;
-		};
-		group1 {
-			pinmux = < PIN_P3_3__UART3_TX_B >,
-				 < PIN_P7_5__UART3_RTS_B >;
-			read_enable = < 0x0 >;
+			pinmux = < PIN_P8_6__UART3_RX_C >,
+				 < PIN_P8_7__UART3_TX_C >;
 		};
 	};
 
@@ -78,10 +74,31 @@
 		};
 	};
 
+	pinctrl_uart0: pinctrl_uart0 {
+		group0 {
+			pinmux = < PIN_P8_0__UART0_RX_C >,
+				 < PIN_P8_1__UART0_TX_C >;
+		};
+	};
+
+	pinctrl_uart1: pinctrl_uart1 {
+		group0 {
+			pinmux = < PIN_P0_4__UART1_RX_A >,
+				 < PIN_P0_5__UART1_TX_A >;
+		};
+	};
+
 	pinctrl_uart2: pinctrl_uart2 {
 		group0 {
 			pinmux = < PIN_P5_2__UART2_RX_B >,
 				 < PIN_P5_3__UART2_TX_B >;
+		};
+	};
+
+	pinctrl_uart5: pinctrl_uart5 {
+		group0 {
+			pinmux = < PIN_P7_6__UART5_RX_B >,
+				 < PIN_P7_7__UART5_TX_B >;
 		};
 	};
 
