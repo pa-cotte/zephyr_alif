@@ -15,10 +15,17 @@
 			zephyr,memory-region = "ITCM";
 		};
 
-		dtcm: dtcm@20000000 {
+		reserved_dtcm: dtcm@20000000 {
 			compatible = "alif,dtcm", "zephyr,memory-region";
 			dtcm_global_base = <0x58800000>;
-			reg = <0x20000000 DT_SIZE_K(1536)>;
+			reg = <0x20000000 DT_SIZE_K(40)>;
+			zephyr,memory-region = "RESERVED_DTCM";
+		};
+
+		dtcm: dtcm@2000a000 {
+			compatible = "alif,dtcm", "zephyr,memory-region";
+			dtcm_global_base = <0x5880a000>;
+			reg = <0x2000a000 DT_SIZE_K(1496)>;
 			zephyr,memory-region = "DTCM";
 		};
 		peripheral@40000000 {
