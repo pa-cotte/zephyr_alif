@@ -105,7 +105,7 @@ struct M55HE_CFG_Type { /*!< (@ 0x43007000) M55HE_CFG Structure */
 	__IOM uint32_t HE_I2S_CTRL;
 	__IM uint32_t RESERVED[2];
 	/*!< (@ 0x00000020) LPCPI Pixel Clock Control Register */
-	__IOM uint32_t HE_CAMERA_PIXCLK;
+	__IOM uint32_t HE_CAM_PIXCLK;
 };
 
 #define CLKCTL_PER_SLV_BASE 0x4902F000UL

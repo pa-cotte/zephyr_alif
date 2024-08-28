@@ -99,7 +99,7 @@ config  ROM_ITCM
 	help
 	  Enable this to build applications to run from the ITCM.
 
-if ROM_ITCM
+if ROM_ITCM || !XIP
 config FLASH_SIZE
 	default $(dt_node_reg_size_int,/soc/itcm@0,0,K)
 
