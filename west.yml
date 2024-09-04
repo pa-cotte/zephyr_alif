@@ -117,10 +117,9 @@ manifest:
       revision: eed6d7038e839153e340bd333bc43541cb90ba64
       groups:
         - babblesim
-    - name: cmsis_alif
-      revision: 85f6b92af0f6ac72594d391f895c45cc30847e41
+    - name: cmsis
+      revision: 4b96cbb174678dcd3ca86e11e1f24bc5f8726da0
       path: modules/hal/cmsis
-      remote: alif
       groups:
         - hal
     - name: cmsis-dsp
