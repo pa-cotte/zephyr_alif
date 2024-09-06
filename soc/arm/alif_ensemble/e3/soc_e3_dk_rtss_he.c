@@ -155,6 +155,9 @@ static int ensemble_e3_dk_rtss_he_init(void)
 	data |= 0x1;
 	sys_write32(data, 0x1a609010);
 
+	/*LP-SPI Flex GPIO */
+	sys_write32(0x1, VBAT_BASE);
+
 	/* Enable DMA */
 #if DT_NODE_HAS_COMPAT_STATUS(DT_NODELABEL(dma2), arm_dma_pl330, okay)
 	sys_set_bits(M55HE_CFG_HE_CLK_ENA, BIT(4));

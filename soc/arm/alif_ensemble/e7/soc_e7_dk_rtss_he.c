@@ -70,6 +70,9 @@ static int ensemble_e7_dk_rtss_he_init(void)
 	data = sys_read32(0x4902F000);
 	data |= 0x100;
 
+	/*LP-SPI Flex GPIO */
+	sys_write32(0x1, VBAT_BASE);
+
 	/* lptimer settings */
 #if DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers)
 	/* LPTIMER 0 settings */
