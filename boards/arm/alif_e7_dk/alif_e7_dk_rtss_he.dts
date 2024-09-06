@@ -24,6 +24,7 @@
 	aliases {
 		led0 = &aled0;
 		pwm-led0 = &pwm_led1_red;
+		sw0 = &button0;
 	};
 	leds {
 		compatible = "gpio-leds";
@@ -37,6 +38,13 @@
 		pwm_led1_red: pwm_led_1 {
 			pwms = <&pwm5 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
 			label = "RED PWM LED 1";
+		};
+	};
+	buttons {
+		compatible = "gpio-keys";
+		button0: button_0 {
+			gpios = < &lpgpio 4 0 >;
+			label = "SW0";
 		};
 	};
 };
