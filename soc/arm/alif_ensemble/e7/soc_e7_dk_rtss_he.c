@@ -67,8 +67,7 @@ static int ensemble_e7_dk_rtss_he_init(void)
 	sys_write32(data, 0x43007010);
 
 	/* enable pdm in expansion master */
-	data = sys_read32(0x4902F000);
-	data |= 0x100;
+	sys_set_bits(EXPSLV_EXPMST0_CTRL, BIT(8));
 
 	/*LP-SPI Flex GPIO */
 	sys_write32(0x1, VBAT_BASE);

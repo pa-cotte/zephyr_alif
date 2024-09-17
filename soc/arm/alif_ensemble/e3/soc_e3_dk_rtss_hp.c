@@ -59,8 +59,7 @@ static int ensemble_e3_dk_rtss_hp_init(void)
 	sys_write32(0x0202, EXPSLV_SSI_CTRL);
 
 	/* enable pdm in expansion master */
-	data = sys_read32(EXPSLV_EXPMST0_CTRL);
-	data |= 0x100;
+	sys_set_bits(EXPSLV_EXPMST0_CTRL, BIT(8));
 
 	/* lptimer settings */
 #if DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers)

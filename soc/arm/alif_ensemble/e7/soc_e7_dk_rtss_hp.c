@@ -64,8 +64,7 @@ static int ensemble_e7_dk_rtss_hp_init(void)
 	sys_write32(data, 0x43007010);
 
 	/* enable pdm in expansion master */
-	data = sys_read32(0x4902F000);
-	data |= 0x100;
+	sys_set_bits(EXPSLV_EXPMST0_CTRL, BIT(8));
 
 	/* lptimer settings */
 #if DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers)
