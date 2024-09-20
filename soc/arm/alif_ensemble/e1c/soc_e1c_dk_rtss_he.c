@@ -12,6 +12,7 @@
 #include <zephyr/sys/reboot.h>
 #include <se_service.h>
 #endif
+#include <zephyr/cache.h>
 
 /**
  * @brief Perform basic hardware initialization at boot.
@@ -21,6 +22,12 @@
 static int ensemble_e1c_dk_rtss_he_init(void)
 {
 	uint32_t reg_val;
+
+	/* Enable ICACHE */
+	sys_cache_instr_enable();
+
+	/* Enable DCACHE */
+	sys_cache_data_enable();
 
 	/* enable all UART[5-0] modules */
 	/* select UART[5-0]_SCLK as SYST_PCLK clock. */

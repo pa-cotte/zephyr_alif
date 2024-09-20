@@ -8,6 +8,7 @@
 #include <zephyr/init.h>
 #include <soc.h>
 #include <zephyr/linker/linker-defs.h>
+#include <zephyr/cache.h>
 
 /**
  * @brief Perform basic hardware initialization at boot.
@@ -17,6 +18,12 @@
 static int ensemble_e3_dk_rtss_hp_init(void)
 {
 	unsigned int data;
+
+	/* Enable ICACHE */
+	sys_cache_instr_enable();
+
+	/* Enable DCACHE */
+	sys_cache_data_enable();
 
 	/* Might need to move later.. Just putting this here for now..*/
 	/* Enable UART clock and clock selection bits in CFGMST0 */
