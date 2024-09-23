@@ -52,6 +52,22 @@
 			};
 		};
 
+		timer0: timer@42001000 {
+			compatible = "snps,dw-timers";
+			reg = <0x42001000 0x14>;
+			interrupts = < 60 3 >;
+			clock-frequency = <32768>;
+			status = "disabled";
+		};
+
+		timer1: timer@42001014 {
+			compatible = "snps,dw-timers";
+			reg = <0x42001014 0x14>;
+			interrupts = < 61 3 >;
+			clock-frequency = <32768>;
+			status = "disabled";
+		};
+
 		utimer0: utimer@48001000 {
 			compatible = "alif,utimer";
 			reg = <0x48001000 0x1000 0x48000000 0x24>;

@@ -182,6 +182,54 @@ static int ensemble_e3_dk_rtss_he_init(void)
 	sys_set_bits(EXPMST_DMA_CTRL, BIT(16));
 #endif
 
+	/* lptimer settings */
+#if DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers)
+	/* LPTIMER 0 settings */
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay)
+	if (IS_ENABLED(CONFIG_LPTIMER0_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER0_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER0 pin by config lpgpio
+		 * pin 0 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 0);
+	}
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay) */
+	/* LPTIMER 1 settings */
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay)
+	if (IS_ENABLED(CONFIG_LPTIMER1_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER1_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER1 pin by config lpgpio
+		 * pin 1 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 1);
+	}
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay) */
+	/* LPTIMER 2 settings */
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(timer2), okay)
+	if (IS_ENABLED(CONFIG_LPTIMER2_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER2_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER2 pin by config lpgpio
+		 * pin 2 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 2);
+	}
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer2), okay) */
+	/* LPTIMER 3 settings */
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(timer3), okay)
+	if (IS_ENABLED(CONFIG_LPTIMER3_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER3_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER3 pin by config lpgpio
+		 * pin 3 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 3);
+	}
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer3), okay) */
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers) */
+
 	return 0;
 }
 

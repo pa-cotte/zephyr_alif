@@ -50,6 +50,9 @@
 #define VBAT_REG_BASE			0x1A609000UL
 #define VBAT_GPIO_CTRL_EN		(VBAT_REG_BASE + 0x0)
 
+/* LPGPIO Base address for LPTIMER pin config */
+#define LPGPIO_BASE     0x42002008UL
+
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.
  *

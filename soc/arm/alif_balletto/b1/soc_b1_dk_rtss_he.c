@@ -40,6 +40,32 @@ static int balletto_b1_dk_rtss_he_init(void)
 	/* Enable AHI Tracing */
 	sys_write32(0x00000004, 0x1a605008);
 
+	/* lptimer settings */
+#if DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers)
+	/* LPTIMER 0 settings */
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay)
+	if (IS_ENABLED(CONFIG_LPTIMER0_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER0_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER0 pin by config lpgpio
+		 * pin 0 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 0);
+	}
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay) */
+	/* LPTIMER 1 settings */
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay)
+	if (IS_ENABLED(CONFIG_LPTIMER1_OUTPUT_TOGGLE) ||
+			(CONFIG_LPTIMER1_EXT_CLK_FREQ > 0U)) {
+		/*
+		 * enable of LPTIMER1 pin by config lpgpio
+		 * pin 1 as Hardware control
+		 */
+		sys_set_bit(LPGPIO_BASE, 1);
+	}
+#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay) */
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers) */
+
 	return 0;
 }
 

@@ -67,6 +67,9 @@
 #define M55HP_CFG_HP_DMA_SEL		(M55HP_CFG_HP_CFG_BASE + 0xC)
 #define M55HP_CFG_HP_CLK_ENA		(M55HP_CFG_HP_CFG_BASE + 0x10)
 
+/* LPGPIO Base address for LPTIMER pin config */
+#define LPGPIO_BASE     0x42002008UL
+
 #define __NVIC_PRIO_BITS          NUM_IRQ_PRIO_BITS
 
 #define __MVE_FP                  1U        /* MVE floating point present */
