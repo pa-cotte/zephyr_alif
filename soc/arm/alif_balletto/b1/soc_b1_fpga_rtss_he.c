@@ -12,6 +12,7 @@
 #include <zephyr/sys/reboot.h>
 #include <se_service.h>
 #endif
+#include <zephyr/cache.h>
 
 /**
  * @brief Perform basic hardware initialization at boot.
@@ -20,6 +21,11 @@
  */
 static int balletto_b1_fpga_rtss_he_init(void)
 {
+	/* Enable ICACHE */
+	sys_cache_instr_enable();
+
+	/* Enable DCACHE */
+	sys_cache_data_enable();
 
 	/* Might need to move later.. Just putting this here for now..*/
 	/* Enable the UART clocks and set bypass to 100Mhz clocks */
