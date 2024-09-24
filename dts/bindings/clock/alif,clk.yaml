@@ -11,7 +11,7 @@ description: |
     uart0: uart@xxx {
         ...
         /* cell encodes clock module, register offset and bit to configure */
-        clocks = < &clock ALIF_UARTn_SYST_PCLK(0) >;
+        clocks = < &clock ALIF_UART0_SYST_PCLK >;
         ...
     }
 

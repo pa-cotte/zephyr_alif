@@ -9,7 +9,7 @@
 #include <zephyr/dt-bindings/gpio/gpio.h>
 #include <zephyr/dt-bindings/timer/alif_utimer.h>
 #include <zephyr/dt-bindings/pwm/pwm.h>
-#include <zephyr/dt-bindings/clock/alif_clock_control.h>
+#include <zephyr/dt-bindings/clock/alif_ensemble_clocks.h>
 &{/soc} {
 	clock: clock-controller@4903f000 {
 		compatible = "alif,clk";
@@ -100,7 +100,7 @@
 		compatible = "snps,dw-timers";
 		reg = <0x42001000 0x14>;
 		interrupts = < 60 3 >;
-		clocks = <&clock ALIF_LPTIMERn_S32K_CLK(0)>;
+		clocks = <&clock ALIF_LPTIMER0_S32K_CLK>;
 		status = "disabled";
 	};
 
@@ -108,7 +108,7 @@
 		compatible = "snps,dw-timers";
 		reg = <0x42001014 0x14>;
 		interrupts = < 61 3 >;
-		clocks = <&clock ALIF_LPTIMERn_S32K_CLK(1)>;
+		clocks = <&clock ALIF_LPTIMER1_S32K_CLK>;
 		status = "disabled";
 	};
 
@@ -116,7 +116,7 @@
 		compatible = "snps,dw-timers";
 		reg = <0x42001028 0x14>;
 		interrupts = < 62 3 >;
-		clocks = <&clock ALIF_LPTIMERn_S32K_CLK(2)>;
+		clocks = <&clock ALIF_LPTIMER2_S32K_CLK>;
 		status = "disabled";
 	};
 
@@ -124,7 +124,7 @@
 		compatible = "snps,dw-timers";
 		reg = <0x4200103C 0x14>;
 		interrupts = < 63 3 >;
-		clocks = <&clock ALIF_LPTIMERn_S32K_CLK(3)>;
+		clocks = <&clock ALIF_LPTIMER3_S32K_CLK>;
 		status = "disabled";
 	};
 
@@ -1427,6 +1427,36 @@
 		compatible = "alif,secure-enclave-trng";
 	};
 	clocks {
+		lfrc: lfrc {
+			compatible = "fixed-clock";
+			clock-frequency = <32000>;
+			status = "okay";
+			#clock-cells = <0>;
+		};
+		lfxo: lfxo {
+			compatible = "fixed-clock";
+			clock-frequency = <32768>;
+			status = "okay";
+			#clock-cells = <0>;
+		};
+		hfrc: hfrc {
+			compatible = "fixed-clock";
+			clock-frequency = <76800000>;
+			status = "okay";
+			#clock-cells = <0>;
+		};
+		hfxo: hfxo {
+			compatible = "fixed-clock";
+			clock-frequency = <38400000>;
+			status = "okay";
+			#clock-cells = <0>;
+		};
+		pll: pll {
+			compatible = "alif,pll-clk";
+			pll_clk1-frequency = <800000000>;
+			pll_clk3-frequency = <480000000>;
+			status = "okay";
+		};
 		syst_hclk: ahb_clk {
 			compatible = "fixed-clock";
 			clock-frequency = <200000000>;

@@ -5,9 +5,25 @@
 #include <arm/armv8.1-m.dtsi>
 #include <zephyr/dt-bindings/timer/alif_utimer.h>
 #include <zephyr/dt-bindings/pwm/pwm.h>
+#include <zephyr/dt-bindings/clock/alif_balletto_clocks.h>
 #include <mem.h>
 / {
 	soc {
+		clock: clock-controller@4903f000 {
+			compatible = "alif,clk";
+			reg =  <0x4903F000 0xB0
+				0x4902F000 0xBC
+				0x1A604000 0x44
+				0x1A609000 0x14
+				0x43007000 0x2C>;
+			reg-names = "master_clkctrl",
+				     "slave_clkctrl",
+				     "aon_clkctrl",
+				     "vbat_clkctrl",
+				     "m55he_clkctrl";
+			#clock-cells = <1>;
+			status = "okay";
+		};
 		itcm: itcm@0 {
 			compatible = "alif,itcm", "zephyr,memory-region";
 			reg = <0x0 DT_SIZE_K(512)>;
@@ -56,7 +72,7 @@
 			compatible = "snps,dw-timers";
 			reg = <0x42001000 0x14>;
 			interrupts = < 60 3 >;
-			clock-frequency = <32768>;
+			clocks = <&clock ALIF_LPTIMER0_S32K_CLK>;
 			status = "disabled";
 		};
 
@@ -64,7 +80,7 @@
 			compatible = "snps,dw-timers";
 			reg = <0x42001014 0x14>;
 			interrupts = < 61 3 >;
-			clock-frequency = <32768>;
+			clocks = <&clock ALIF_LPTIMER1_S32K_CLK>;
 			status = "disabled";
 		};
 
@@ -641,6 +657,37 @@
 		};
 	};
 	clocks {
+		lfrc: lfrc {
+			compatible = "fixed-clock";
+			clock-frequency = <32000>;
+			status = "okay";
+			#clock-cells = <0>;
+		};
+		lfxo: lfxo {
+			compatible = "fixed-clock";
+			clock-frequency = <32768>;
+			status = "okay";
+			#clock-cells = <0>;
+		};
+		hfrc: hfrc {
+			compatible = "fixed-clock";
+			clock-frequency = <76800000>;
+			status = "okay";
+			#clock-cells = <0>;
+		};
+		hfxo: hfxo {
+			compatible = "fixed-clock";
+			clock-frequency = <38400000>;
+			status = "okay";
+			#clock-cells = <0>;
+		};
+		pll: pll {
+			compatible = "alif,pll-clk";
+			pll_clk1-frequency = <160000000>;
+			pll_clk2-frequency = <120000000>;
+			pll_clk3-frequency = <480000000>;
+			status = "okay";
+		};
 		syst_hclk: ahb_clk {
 			compatible = "fixed-clock";
 			clock-frequency = <80000000>;
