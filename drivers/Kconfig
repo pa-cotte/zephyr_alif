@@ -88,6 +88,7 @@ source "drivers/watchdog/Kconfig"
 source "drivers/wifi/Kconfig"
 source "drivers/xen/Kconfig"
 source "drivers/crc/Kconfig"
+source "drivers/comparator/Kconfig"
 # zephyr-keep-sorted-stop
 
 endmenu

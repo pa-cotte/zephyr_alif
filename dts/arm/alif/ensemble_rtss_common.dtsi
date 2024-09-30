@@ -1390,6 +1390,87 @@
 					  "comparator_b_intr";
 		status = "disabled";
 	};
+
+	cmp0: cmp0@49023000 {
+		compatible = "alif,cmp";
+		reg = <0x49023000 0x1000>,
+			  <0x49023000 0x1000>;
+		reg-names	 = "cmp_reg", "config_reg";
+		pinctrl-0	 = < &pinctrl_cmp0 >;
+		pinctrl-names	 = "default";
+		driver_instance	 = "CMP_INSTANCE_0";
+		positive_input	 = "CMP_POS_IN0";
+		negative_input	 = "CMP_NEG_IN3";
+		hysteresis_level = "42mV";
+		interrupts	 = <167 3>;
+		cmp-gpios	 = <&gpio14 7 GPIO_ACTIVE_HIGH>;
+		status = "disabled";
+	};
+
+	cmp1: cmp1@49024000 {
+		compatible = "alif,cmp";
+		reg = <0x49024000 0x1000>,
+			  <0x49023000 0x1000>;
+		reg-names	 = "cmp_reg", "config_reg";
+		pinctrl-0	 = < &pinctrl_cmp1 >;
+		pinctrl-names	 = "default";
+		driver_instance	 = "CMP_INSTANCE_1";
+		positive_input	 = "CMP_POS_IN0";
+		negative_input	 = "CMP_NEG_IN3";
+		hysteresis_level = "42mV";
+		interrupts	 = <168 3>;
+		cmp-gpios	 = <&gpio14 6 GPIO_ACTIVE_HIGH>;
+		status = "disabled";
+	};
+
+	cmp2: cmp2@49025000 {
+		compatible = "alif,cmp";
+		reg = <0x49025000 0x1000>,
+			  <0x49023000 0x1000>;
+		reg-names	 = "cmp_reg", "config_reg";
+		pinctrl-0	 = < &pinctrl_cmp2 >;
+		pinctrl-names	 = "default";
+		driver_instance	 = "CMP_INSTANCE_2";
+		positive_input	 = "CMP_POS_IN0";
+		negative_input	 = "CMP_NEG_IN3";
+		hysteresis_level = "42mV";
+		interrupts	 = <169 3>;
+		cmp-gpios	 = <&gpio14 5 GPIO_ACTIVE_HIGH>;
+		status = "disabled";
+	};
+
+	cmp3: cmp3@49026000 {
+		compatible = "alif,cmp";
+		reg = <0x49023000 0x1000>,
+			  <0x49023000 0x1000>;
+		reg-names	 = "cmp_reg", "config_reg";
+		pinctrl-0	 = < &pinctrl_cmp3 >;
+		pinctrl-names	 = "default";
+		driver_instance	 = "CMP_INSTANCE_3";
+		positive_input	 = "CMP_POS_IN0";
+		negative_input	 = "CMP_NEG_IN3";
+		hysteresis_level = "42mV";
+		interrupts	 = <170 3>;
+		cmp-gpios	 = <&gpio14 4 GPIO_ACTIVE_HIGH>;
+		status = "disabled";
+	};
+
+	lpcmp: lpcmp@1A60A03C {
+		compatible = "alif,cmp";
+		reg = <0x1A60A03C 0x10>,
+			  <0x1A60A03C 0x10>;
+		reg-names = "cmp_reg", "config_reg";
+		pinctrl-0	 = < &pinctrl_lpcmp >;
+		pinctrl-names	 = "default";
+		driver_instance	 = "CMP_INSTANCE_LP";
+		positive_input	 = "CMP_POS_IN0";
+		negative_input	 = "CMP_NEG_IN0";
+		hysteresis_level = "42mV";
+		interrupts	 = <56 3>;
+		cmp-gpios	 = <&gpio14 4 GPIO_ACTIVE_HIGH>;
+		status = "disabled";
+	};
+
 	rtc0: lprtc@42000000 {
 		compatible = "snps,dw-apb-rtc";
 		reg = <0x42000000 0x1000>;

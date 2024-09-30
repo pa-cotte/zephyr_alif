@@ -88,4 +88,5 @@ add_subdirectory_ifdef(CONFIG_WATCHDOG watchdog)
 add_subdirectory_ifdef(CONFIG_WIFI wifi)
 add_subdirectory_ifdef(CONFIG_XEN xen)
 add_subdirectory_ifdef(CONFIG_CRC_ALIF crc)
+add_subdirectory_ifdef(CONFIG_CMP comparator)
 # zephyr-keep-sorted-stop
