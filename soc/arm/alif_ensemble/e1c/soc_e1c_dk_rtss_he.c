@@ -93,6 +93,11 @@ static int ensemble_e1c_dk_rtss_he_init(void)
 		 */
 	}
 
+	/*Clock : OSPI */
+	if (IS_ENABLED(CONFIG_OSPI)) {
+		sys_write32(0x1, EXPSLV_OSPI_CTRL);
+	}
+
 	return 0;
 }
 
