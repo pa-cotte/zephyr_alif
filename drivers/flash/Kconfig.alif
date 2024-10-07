@@ -23,10 +23,30 @@ menuconfig OSPI_FLASH_IS25WX
 	 - 8K for 256Mb and 16K for 512Mb size support.
 
 if OSPI_FLASH_IS25WX
+	config OSPI
+	bool "OSPI Controller Enabled"
+	default y
+	help
+	 Indicate OSPI Controller Enabled.
+
 	config USE_ALIF_HAL_OSPI
 	bool "OSPI driver located in HAL Module"
 	default y
 	help
 	 Enables OSPI driver on Alif SoCs.
+
+	config FLASH_ADDRESS_IN_SINGLE_FIFO_LOCATION
+	bool "IS25WX Flash Setup with Single Address mode"
+	default n
+	help
+	 Enables Single Address mode while setting up IS25Wx Flash.
+
+	config  FLASH_PREPARE_CMD_LEN
+	int "Number of 32 bit buffer provided for prepare command"
+	default 3 if FLASH_ADDRESS_IN_SINGLE_FIFO_LOCATION
+	default 5
+	help
+	  Configure prepare command length
+
 
 endif # OSPI_FLASH_IS25WX
