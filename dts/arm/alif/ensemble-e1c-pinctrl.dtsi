@@ -230,4 +230,22 @@
 				 < PIN_P4_6__LPI2S_WS_B >;
 		};
 	};
+	pinctrl_ospi0:pinctrl_ospi0 {
+		group0 {
+			pinmux = < PIN_P4_2__OSPI0_SCLK_A >,
+				 < PIN_P4_1__OSPI0_RXDS_A >,
+				 < PIN_P0_2__OSPI0_SS0_A >,
+				 < PIN_P3_0__OSPI0_D0_A >,
+				 < PIN_P3_1__OSPI0_D1_A >,
+				 < PIN_P3_2__OSPI0_D2_A >,
+				 < PIN_P3_3__OSPI0_D3_A >,
+				 < PIN_P3_4__OSPI0_D4_A >,
+				 < PIN_P3_5__OSPI0_D5_A >,
+				 < PIN_P3_6__OSPI0_D6_A >,
+				 < PIN_P3_7__OSPI0_D7_A >;
+			read_enable = <0x1>;
+			drive_strength = <12>;
+			slew_rate = <0x1>;
+		};
+	};
 };

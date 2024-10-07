@@ -572,7 +572,33 @@
 			pinctrl-0 = <&pinctrl_lpi2s>;
 			interrupts = <48 3>;
 		};
+		ospi0: ospi0@83000000 {
+			compatible = "snps,designware-ospi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x83000000 0x1000>;
+			pinctrl-0 = <&pinctrl_ospi0>;
+			pinctrl-names = "default";
+			interrupt-parent = <&nvic>;
+			interrupts = <96 3>;
+			aes-reg = <0x83001000 0x100>;
+			bus-speed = <10000000>;
+			cs-pin = <0>;
+			ddr-drive-edge;
+			rx-ds-delay = <11>;
+			tx-fifo-threshold = <64>;
+			status = "disabled";
 
+			ospi_flash: ospi_flash@0 {
+				compatible = "issi,xspi-flash-controller";
+				reg = <0x0>;
+				erase-value = <0xff>;
+				num-of-sector = <8192>;
+				page-size = <256>;
+				sector-size = <4096>;
+				write-block-size = <2>;
+			};
+		};
 		rng: rng {
 			compatible = "alif,secure-enclave-trng";
 			status = "okay";
