@@ -190,6 +190,23 @@
 		};
 	};
 
+	pinctrl_lppdm: pinctrl_lppdm {
+		group0 {
+			pinmux = < PIN_P5_4__LPPDM_C0_C >,
+				 < PIN_P5_5__LPPDM_C1_C >,
+				 < PIN_P7_4__LPPDM_C2_C >,
+				 < PIN_P7_6__LPPDM_C3_C >;
+			read_enable = < 0x0 >;
+		};
+		group1 {
+			pinmux = < PIN_P5_6__LPPDM_D0_C >,
+				 < PIN_P5_7__LPPDM_D1_C >,
+				 < PIN_P7_5__LPPDM_D2_C >,
+				 < PIN_P7_7__LPPDM_D3_C >;
+			read_enable = < 0x1 >;
+		};
+	};
+
 	pinctrl_lpcam: pinctrl_lpcam {
 		/* LP-CAM interface. */
 		group0 {

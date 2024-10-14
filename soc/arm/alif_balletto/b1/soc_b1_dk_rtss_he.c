@@ -31,6 +31,11 @@ static int balletto_b1_dk_rtss_he_init(void)
 	/* select UART[5-0]_SCLK as SYST_PCLK clock. */
 	sys_write32(0xFFFF, 0x4902F008);
 
+	/* Enable LPPDM clock */
+	if (IS_ENABLED(CONFIG_ALIF_PDM)) {
+		sys_set_bits(HE_PER_CLK_EN, BIT(8));
+	}
+
 	/* LPUART settings */
 	if (IS_ENABLED(CONFIG_SERIAL)) {
 		/* Enable clock supply for LPUART */

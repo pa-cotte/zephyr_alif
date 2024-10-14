@@ -79,6 +79,11 @@ static int ensemble_e1c_dk_rtss_he_init(void)
 	/*LP-SPI0 Flex GPIO */
 	sys_write32(0x1, VBAT_GPIO_CTRL_EN);
 
+	/* Enable LPPDM clock */
+	if (IS_ENABLED(CONFIG_ALIF_PDM)) {
+		sys_set_bits(HE_PER_CLK_EN, BIT(8));
+	}
+
 	if (IS_ENABLED(CONFIG_VIDEO)) {
 		/*
 		 * TODO: Check from the DTS property if LP-CAM is enabled and

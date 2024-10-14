@@ -284,6 +284,17 @@
 			status = "okay";
 		};
 
+		lppdm: lppdm@43002000 {
+			compatible = "alif,alif-pdm";
+			reg = <0x43002000 0x1000>;
+			interrupts = <49 3>;
+			pinctrl-0 = < &pinctrl_lppdm >;
+			pinctrl-names = "default";
+			fifo_watermark = <5>;
+			bypass_iir_filter = <1>;
+			status = "disabled";
+		};
+
 		gpio0: gpio@49000000 {
 			compatible = "snps,designware-gpio";
 			reg = <0x49000000 0x1000>;

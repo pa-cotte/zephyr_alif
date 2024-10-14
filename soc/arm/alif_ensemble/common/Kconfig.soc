@@ -34,14 +34,6 @@ config SPI_DW_ENABLE
 	  Enable Designware SPI driver.
 	select HAS_SPI_DW
 
-config ENSEMBLE_PDM
-	bool "Enable PDM in Ensemble family"
-	select AUDIO
-	select AUDIO_CODEC
-	select AUDIO_DMIC
-	help
-	  Enable PDM in Ensemble family
-
 if COUNTER_SNPS_DW
 config LPTIMER0_OUTPUT_TOGGLE
 	bool "LPTimer0 Output Toggle"
