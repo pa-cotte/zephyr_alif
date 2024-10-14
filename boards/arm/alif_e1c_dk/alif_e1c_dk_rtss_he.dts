@@ -11,10 +11,9 @@
 	compatible = "arm,alif-e1c-dk-rtss-he";
 	#address-cells = <1>;
 	#size-cells = <1>;
-};
 
-&{/} {
 	chosen {
+		zephyr,sram = &dtcm;
 		zephyr,console = &uart2;
 		zephyr,shell-uart = &uart2;
 	};
