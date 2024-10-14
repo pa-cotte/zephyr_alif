@@ -308,6 +308,17 @@
 			status = "okay";
 		};
 
+		lpi2c: lpi2c@43009000 {
+			compatible = "alif,lpi2c";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_lpi2c>;
+			reg = <0x43009000 0x100>;
+			interrupts = <47 3>;
+			status = "disabled";
+		};
+
 		adc0: adc0@49020000{
 			compatible = "alif,adc";
 			reg =	<0x49020000 0x1000>,
