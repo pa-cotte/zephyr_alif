@@ -337,7 +337,14 @@ static int spi_dw_dma_transceive(const struct device *dev,
 	if (info->dma_rx.enabled && rx_bufs && rx_bufs->buffers) {
 		reg_data |= DW_SPI_DMACR_RDMAE;
 	}
+
+	/* Disabling the controller */
+	clear_bit_ssienr(info);
+
 	write_dmacr(info, reg_data);
+
+	/* Enabling the controller */
+	set_bit_ssienr(info);
 
 	ret = spi_dw_start_dma_ch(dev);
 	if (ret) {
@@ -382,11 +389,11 @@ dma_out:
 	/* Disabling interrupts */
 	write_imr(info, DW_SPI_IMR_MASK);
 
-	/* Disabling the DMA */
-	write_dmacr(info, 0);
-
 	/* Disabling the controller */
 	clear_bit_ssienr(info);
+
+	/* Disabling the DMA */
+	write_dmacr(info, 0);
 
 	if (!spi_dw_is_slave(spi)) {
 		spi_context_cs_control(&spi->ctx, false);
@@ -572,6 +579,9 @@ static int transceive(const struct device *dev,
 	uint32_t dw_spi_rxftlr_dflt = (info->fifo_depth * 1) / 2;
 	uint32_t reg_data;
 	int ret;
+
+	/* Disabling the controller */
+	clear_bit_ssienr(info);
 
 	spi_context_lock(&spi->ctx, asynchronous, cb, userdata, config);
 
