@@ -12,6 +12,11 @@
 
 #define __MVE_FP                  1U        /* MVE floating point present */
 
+/* Host Base System Control Registers */
+#define HOST_BASE_SYS_CTRL	0x1A010000
+#define HOST_BSYS_PWR_REQ	(HOST_BASE_SYS_CTRL + 0x400)
+#define HOST_BSYS_PWR_ST	(HOST_BASE_SYS_CTRL + 0x404)
+
 /* AON registers. */
 #define AON_BASE                        0x1A604000UL
 #define AON_RTSS_HE_LPUART_CKEN         (AON_BASE + 0x1C)

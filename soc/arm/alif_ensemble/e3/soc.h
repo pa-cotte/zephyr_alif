@@ -6,6 +6,11 @@
 #ifndef _SOC_H_
 #define _SOC_H_
 
+/* Host Base System Control Registers */
+#define HOST_BASE_SYS_CTRL	0x1A010000
+#define HOST_BSYS_PWR_REQ	(HOST_BASE_SYS_CTRL + 0x400)
+#define HOST_BSYS_PWR_ST	(HOST_BASE_SYS_CTRL + 0x404)
+
 /* CGU registers. */
 #define CGU_BASE		0x1A602000
 #define CGU_PLL_CLK_SEL		(CGU_BASE + 0x8)
