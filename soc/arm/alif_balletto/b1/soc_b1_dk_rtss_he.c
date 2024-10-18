@@ -77,6 +77,14 @@ static int balletto_b1_dk_rtss_he_init(void)
 	sys_write32(0x0a004411, 0x1a60a034);
 	sys_write32(0x1e11e701, 0x1a60a030);
 
+	/* RTC Clk Enable */
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(rtc0), okay)
+	sys_write32(0x1, LPRTC0_CLK_EN);
+#endif
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(rtc1), okay)
+	sys_write32(0x1, LPRTC1_CLK_EN);
+#endif
+
 	return 0;
 }
 
