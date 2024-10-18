@@ -19,6 +19,8 @@
 
 /* AON registers. */
 #define AON_BASE                        0x1A604000UL
+#define AON_RTSS_HE_CTRL                (AON_BASE + 0x10)
+#define AON_RTSS_HE_RESET               (AON_BASE + 0x14)
 #define AON_RTSS_HE_LPUART_CKEN         (AON_BASE + 0x1C)
 
 /* VBAT Modules */

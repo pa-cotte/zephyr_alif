@@ -34,3 +34,12 @@ endchoice
 
 config SOC_SERIES_BALLETTO
 	bool "Alif Balletto Series"
+
+if PM
+config PM_RTSS
+	bool
+	default y if (RTSS_HE)
+	help
+		Enable Power Management for RTSS cores
+
+endif
