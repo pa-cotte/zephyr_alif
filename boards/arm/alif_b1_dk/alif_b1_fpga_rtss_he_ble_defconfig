@@ -33,4 +33,3 @@ CONFIG_UART_NS16550_VARIANT_NS16750=y
 
 # Enabled temporarily to work with FPGA. When booting from OSPI1 set to 'n'.
 CONFIG_INIT_ARCH_HW_AT_BOOT=y
-CONFIG_XIP_CODE_ITCM=y
