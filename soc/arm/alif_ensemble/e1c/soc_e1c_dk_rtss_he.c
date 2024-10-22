@@ -14,6 +14,11 @@
 #endif
 #include <zephyr/cache.h>
 
+#ifdef CONFIG_ARM_SECURE_FIRMWARE
+#include "partition_M55_HE.h"
+#endif
+#include "tgu_M55.h"
+
 /**
  * @brief Perform basic hardware initialization at boot.
  *
@@ -102,19 +107,17 @@ static int ensemble_e1c_dk_rtss_he_init(void)
 #if DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers)
 	/* LPTIMER 0 settings */
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay)
-	if (IS_ENABLED(CONFIG_LPTIMER0_OUTPUT_TOGGLE) ||
-			(CONFIG_LPTIMER0_EXT_CLK_FREQ > 0U)) {
+	if (IS_ENABLED(CONFIG_LPTIMER0_OUTPUT_TOGGLE) || (CONFIG_LPTIMER0_EXT_CLK_FREQ > 0U)) {
 		/*
 		 * enable of LPTIMER0 pin by config lpgpio
 		 * pin 0 as Hardware control
 		 */
 		sys_set_bit(LPGPIO_BASE, 0);
 	}
-#endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay) */
+#endif  /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer0), okay) */
 	/* LPTIMER 1 settings */
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay)
-	if (IS_ENABLED(CONFIG_LPTIMER1_OUTPUT_TOGGLE) ||
-			(CONFIG_LPTIMER1_EXT_CLK_FREQ > 0U)) {
+	if (IS_ENABLED(CONFIG_LPTIMER1_OUTPUT_TOGGLE) || (CONFIG_LPTIMER1_EXT_CLK_FREQ > 0U)) {
 		/*
 		 * enable of LPTIMER1 pin by config lpgpio
 		 * pin 1 as Hardware control
@@ -123,6 +126,11 @@ static int ensemble_e1c_dk_rtss_he_init(void)
 	}
 #endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay) */
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers) */
+
+	if (IS_ENABLED(CONFIG_ARM_SECURE_FIRMWARE)) {
+		alif_tz_sau_setup();
+		alif_tgu_setup();
+	}
 
 	return 0;
 }
