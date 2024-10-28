@@ -43,7 +43,6 @@ properties:
 
   cmp-gpios:
     type: phandle-array
-    required: true
     description: |
       An array of chip select GPIOs to use. Each element
       in the array specifies a GPIO. The index in the array

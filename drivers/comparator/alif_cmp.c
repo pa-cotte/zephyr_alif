@@ -421,7 +421,7 @@ struct cmp_driver_api alif_cmp_api = {
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(cmp_reg, DT_DRV_INST(inst)),                    \
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(config_reg, DT_DRV_INST(inst)),                 \
 		.irq_config_func = cmp_config_func_##inst,                                         \
-		.cmp_gpio = GPIO_DT_SPEC_INST_GET(inst, cmp_gpios),                                \
+		.cmp_gpio = GPIO_DT_SPEC_INST_GET_OR(inst, cmp_gpios, {0}),                        \
 		.drv_inst = DT_INST_ENUM_IDX(inst, driver_instance),                               \
 		.positive_inp = DT_INST_ENUM_IDX(inst, positive_input),                            \
 		.negative_inp = DT_INST_ENUM_IDX(inst, negative_input),                            \
