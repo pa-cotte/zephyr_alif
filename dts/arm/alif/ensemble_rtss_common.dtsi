@@ -1467,7 +1467,6 @@
 		negative_input	 = "CMP_NEG_IN0";
 		hysteresis_level = "42mV";
 		interrupts	 = <56 3>;
-		cmp-gpios	 = <&gpio14 4 GPIO_ACTIVE_HIGH>;
 		status = "disabled";
 	};
 
