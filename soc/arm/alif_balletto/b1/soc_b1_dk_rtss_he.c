@@ -71,6 +71,12 @@ static int balletto_b1_dk_rtss_he_init(void)
 #endif /* DT_NODE_HAS_STATUS(DT_NODELABEL(timer1), okay) */
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(snps_dw_timers) */
 
+	/* A0-A4 DCDC fix
+	 * This is needed to clean BLE transmissions.
+	 */
+	sys_write32(0x0a004411, 0x1a60a034);
+	sys_write32(0x1e11e701, 0x1a60a030);
+
 	return 0;
 }
 
