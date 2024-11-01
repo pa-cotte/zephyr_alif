@@ -284,6 +284,13 @@
 			status = "okay";
 		};
 
+		crc: crc@48107000 {
+			compatible = "alif,alif-crc";
+			reg = <0x48107000 0x1000>;
+			crc_algo = "CRC_8_BIT_SIZE";
+			status = "okay";
+		};
+
 		lppdm: lppdm@43002000 {
 			compatible = "alif,alif-pdm";
 			reg = <0x43002000 0x1000>;
