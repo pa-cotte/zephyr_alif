@@ -178,7 +178,7 @@
 				< PIN_P0_6__ANA_S6 >,
 				< PIN_P2_0__ANA_S8 >,
 				< PIN_P2_1__ANA_S9 >,
-				< PIN_P4_4__CMP0_OUT_B >;
+				< PIN_P4_3__CMP0_OUT_B >;
 
 			read_enable = < 0x1 >;
 		};
