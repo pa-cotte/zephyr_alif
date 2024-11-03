@@ -139,7 +139,7 @@ manifest:
       groups:
         - fs
     - name: hal_alif
-      revision: main
+      revision: zas-v1.1
       path: modules/hal/alif
       remote: alif
       groups:
