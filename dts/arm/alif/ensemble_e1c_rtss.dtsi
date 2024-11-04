@@ -635,6 +635,80 @@
 			};
 		};
 
+		cdc200: cdc200@49031000 {
+			compatible = "tes,cdc-2.1";
+			reg = <0x49031000 0x1000>;
+			status = "okay";
+			interrupts =	<333 3>,
+					<334 3>,
+					<335 3>,
+					<336 3>,
+					<337 3>,
+					<338 3>,
+					<339 3>,
+					<340 3>,
+					<341 3>,
+					<342 3>;
+			interrupt-names = "scanline_0",
+					  "scanline_1",
+					  "fifo_warning_0",
+					  "fifo_warning_1",
+					  "fifo_underrun_0",
+					  "fifo_underrun_1",
+					  "bus_error_0",
+					  "bus_error_1",
+					  "reg_reload_0",
+					  "reg_reload_1";
+			pinctrl-0 = < &pinctrl_cdc200 >;
+			pinctrl-names = "default";
+
+			/* Panel Config */
+			width = <800>;
+			height = <480>;
+
+			display-timings {
+				compatible = "zephyr,panel-timing";
+				hsync-len = <1>;
+				hfront-porch = <210>;
+				hback-porch = <46>;
+				vsync-len = <1>;
+				vfront-porch = <22>;
+				vback-porch = <23>;
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <1>;
+				pixelclk-active = <0>;
+				clock-frequency = <62346240>;
+			};
+
+			/* BG Layer color is 24-bit in size. */
+			bg-color = <0x5a5a5a>;
+
+			/* Layer 0 Config */
+			enable-l1 = <1>;
+			pixel-fmt-l1 = "rgb-565";
+			/* Default color for Layer is 32-bit in size. */
+			def-back-color-l1 = <0x00ff00>;
+			win-x0-l1 = <0>;
+			win-y0-l1 = <0>;
+			win-x1-l1 = <300>;
+			win-y1-l1 = <480>;
+			blend-factor1-l1 = <4>;
+			blend-factor2-l1 = <5>;
+			const-alpha-l1 = <0x7f>;
+
+			/* Layer 1 Config */
+			enable-l2 = <1>;
+			pixel-fmt-l2 = "argb-8888";
+			win-x0-l2 = <500>;
+			win-y0-l2 = <0>;
+			win-x1-l2 = <800>;
+			win-y1-l2 = <68>;
+			blend-factor1-l2 = <4>;
+			blend-factor2-l2 = <5>;
+			const-alpha-l2 = <0xaf>;
+		};
+
 		rtc0: lprtc@42000000 {
 			compatible = "snps,dw-apb-rtc";
 			reg = <0x42000000 0x1000>;
@@ -858,6 +932,7 @@
 		zephyr,sram = &dtcm;
 		zephyr,dtcm = &dtcm;
 		zephyr,entropy = &rng;
+		zephyr,display = &cdc200;
 	};
 	wdog0: wdog0@40100000{
 		compatible = "arm,cmsdk-watchdog";

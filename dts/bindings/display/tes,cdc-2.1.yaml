@@ -17,68 +17,6 @@ properties:
   interrupt-names:
     required: true
 
-  hfront-porch:
-    type: int
-    required: true
-    description: Horizontal front porch in display clock cycles
-
-  hback-porch:
-    type: int
-    required: true
-    description: Horizontal back porch in display clock cycles
-
-  hsync-len:
-    type: int
-    required: true
-    description: HSYNC pulse width in display clock cycles
-
-  vfront-porch:
-    type: int
-    required: true
-    description: Vertical front porch in display clock cycles
-
-  vback-porch:
-    type: int
-    required: true
-    description: Vertical back porch in display clock cycles
-
-  vsync-len:
-    type: int
-    required: true
-    description: VSYNC pulse width in display clock cycles
-
-  hsync-active:
-    type: int
-    required: true
-    description:
-      Horizontal synchronization pulse polarity.
-      If HSYNC is active low, use 0,
-      otherwise use 1.
-
-  vsync-active:
-    type: int
-    required: true
-    description:
-      Vertical synchronization pulse polarity.
-      If VSYNC is active low, use 0,
-      otherwise use 1.
-
-  de-active:
-    type: int
-    required: true
-    description:
-      Data Enable pulse polarity.
-      If DE is active low, use 0,
-      otherwise use 1.
-
-  pixelclk-active:
-    type: int
-    required: true
-    description:
-      Pixel Clock pulse polarity.
-      If PCLK is active low, use 0,
-      otherwise use 1.
-
   enable-l1:
     type: int
     required: false
