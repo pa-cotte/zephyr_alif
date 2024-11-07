@@ -33,7 +33,7 @@ endchoice
 config SOC_SERIES_ENSEMBLE
 	bool "Alif Ensemble Series"
 
-if PM
+if (PM || POWEROFF)
 
 config PM_RTSS
 	bool

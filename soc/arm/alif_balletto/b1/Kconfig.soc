@@ -35,7 +35,7 @@ endchoice
 config SOC_SERIES_BALLETTO
 	bool "Alif Balletto Series"
 
-if PM
+if (PM || POWEROFF)
 config PM_RTSS
 	bool
 	default y if (RTSS_HE)
