@@ -885,23 +885,17 @@ static const struct display_driver_api cdc200_display_api = {
 					    COND_CODE_1(DT_INST_PROP(i, pixelclk_active),          \
 							CDC_GLB_CTRL_PCLKPOL, (0)),                \
                                                                                                    \
-				.hsync_len = DT_PROP(DT_CHILD(DT_NODELABEL(cdc200),                \
-							display_timings), hsync_len),              \
-				.vsync_len = DT_PROP(DT_CHILD(DT_NODELABEL(cdc200),                \
-							display_timings), vsync_len),              \
-                                                                                                   \
-				.hbp = DT_PROP(DT_CHILD(DT_NODELABEL(cdc200),                      \
-							display_timings), hback_porch),            \
-				.vbp = DT_PROP(DT_CHILD(DT_NODELABEL(cdc200),                      \
-							display_timings), vback_porch),            \
-                                                                                                   \
+				.hsync_len = DT_INST_PROP(i, hsync_len),                           \
+				.vsync_len = DT_INST_PROP(i, vsync_len),                           \
+				                                                                   \
+				.hbp = DT_INST_PROP(i, hback_porch),                               \
+				.vbp = DT_INST_PROP(i, vback_porch),                               \
+				                                                                   \
 				.active_width = DT_INST_PROP(i, width),                            \
 				.active_height = DT_INST_PROP(i, height),                          \
-                                                                                                   \
-				.hfp = DT_PROP(DT_CHILD(DT_NODELABEL(cdc200),                      \
-							display_timings), hfront_porch),           \
-				.vfp = DT_PROP(DT_CHILD(DT_NODELABEL(cdc200),                      \
-							display_timings), vfront_porch),           \
+				                                                                   \
+				.hfp = DT_INST_PROP(i, hfront_porch),                              \
+				.vfp = DT_INST_PROP(i, vfront_porch),                              \
 			},                                                                         \
 		.layer[0] =                                                                        \
 			{                                                                          \

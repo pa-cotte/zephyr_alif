@@ -665,22 +665,16 @@
 			/* Panel Config */
 			width = <800>;
 			height = <480>;
-
-			display-timings {
-				compatible = "zephyr,panel-timing";
-				hsync-len = <1>;
-				hfront-porch = <210>;
-				hback-porch = <46>;
-				vsync-len = <1>;
-				vfront-porch = <22>;
-				vback-porch = <23>;
-				hsync-active = <0>;
-				vsync-active = <0>;
-				de-active = <1>;
-				pixelclk-active = <0>;
-				clock-frequency = <62346240>;
-			};
-
+			hfront-porch = <210>;
+			hback-porch = <46>;
+			hsync-len = <1>;
+			vfront-porch = <22>;
+			vback-porch = <23>;
+			vsync-len = <1>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			de-active = <1>;
+			pixelclk-active = <0>;
 			/* BG Layer color is 24-bit in size. */
 			bg-color = <0x5a5a5a>;
 
