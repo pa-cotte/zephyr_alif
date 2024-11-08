@@ -103,12 +103,21 @@ choice CSPRNG_GENERATOR_CHOICE
 	default CTR_DRBG_CSPRNG_GENERATOR
 endchoice
 
+config  ROM_ITCM
+	bool "Link code into internal instruction tightly coupled memory (ITCM)"
+	default n if BOOTLOADER_MCUBOOT || MCUBOOT
+	default y
+	help
+	  Enable this to build applications to run from the ITCM.
+
 # Workaround for not being able to have commas in macro arguments
 DT_CHOSEN_Z_FLASH := zephyr,flash
 DT_CHOSEN_Z_ITCM := zephyr,itcm
 
 config FLASH_SIZE
-	default $(dt_chosen_reg_size_int,$(DT_CHOSEN_Z_FLASH),0,K)
+	default $(dt_chosen_reg_size_int,$(DT_CHOSEN_Z_FLASH),0,K) if !ROM_ITCM
+	default $(dt_chosen_reg_size_int,$(DT_CHOSEN_Z_ITCM),0,K) if ROM_ITCM
 
 config FLASH_BASE_ADDRESS
-	default $(dt_chosen_reg_addr_hex,$(DT_CHOSEN_Z_FLASH))
+	default $(dt_chosen_reg_addr_hex,$(DT_CHOSEN_Z_FLASH)) if !ROM_ITCM
+	default $(dt_chosen_reg_addr_hex,$(DT_CHOSEN_Z_ITCM)) if ROM_ITCM
