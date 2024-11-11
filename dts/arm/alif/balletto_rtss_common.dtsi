@@ -256,6 +256,28 @@
 			status = "disabled";
 		};
 
+		uart_hci: uart@4300a000 {
+			compatible = "ns16550";
+			reg = <0x4300a000 0x100>;
+			clock-frequency = <160000000>;
+			interrupts = <50 3>;
+			reg-shift = <2>;
+			current-speed = <1000000>;
+			hw-flow-control;
+			status = "okay";
+		};
+
+		uart_ahi: uart@4300b000 {
+			compatible = "ns16550";
+			reg = <0x4300b000 0x100>;
+			clock-frequency = <160000000>;
+			interrupts = <51 3>;
+			reg-shift = <2>;
+			current-speed = <1000000>;
+			hw-flow-control;
+			status = "okay";
+		};
+
 		lpuart: uart@43008000 {
 			compatible = "ns16550";
 			reg = <0x43008000 0x100>;
@@ -433,28 +455,6 @@
 			#gpio-cells = <2>;
 		};
 
-		uart_hci: uart@4300a000 {
-			compatible = "ns16550";
-			reg = <0x4300a000 0x100>;
-			clock-frequency = <160000000>;
-			interrupts = <50 3>;
-			reg-shift = <2>;
-			current-speed = <1000000>;
-			hw-flow-control;
-			status = "okay";
-		};
-
-		uart_ahi: uart@4300b000 {
-			compatible = "ns16550";
-			reg = <0x4300b000 0x100>;
-			clock-frequency = <160000000>;
-			interrupts = <51 3>;
-			reg-shift = <2>;
-			current-speed = <1000000>;
-			hw-flow-control;
-			status = "okay";
-		};
-
 		ieee802154: ieee802154 {
 			compatible = "alif,ahi-ieee802154";
 			status = "disabled";
@@ -617,6 +617,34 @@
 			status = "disabled";
 		};
 
+		ospi0: ospi0@83000000 {
+			compatible = "snps,designware-ospi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x83000000 0x1000>;
+			pinctrl-0 = <&pinctrl_ospi0>;
+			pinctrl-names = "default";
+			interrupt-parent = <&nvic>;
+			interrupts = <96 3>;
+			aes-reg = <0x83001000 0x100>;
+			bus-speed = <10000000>;
+			cs-pin = <0>;
+			ddr-drive-edge;
+			rx-ds-delay = <11>;
+			tx-fifo-threshold = <64>;
+			status = "disabled";
+
+			ospi_flash: ospi_flash@0 {
+				compatible = "issi,xspi-flash-controller";
+				reg = <0x0>;
+				erase-value = <0xff>;
+				num-of-sector = <8192>;
+				page-size = <256>;
+				sector-size = <4096>;
+				write-block-size = <2>;
+			};
+		};
+
 		rng: rng {
 			compatible = "alif,secure-enclave-trng";
 			status = "okay";
@@ -642,6 +670,7 @@
 			};
 		};
 	};
+
 	clocks {
 		lfrc: lfrc {
 			compatible = "fixed-clock";
