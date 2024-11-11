@@ -85,6 +85,11 @@ static int balletto_b1_dk_rtss_he_init(void)
 	sys_write32(0x1, LPRTC1_CLK_EN);
 #endif
 
+	/*Clock : OSPI */
+	if (IS_ENABLED(CONFIG_OSPI)) {
+		sys_write32(0x1, EXPSLV_OSPI_CTRL);
+	}
+
 	return 0;
 }
 

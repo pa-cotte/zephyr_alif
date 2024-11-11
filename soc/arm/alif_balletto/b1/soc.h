@@ -42,12 +42,13 @@
 
 /* Expansion Slave registers. */
 #define EXPSLV_BASE			0x4902F000
-#define EXPSLV_UART_CTRL	(EXPSLV_BASE + 0x8)
-#define EXPSLV_ADC_CTRL		(EXPSLV_BASE + 0x30)
-#define EXPSLV_CMP_CTRL		(EXPSLV_BASE + 0x38)
+#define EXPSLV_UART_CTRL		(EXPSLV_BASE + 0x8)
+#define EXPSLV_ADC_CTRL			(EXPSLV_BASE + 0x30)
+#define EXPSLV_CMP_CTRL			(EXPSLV_BASE + 0x38)
+#define EXPSLV_OSPI_CTRL		(EXPSLV_BASE + 0x3C)
 
 /* Peripheral CLKCTRL */
-#define CLKCTRL_PER_SLV		0X4902F000UL
+#define CLKCTRL_PER_SLV			0X4902F000UL
 #define SSI_CTRL_EN			(CLKCTRL_PER_SLV + 0x28)
 
 /* M55-HE Config Registers */
@@ -59,7 +60,7 @@
 #define VBAT_GPIO_CTRL_EN		(VBAT_REG_BASE + 0x0)
 
 /* LPGPIO Base address for LPTIMER pin config */
-#define LPGPIO_BASE     0x42002008UL
+#define LPGPIO_BASE			0x42002008UL
 
 /*
  * CMSIS IRQn_Type enum is broken relative to ARM GNU compiler.
