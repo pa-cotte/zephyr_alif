@@ -8,7 +8,9 @@
 #include <zephyr/drivers/video.h>
 
 #if defined(CONFIG_SOC_FAMILY_ENSEMBLE) && !defined(CONFIG_SOC_SERIES_ENSEMBLE_E1C)
-#define SRAM1_BASE 0x08000000  /* CONFIG_SOC_FAMILY_ENSEMBLE */
+#define FB_MEM_BASE 0x08000000  /* CONFIG_SOC_FAMILY_ENSEMBLE */
+#elif defined(CONFIG_SOC_FAMILY_ENSEMBLE) && defined(CONFIG_SOC_SERIES_ENSEMBLE_E1C)
+#define FB_MEM_BASE 0x200a0000  /* CONFIG_SOC_SERIES_ENSEMBLE_E1C */
 #else
 K_HEAP_DEFINE(video_buffer_pool, CONFIG_VIDEO_BUFFER_POOL_SZ_MAX *
 		CONFIG_VIDEO_BUFFER_POOL_NUM_MAX);
@@ -28,12 +30,12 @@ struct video_buffer *video_buffer_alloc(size_t size)
 	struct mem_block *block;
 	int i;
 
-#if defined(CONFIG_SOC_FAMILY_ENSEMBLE) && !defined(CONFIG_SOC_SERIES_ENSEMBLE_E1C)
+#if defined(CONFIG_SOC_FAMILY_ENSEMBLE) || defined(CONFIG_SOC_SERIES_ENSEMBLE_E1C)
 	/*
-	 * TODO: HACK - Allocate everything from the SRAM1_BASE address for
+	 * TODO:  Allocate everything from the available memory space for
 	 * testing.
 	 */
-	static uint32_t base_addr = SRAM1_BASE;
+	static uint32_t base_addr = FB_MEM_BASE;
 #endif /* CONFIG_SOC_FAMILY_ENSEMBLE */
 
 	/* find available video buffer */
@@ -50,7 +52,7 @@ struct video_buffer *video_buffer_alloc(size_t size)
 	}
 
 	/* Alloc buffer memory */
-#if defined(CONFIG_SOC_FAMILY_ENSEMBLE) && !defined(CONFIG_SOC_SERIES_ENSEMBLE_E1C)
+#if defined(CONFIG_SOC_FAMILY_ENSEMBLE) || defined(CONFIG_SOC_SERIES_ENSEMBLE_E1C)
 	/* TODO: HACK - Increment base_address as new allocations come. */
 	block->data = (void *)base_addr;
 	base_addr = base_addr + size;
