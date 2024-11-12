@@ -601,7 +601,7 @@
 			max-xfer-size = <32>;
 			status = "disabled";
 		};
-		spi3: lpspi@43000000 {
+		lpspi0: lpspi0@43000000 {
 			compatible = "snps,designware-spi";
 			#address-cells = <1>;
 			#size-cells = <0>;
