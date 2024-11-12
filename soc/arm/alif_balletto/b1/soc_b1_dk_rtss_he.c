@@ -130,6 +130,26 @@ static int balletto_b1_dk_rtss_he_init(void)
 	sys_write32(0U, M55HE_CFG_HE_DMA_PERIPH);
 	sys_set_bits(M55HE_CFG_HE_DMA_CTRL, BIT(16));
 #endif
+
+	if (IS_ENABLED(CONFIG_VIDEO)) {
+		/*
+		 * TODO: Check from the DTS property if LP-CAM is enabled and
+		 * set clocks only for LP-CAM controller.
+		 */
+		/* Enable LPCAM Controller Peripheral clock. */
+		sys_set_bits(HE_PER_CLK_EN, BIT(12));
+
+		/* Enable LPCAM controller Pixel Clock (XVCLK). */
+		/*
+		 * Not needed for the time being as LP-CAM supports only
+		 * parallel data-mode of cature and only MT9M114 sensor is
+		 * tested with parallel data capture which generates clock
+		 * internally. But can be used to generate XVCLK from LP CAM
+		 * controller.
+		 * sys_write32(0x140001, HE_CAMERA_PIXCLK);
+		 */
+	}
+
 	return 0;
 }
 

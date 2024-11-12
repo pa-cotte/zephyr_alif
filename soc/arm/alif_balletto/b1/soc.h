@@ -55,6 +55,7 @@
 /* M55-HE Config Registers */
 #define M55HE_CFG_BASE			0x43007000UL
 #define HE_PER_CLK_EN			(M55HE_CFG_BASE + 0x10)
+#define HE_CAMERA_PIXCLK		(M55HE_CFG_BASE + 0x20)
 
 /* VBAT Modules */
 #define VBAT_REG_BASE			0x1A609000UL

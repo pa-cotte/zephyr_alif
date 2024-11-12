@@ -323,4 +323,22 @@
 			slew_rate = <0x1>;
 		};
 	};
+
+	pinctrl_lpcam: pinctrl_lpcam {
+		/* LP-CAM interface. */
+		group0 {
+			pinmux = < PIN_P8_4__LPCAM_VSYNC_C >,
+				 < PIN_P8_5__LPCAM_HSYNC_C >,
+				 < PIN_P8_6__LPCAM_PCLK_C >,
+				 < PIN_P8_7__LPCAM_XVCLK_C >,
+				 < PIN_P9_0__LPCAM_D0_C >,
+				 < PIN_P9_1__LPCAM_D1_C >,
+				 < PIN_P7_2__LPCAM_D2_B >,
+				 < PIN_P7_3__LPCAM_D3_B >,
+				 < PIN_P7_4__LPCAM_D4_B >,
+				 < PIN_P7_5__LPCAM_D5_B >,
+				 < PIN_P7_6__LPCAM_D6_B >,
+				 < PIN_P7_7__LPCAM_D7_B >;
+		};
+	};
 };
