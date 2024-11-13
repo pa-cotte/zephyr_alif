@@ -867,8 +867,15 @@
 		zephyr,entropy = &rng;
 	};
 
+	wdog0: wdog0@40100000{
+		compatible = "arm,cmsdk-watchdog";
+		reg = <0x40100000 0x1000>;
+		clocks = <&syst_core>;
+		status = "okay";
+	};
 	aliases {
 		led0 = &aled0;
+		watchdog0 = &wdog0;
 	};
 	leds {
 		compatible = "gpio-leds";
