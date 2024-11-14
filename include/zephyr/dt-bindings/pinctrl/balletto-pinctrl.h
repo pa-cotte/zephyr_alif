@@ -778,3 +778,18 @@
 #define	PIN_P9_7__LPCAM_D7_C		PINMUX_PIN(PIN_P9_7, 3)
 #define	PIN_P9_7__SD_D7_C		PINMUX_PIN(PIN_P9_7, 4)
 
+/*
+ * LPGPIO Port(P15) PinMux Control
+ * - LPGPIO port has separate pinmux in which
+ *    there are only LPGPIO pins (no other pin multiplexing)
+ *    with pin-pad control.
+ * - Used "PINMUX_PIN" macro as below:
+ *    bits 0...2 denote LPGPIO port pin number and
+ *    bits 3...9 denote LPGPIO port(P15).
+ */
+#define	PORT_P15			120
+#define	LPGPIO_PORT			PORT_P15
+#define	PIN_P15_0			0
+#define	PIN_P15_1			1
+#define	PIN_P15_0__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_0)
+#define	PIN_P15_1__LPGPIO		PINMUX_PIN(LPGPIO_PORT, PIN_P15_1)

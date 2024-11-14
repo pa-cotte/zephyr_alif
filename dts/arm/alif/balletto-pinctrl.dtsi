@@ -6,7 +6,14 @@
 &{/soc} {
 	pinctrl: pin-controller@1a603000 {
 		compatible = "alif,pinctrl";
-		reg =   <0x1A603000 0x00001000>;
+		reg = <0x1A603000 0x00001000>, <0x42007000 0x00001000>;
+		reg-names = "pinctrl", "lpgpio_pinctrl";
+		/* Note:
+		 * "lpgpio_pinctrl" reg must be added,
+		 *   if pinctrl is added into "lpgpio" node
+		 *   otherwise it will give hard-fault
+		 *   (due to invalid pinmux address in "pinctrl_configure_pin" api).
+		 */
 	};
 };
 
@@ -339,6 +346,149 @@
 				 < PIN_P7_5__LPCAM_D5_B >,
 				 < PIN_P7_6__LPCAM_D6_B >,
 				 < PIN_P7_7__LPCAM_D7_B >;
+		};
+	};
+
+	pinctrl_gpio0:pinctrl_gpio0 {
+		group0 {
+			pinmux = < PIN_P0_0__GPIO >,
+				 < PIN_P0_1__GPIO >,
+				 < PIN_P0_2__GPIO >,
+				 < PIN_P0_3__GPIO >,
+				 < PIN_P0_4__GPIO >,
+				 < PIN_P0_5__GPIO >,
+				 < PIN_P0_6__GPIO >,
+				 < PIN_P0_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio1:pinctrl_gpio1 {
+		group0 {
+			pinmux = < PIN_P1_0__GPIO >,
+				 < PIN_P1_1__GPIO >,
+				 < PIN_P1_2__GPIO >,
+				 < PIN_P1_3__GPIO >,
+				 < PIN_P1_4__GPIO >,
+				 < PIN_P1_5__GPIO >,
+				 < PIN_P1_6__GPIO >,
+				 < PIN_P1_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio2:pinctrl_gpio2 {
+		group0 {
+			pinmux = < PIN_P2_0__GPIO >,
+				 < PIN_P2_1__GPIO >,
+				 < PIN_P2_2__GPIO >,
+				 < PIN_P2_3__GPIO >,
+				 < PIN_P2_4__GPIO >,
+				 < PIN_P2_5__GPIO >,
+				 < PIN_P2_6__GPIO >,
+				 < PIN_P2_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio3:pinctrl_gpio3 {
+		group0 {
+			pinmux = < PIN_P3_0__GPIO >,
+				 < PIN_P3_1__GPIO >,
+				 < PIN_P3_2__GPIO >,
+				 < PIN_P3_3__GPIO >,
+				 < PIN_P3_4__GPIO >,
+				 < PIN_P3_5__GPIO >,
+				 < PIN_P3_6__GPIO >,
+				 < PIN_P3_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio4:pinctrl_gpio4 {
+		group0 {
+			pinmux = < PIN_P4_0__GPIO >,
+				 < PIN_P4_1__GPIO >,
+				 < PIN_P4_2__GPIO >,
+				 < PIN_P4_3__GPIO >,
+				 < PIN_P4_4__GPIO >,
+				 < PIN_P4_5__GPIO >,
+				 < PIN_P4_6__GPIO >,
+				 < PIN_P4_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio5:pinctrl_gpio5 {
+		group0 {
+			pinmux = < PIN_P5_0__GPIO >,
+				 < PIN_P5_1__GPIO >,
+				 < PIN_P5_2__GPIO >,
+				 < PIN_P5_3__GPIO >,
+				 < PIN_P5_4__GPIO >,
+				 < PIN_P5_5__GPIO >,
+				 < PIN_P5_6__GPIO >,
+				 < PIN_P5_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio6:pinctrl_gpio6 {
+		group0 {
+			pinmux = < PIN_P6_0__GPIO >,
+				 < PIN_P6_1__GPIO >,
+				 < PIN_P6_2__GPIO >,
+				 < PIN_P6_3__GPIO >,
+				 < PIN_P6_4__GPIO >,
+				 < PIN_P6_5__GPIO >,
+				 < PIN_P6_6__GPIO >,
+				 < PIN_P6_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio7:pinctrl_gpio7 {
+		group0 {
+			pinmux = < PIN_P7_0__GPIO >,
+				 < PIN_P7_1__GPIO >,
+				 < PIN_P7_2__GPIO >,
+				 < PIN_P7_3__GPIO >,
+				 < PIN_P7_4__GPIO >,
+				 < PIN_P7_5__GPIO >,
+				 < PIN_P7_6__GPIO >,
+				 < PIN_P7_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio8:pinctrl_gpio8 {
+		group0 {
+			pinmux = < PIN_P8_0__GPIO >,
+				 < PIN_P8_1__GPIO >,
+				 < PIN_P8_2__GPIO >,
+				 < PIN_P8_3__GPIO >,
+				 < PIN_P8_4__GPIO >,
+				 < PIN_P8_5__GPIO >,
+				 < PIN_P8_6__GPIO >,
+				 < PIN_P8_7__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_gpio9:pinctrl_gpio9 {
+		group0 {
+			pinmux = < PIN_P9_0__GPIO >,
+				 < PIN_P9_1__GPIO >,
+				 < PIN_P9_2__GPIO >;
+			read_enable = < 0x1 >;
+		};
+	};
+
+	pinctrl_lpgpio:pinctrl_lpgpio {
+		group0 {
+			pinmux = < PIN_P15_0__LPGPIO >,
+				 < PIN_P15_1__LPGPIO >;
+			read_enable = < 0x1 >;
 		};
 	};
 };
