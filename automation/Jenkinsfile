@@ -21,7 +21,7 @@ pipeline {
                         BRANCH="main"
                      fi
                      export DOCKER_CMDS="source /opt/*/environment* ; \
-west init -m 'org-115832732@github.com:AlifSemiDev/zephyr_alif.git' \
+west init -m 'https://github.com/alifsemi/zephyr_alif.git' \
 --mr ${BRANCH} --mf west.yml ; cd zephyr ; west update ; \
 if [ \"x${BRANCH}\" = \"xmain\" ] ; then rm -rf build ; \
 west build -b alif_e3_dk_rtss_hp samples/hello_world ; \

@@ -31,7 +31,7 @@ def zephyr_init() {
         sh """#!/bin/bash -xe
             . venv/bin/activate
             eval `ssh-agent -s`
-            west init zephyrproject -m org-115832732@github.com:AlifSemiDev/zephyr_alif.git
+            west init zephyrproject -m https://github.com/alifsemi/zephyr_alif.git
             cd zephyrproject/
             west update
             cd zephyr

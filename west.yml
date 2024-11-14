@@ -24,7 +24,7 @@ manifest:
     - name: babblesim
       url-base: https://github.com/BabbleSim
     - name: alif
-      url-base: org-115832732@github.com:AlifSemiDev
+      url-base: https://github.com/alifsemi
 
   group-filter: [-babblesim, -optional]
 
@@ -139,7 +139,7 @@ manifest:
       groups:
         - fs
     - name: hal_alif
-      revision: zas-v1.0.0
+      revision: main
       path: modules/hal/alif
       remote: alif
       groups:
