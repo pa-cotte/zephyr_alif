@@ -232,3 +232,11 @@ properties:
     required: false
     default: 0xff
     description: Constant alpha to be used for layer 2.
+
+  clock-frequency:
+    type: int
+    description: |
+      Pixel clock for display controller in Hz. Must be at least as large as:
+      (height + vsync-len + vfront-porch + vback-porch) *
+      (width + hsync-len + hfront-porch + hback-porch) *
+      desired frame rate

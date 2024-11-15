@@ -87,3 +87,10 @@ properties:
       - "vertical-bit-error-rate"
     description:
       Video pattern generator for testing MIPI-DSI without DPI inputs.
+
+  panel-max-lane-bandwidth:
+    type: int
+    default: 500000000
+    description:
+      The lane bandwidth that a panel supports. All the calculations for DPHY
+      PLL should be limited to half of the above value for a panel.

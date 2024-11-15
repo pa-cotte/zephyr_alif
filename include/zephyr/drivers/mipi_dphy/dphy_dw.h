@@ -17,7 +17,7 @@ extern "C" {
 
 /* Utility functions. */
 #define CEIL(x) ((x) > (uint32_t)(x) ? (uint32_t) (x+1) : (uint32_t) (x))
-#define ROUND(x) (uint32_t)((x) + 0.5f)
+#define ROUND(x) (uint32_t)((double)(x) + 0.5)
 
 struct dphy_dsi_settings {
 	/* Number of lanes in D-PHY. */

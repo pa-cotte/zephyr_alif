@@ -174,19 +174,26 @@ int dw_calc_clocks(const struct device *dev,
 	const struct mipi_dsi_timings *timings = &mdev->timings;
 	struct dsi_dw_data *data = dev->data;
 	struct dphy_dsi_settings *phy = &data->phy;
+	const struct dsi_dw_config *config = dev->config;
 
 	uint32_t dpi_pix_clk;
 	uint8_t esc_clk_div;
+#if !DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
 	uint32_t htotal;
 	uint32_t vtotal;
+#endif /* !DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 	float hs_bit_clk;
 	int ret;
 
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+	ret = clock_control_get_rate(config->clk_dev, config->pix_cid, &dpi_pix_clk);
+#else
 	htotal = timings->hsync + timings->hbp + timings->hactive +
 		timings->hfp;
 	vtotal = timings->vsync + timings->vbp + timings->vactive +
 		timings->vfp;
-	dpi_pix_clk = htotal * vtotal * 60;
+	dpi_pix_clk = htotal * vtotal * DPI_FRAME_RATE;
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 
 	if (mdev->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) {
 		LOG_DBG("Burst mode of clock calculation");
@@ -205,6 +212,7 @@ int dw_calc_clocks(const struct device *dev,
 		 * as per the above calculations.
 		 */
 		hs_bit_clk *= DSI_HS_CLK_SCALING_FACTOR;
+		LOG_DBG("YKA:: hs_bit_clk: %f", (double)hs_bit_clk);
 	} else {
 		float tmp;
 
@@ -225,11 +233,9 @@ int dw_calc_clocks(const struct device *dev,
 		hs_bit_clk += tmp;
 	}
 
-	/* Clamp the Datarate to maximum panel supported in 1/2-lane cases. */
-	if ((mdev->data_lanes == 1) && (hs_bit_clk > PANEL_MAX_BW_1LANE))
-		hs_bit_clk = PANEL_MAX_BW_1LANE;
-	else if ((mdev->data_lanes == 2) && (hs_bit_clk > PANEL_MAX_BW_2LANE))
-		hs_bit_clk = PANEL_MAX_BW_2LANE;
+	/* Clamp the Datarate to maximum panel supported. */
+	if (hs_bit_clk > config->panel_max_lane_bw)
+		hs_bit_clk = config->panel_max_lane_bw;
 
 	phy->pll_fout = ((uint32_t) hs_bit_clk) >> 1;
 	LOG_DBG("PLL Fout requested - %d", phy->pll_fout);
@@ -245,7 +251,7 @@ int dw_calc_clocks(const struct device *dev,
 	 * scale = hs_lane_byte_clk/dpi_pix_clk
 	 *	 = hs_bit_clk/(8 * dpi_pix_clk)
 	 */
-	data->clk_scale = ((float)(phy->pll_fout >> 2)) / dpi_pix_clk;
+	data->clk_scale = ((double)(phy->pll_fout >> 2)) / dpi_pix_clk;
 	data->dpi_pix_clk = dpi_pix_clk;
 	data->lane_byte_clk = phy->pll_fout >> 2;
 
@@ -287,7 +293,7 @@ int dw_calc_clocks(const struct device *dev,
 	LOG_DBG("pixel clock calculated: %d", data->dpi_pix_clk);
 	LOG_DBG("lane byte clock calculated: %d", data->lane_byte_clk);
 	LOG_DBG("PLL Fout: %d", phy->pll_fout);
-	LOG_DBG("Lane byte clock / pixel clock ratio: %d",
+	LOG_DBG("Lane byte clock / pixel clock ratio: %f",
 			data->clk_scale);
 	LOG_DBG("Escape clk value: %d", data->lane_byte_clk/esc_clk_div);
 	return 0;
@@ -396,7 +402,7 @@ void dw_setup_timeout(const struct device *dev,
 
 	/* Time in lanebyteclocks to send 1 line + 15% of pixel data */
 	hstx_to = (timings->hsync + timings->hbp + timings->hfp +
-			timings->hactive) * 1.15f * data->clk_scale;
+			timings->hactive) * 1.15 * data->clk_scale;
 
 	if (!(mdev->mode_flags & MIPI_DSI_MODE_VIDEO_BURST)) {
 		/*
@@ -791,6 +797,9 @@ static int dsi_dw_attach(const struct device *dev,
 	phy->num_lanes = mdev->data_lanes;
 	data->mode_flags = mdev->mode_flags;
 
+	LOG_DBG("Number of lanes: %d", data->phy.num_lanes);
+	LOG_DBG("DSI mode_flags: 0x%x", data->mode_flags);
+
 	dsi_dw_pwr_down(regs);
 	ret = dw_calc_clocks(dev, mdev);
 	if (ret)
@@ -1104,43 +1113,77 @@ static void dsi_dw_irq(const struct device *dev)
 		DSI_INT_0_ACK_WITH_ERR_3 | DSI_INT_0_ACK_WITH_ERR_2 |
 		DSI_INT_0_ACK_WITH_ERR_1 | DSI_INT_0_ACK_WITH_ERR_0;
 	if (irq_st0 & mask)
-		LOG_ERR("ACK Error");
+		LOG_ERR("ACK Error. irq_st0 - 0x%x", irq_st0);
 
 	mask = DSI_INT_0_DPHY_ERR_4 | DSI_INT_0_DPHY_ERR_3 |
 		DSI_INT_0_DPHY_ERR_2 | DSI_INT_0_DPHY_ERR_1 |
 		DSI_INT_0_DPHY_ERR_0;
 	if (irq_st0 & mask)
-		LOG_ERR("D-PHY Error");
+		LOG_ERR("D-PHY Error. irq_st0 - 0x%x", irq_st0);
 
 	mask = DSI_INT_1_TO_HP_TX | DSI_INT_1_TO_LP_RX |
 		DSI_INT_1_ECC_SINGLE_ERR | DSI_INT_1_ECC_MULTI_ERR |
 		DSI_INT_1_CRC_ERR | DSI_INT_1_PKT_SIZE_ERR | DSI_INT_1_EOTP_ERR;
 	if (irq_st1 & mask)
-		LOG_ERR("DSI PKT Error");
+		LOG_ERR("DSI PKT Error. irq_st1 - 0x%x", irq_st1);
 
 	mask = DSI_INT_1_DPI_PLD_WR_ERR | DSI_INT_1_GEN_CMD_WR_ERR |
 		DSI_INT_1_GEN_PLD_WR_ERR | DSI_INT_1_GEN_PLD_SEND_ERR |
 		DSI_INT_1_GEN_PLD_RD_ERR | DSI_INT_1_GEN_PLD_RECEV_ERR |
 		DSI_INT_1_DPI_BUFF_PLD_UNDER;
 	if (irq_st1 & mask)
-		LOG_ERR("DSI DPI Error Event");
+		LOG_ERR("DSI DPI Error Event. irq_st1 - 0x%x", irq_st1);
 }
+
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+static int dsi_dw_enable_clocks(const struct device *dev)
+{
+	const struct dsi_dw_config *config = dev->config;
+	int ret;
+
+	/* Enable DSI clock. */
+	ret = clock_control_on(config->clk_dev, config->dsi_cid);
+	if (ret) {
+		LOG_ERR("Enable DSI clock source for APB interface failed! ret - %d", ret);
+		return ret;
+	}
+
+	/* Enable TX-DPHY clock. */
+	ret = clock_control_on(config->clk_dev, config->txdphy_cid);
+	if (ret) {
+		LOG_ERR("Enable DSI clock source for APB interface failed! ret - %d", ret);
+		return ret;
+	}
+
+	return 0;
+
+}
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 
 static int dsi_dw_init(const struct device *dev)
 {
 	const struct dsi_dw_config *config = dev->config;
 	struct dsi_dw_data *data = dev->data;
+	int ret = 0;
 
 	DEVICE_MMIO_MAP(dev, K_MEM_CACHE_NONE);
+
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+	ret = dsi_dw_enable_clocks(dev);
+	if (ret) {
+		LOG_ERR("DSI clock enable failed! Exiting! ret - %d", ret);
+		return ret;
+	}
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 
 	config->irq_config_func(dev);
 
 	LOG_DBG("MMIO address: 0x%x", (uint32_t) DEVICE_MMIO_GET(dev));
 
 	LOG_DBG("irq - %d", config->irq);
-	LOG_DBG("Number of lanes: %d", data->phy.num_lanes);
 	LOG_DBG("Video pattern generator: %d", config->dpi.vpg_pattern);
 	LOG_DBG("Packet size - %d", data->pkt_size);
+	LOG_DBG("Panel Max Lane BW - %d", config->panel_max_lane_bw);
 	return 0;
 }
 
@@ -1149,11 +1192,22 @@ static struct mipi_dsi_driver_api dsi_dw_api = {
 	.transfer = dsi_dw_transfer,
 };
 
-#define ALIF_MIPI_DSI_DEVICE(i)									\
+#define MIPI_DSI_GET_CLK(i)                                                                     \
+	IF_ENABLED(DT_INST_NODE_HAS_PROP(i, clocks),                                            \
+		(.clk_dev = DEVICE_DT_GET(DT_INST_CLOCKS_CTLR(i)),                              \
+		 .pix_cid = (clock_control_subsys_t)DT_INST_CLOCKS_CELL_BY_NAME(i,              \
+			 pixel_clk, clkid),                                                     \
+		 .dsi_cid = (clock_control_subsys_t)DT_INST_CLOCKS_CELL_BY_NAME(i,              \
+			 dsi_clk_en, clkid),                                                    \
+		 .txdphy_cid = (clock_control_subsys_t)DT_INST_CLOCKS_CELL_BY_NAME(i,           \
+			 tx_dphy_clk, clkid),))
+
+#define ALIF_MIPI_DSI_DEVICE(i)                                                                 \
 	static void dsi_dw_config_func_##i(const struct device *dev);				\
 	static const struct dsi_dw_config config_##i = {					\
 		DEVICE_MMIO_ROM_INIT(DT_DRV_INST(i)),						\
 												\
+		MIPI_DSI_GET_CLK(i)                                                             \
 		.tx_dphy = DEVICE_DT_GET_OR_NULL(DT_INST_PHANDLE(i, phy_if)),			\
 		.irq = DT_INST_IRQN(i),								\
 		.irq_config_func = dsi_dw_config_func_##i,					\
@@ -1184,6 +1238,7 @@ static struct mipi_dsi_driver_api dsi_dw_api = {
 		.ecc_recv_en = DT_INST_PROP(i, ecc_recv_en),					\
 		.crc_recv_en = DT_INST_PROP(i, crc_recv_en),					\
 		.frame_ack_en = DT_INST_PROP(i, frame_ack_en),					\
+		.panel_max_lane_bw = DT_INST_PROP(i, panel_max_lane_bandwidth),                 \
 	};											\
 	static struct dsi_dw_data data_##i = {							\
 		.pkt_size = COND_CODE_1(DT_INST_NODE_HAS_PROP(i, vid_pkt_size),			\

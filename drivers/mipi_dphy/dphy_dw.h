@@ -8,6 +8,7 @@
 
 #include <zephyr/device.h>
 #include <zephyr/sys/util.h>
+#include <zephyr/drivers/clock_control.h>
 
 /* DPHY TX Regs */
 #define dphy4txtester_DIG_RDWR_TX_SYS_3			0x004
@@ -231,6 +232,11 @@ struct dphy_dw_config {
 	DEVICE_MMIO_NAMED_ROM(expmst_reg);
 	DEVICE_MMIO_NAMED_ROM(dsi_reg);
 	DEVICE_MMIO_NAMED_ROM(csi_reg);
+
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+	const struct device *clk_dev;
+	clock_control_subsys_t pllref_cid;
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 
 	uint32_t ref_frequency;
 	uint32_t cfg_clk_frequency;

@@ -624,13 +624,40 @@ int dphy_dw_slave_setup(const struct device *dev, struct dphy_csi2_settings *phy
 	return 0;
 }
 
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+static int dphy_dw_enable_clocks(const struct device *dev)
+{
+	const struct dphy_dw_config *config = dev->config;
+	int ret;
+
+	/* Enable TX-DPHY clock. */
+	ret = clock_control_on(config->clk_dev, config->pllref_cid);
+	if (ret) {
+		LOG_ERR("Enable DSI clock source for APB interface failed! ret - %d", ret);
+		return ret;
+	}
+
+	return 0;
+
+}
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
+
 static int dphy_dw_init(const struct device *dev)
 {
 	const struct dphy_dw_config *config = dev->config;
+	int ret = 0;
 
 	DEVICE_MMIO_NAMED_MAP(dev, expmst_reg, K_MEM_CACHE_NONE);
 	DEVICE_MMIO_NAMED_MAP(dev, dsi_reg, K_MEM_CACHE_NONE);
 	DEVICE_MMIO_NAMED_MAP(dev, csi_reg, K_MEM_CACHE_NONE);
+
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+	ret = dphy_dw_enable_clocks(dev);
+	if (ret) {
+		LOG_ERR("DSI clock enable failed! Exiting! ret - %d", ret);
+		return ret;
+	}
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 
 	LOG_DBG("MMIO Address expmst: 0x%08x", (uint32_t)DEVICE_MMIO_NAMED_GET(dev, expmst_reg));
 	LOG_DBG("MMIO Address dsi: 0x%08x", (uint32_t)DEVICE_MMIO_NAMED_GET(dev, dsi_reg));
@@ -640,11 +667,20 @@ static int dphy_dw_init(const struct device *dev)
 	return 0;
 }
 
+#define MIPI_DPHY_GET_CLK(i)                                                                       \
+	IF_ENABLED(DT_INST_NODE_HAS_PROP(i, clocks),                                               \
+		(.clk_dev = DEVICE_DT_GET(DT_INST_CLOCKS_CTLR(i)),                                 \
+		 .pllref_cid = (clock_control_subsys_t)DT_INST_CLOCKS_CELL_BY_NAME(i,              \
+			 pllref_clk, clkid),))
+
+
 #define ALIF_MIPI_DPHY_DEVICE(i)                                                                   \
 	static const struct dphy_dw_config config_##i = {                                          \
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(expmst_reg, DT_DRV_INST(i)),                    \
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(dsi_reg, DT_DRV_INST(i)),                       \
 		DEVICE_MMIO_NAMED_ROM_INIT_BY_NAME(csi_reg, DT_DRV_INST(i)),                       \
+                                                                                                   \
+		MIPI_DPHY_GET_CLK(i)                                                               \
                                                                                                    \
 		.ref_frequency = DT_INST_PROP(i, ref_frequency),                                   \
 		.cfg_clk_frequency = DT_INST_PROP(i, cfg_clk_frequency),                           \

@@ -7,6 +7,7 @@
 #define _DSI_DW_H_
 
 #include <zephyr/device.h>
+#include <zephyr/drivers/clock_control.h>
 
 #define DSI_VERSION		0x00 /* HW Version Register */
 #define DSI_PWR_UP		0x04 /* Power-up Control Register */
@@ -384,10 +385,6 @@
 /*
  * MIPI-DSI Host controller configurations
  */
-/* Maximum Datarate supported by panel in 1-Lane and 2-Lane cases.  */
-#define PANEL_MAX_BW_1LANE			850000000
-#define PANEL_MAX_BW_2LANE			500000000
-
 /* PHY parameters. */
 #define PHY_STOP_WAIT_TIME			0x20
 
@@ -450,7 +447,14 @@ struct dsi_dw_config {
 	void (*irq_config_func)(const struct device *dev);
 
 	uint32_t irq;
+	uint32_t panel_max_lane_bw;
 	struct dpi_config dpi;
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+	const struct device *clk_dev;
+	clock_control_subsys_t dsi_cid;
+	clock_control_subsys_t pix_cid;
+	clock_control_subsys_t txdphy_cid;
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 
 	/* Allow EoTp Transmission/Reception in HS/LP mode. */
 	uint32_t eotp_lp_tx : 1;
@@ -468,7 +472,7 @@ struct dsi_dw_data {
 	struct dphy_dsi_settings phy;
 
 	/* Cached Clock values. */
-	uint32_t clk_scale;
+	double clk_scale;
 	uint32_t dpi_pix_clk;
 	uint32_t lane_byte_clk;
 	uint8_t esc_clk_div;

@@ -7,6 +7,7 @@
 #define _DISPLAY_CDC200_H_
 
 #include <zephyr/device.h>
+#include <zephyr/drivers/clock_control.h>
 
 /* Global Registers */
 #define CDC_HW_VER		0x00 /* HW Version Register */
@@ -309,6 +310,12 @@ struct cdc200_config {
 
 	struct cdc200_panel_config panel_cfg;
 	struct cdc200_layer_config layer[CDC_LAYER_MAX];
+
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+	const struct device *clk_dev;
+	clock_control_subsys_t pix_cid;
+	clock_control_subsys_t dpi_cid;
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 };
 
 /*
@@ -321,6 +328,8 @@ struct cdc200_data {
 
 	const struct device *dev;
 	uint8_t layer_count;
+
+	uint32_t clk_freq;
 
 	uint8_t *curr_fb[CDC_LAYER_MAX];
 	uint8_t *next_fb[CDC_LAYER_MAX];

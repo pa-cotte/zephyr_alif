@@ -665,10 +665,87 @@ static void cdc200_isr(const struct device *dev)
 	}
 }
 
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+static int cdc200_setup_pixel_clock(const struct device *dev)
+{
+	const struct cdc200_config *config = dev->config;
+	struct cdc200_data *data = dev->data;
+	int ret;
+
+	ret = clock_control_configure(config->clk_dev, config->pix_cid, NULL);
+	if (ret) {
+		LOG_ERR("Pixel-CLK source configuration failed! ret - %d", ret);
+		return ret;
+	}
+
+	ret = clock_control_set_rate(config->clk_dev, config->pix_cid,
+			(clock_control_subsys_rate_t)data->clk_freq);
+	if (ret) {
+		LOG_ERR("Pixel-CLK set frequency failed! ret - %d", ret);
+		return ret;
+	}
+
+	ret = clock_control_get_rate(config->clk_dev, config->pix_cid, &data->clk_freq);
+	if (!ret) {
+		LOG_DBG("Pixel-CLK set frequency: %d", data->clk_freq);
+	} else {
+		LOG_ERR("Pixel-CLK get updated frequency failed! ret - %d", ret);
+		return ret;
+	}
+
+	ret = clock_control_on(config->clk_dev, config->pix_cid);
+	if (ret) {
+		LOG_ERR("Enable Pixel-CLK failed! ret - %d", ret);
+		return ret;
+	}
+
+	return 0;
+
+}
+
+static int cdc200_setup_clocks(const struct device *dev)
+{
+	const struct cdc200_config *config = dev->config;
+	int ret;
+
+	/* Enable DPI clock. */
+	ret = clock_control_on(config->clk_dev, config->dpi_cid);
+	if (ret) {
+		LOG_ERR("Enable DPI clock source for APB & AXI interface failed! ret - %d", ret);
+		return ret;
+	}
+
+	/* Setup and Enable Pixel clock. */
+	ret = cdc200_setup_pixel_clock(dev);
+	if (ret) {
+		return ret;
+	}
+
+	return 0;
+}
+
+static uint32_t cdc200_pixel_clock_valid(const struct device *dev)
+{
+	const struct cdc200_config *config = dev->config;
+	const struct cdc200_panel_config *pcfg = &config->panel_cfg;
+	struct cdc200_data *data = dev->data;
+	uint32_t htotal = 0;
+	uint32_t vtotal = 0;
+
+	htotal = (pcfg->hsync_len + pcfg->hbp + pcfg->hfp + pcfg->active_width);
+	vtotal = (pcfg->vsync_len + pcfg->vbp + pcfg->vfp + pcfg->active_height);
+
+	LOG_DBG("Min pixel clock for 1 FPS required: %d", htotal * vtotal);
+	LOG_DBG("Expected FPS: %f", (double)data->clk_freq / (htotal * vtotal));
+	return ((htotal * vtotal) <= data->clk_freq);
+}
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
+
 /* Init function */
 static int cdc200_init(const struct device *dev)
 {
 	const struct cdc200_config *config = dev->config;
+	const struct cdc200_panel_config *pcfg = &config->panel_cfg;
 	const struct cdc200_layer_config *layer = NULL;
 	struct cdc200_data *data = dev->data;
 	int ret;
@@ -677,6 +754,18 @@ static int cdc200_init(const struct device *dev)
 	LOG_DBG("MMIO address - 0x%x", (uint32_t)DEVICE_MMIO_GET(dev));
 
 	data->dev = dev;
+
+#if DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks)
+	if (!cdc200_pixel_clock_valid(dev)) {
+		LOG_ERR("Incorrect Pixel Clock value supplied in DTS.");
+		return -EINVAL;
+	}
+	ret = cdc200_setup_clocks(dev);
+	if (ret) {
+		LOG_ERR("CDC200 Clock enable failed! Exiting!");
+		return ret;
+	}
+#endif /* DT_ANY_INST_HAS_PROP_STATUS_OKAY(clocks) */
 
 #if !defined(CONFIG_MIPI_DSI)
 	ret = pinctrl_apply_state(config->pcfg, PINCTRL_STATE_DEFAULT);
@@ -699,6 +788,9 @@ static int cdc200_init(const struct device *dev)
 	LOG_DBG("\tIRQ number for Scanline interrupt - %d", config->irq);
 	LOG_DBG("\tEnabled Layers - %d", data->layer_count);
 	LOG_DBG("\tBackground color - 0x%06x", config->bg_color);
+	LOG_DBG("\thtimings(%d, %d, %d, %d)\tvtimings(%d, %d, %d, %d)",
+			pcfg->hsync_len, pcfg->hbp, pcfg->active_width, pcfg->hfp,
+			pcfg->vsync_len, pcfg->vbp, pcfg->active_height, pcfg->vfp);
 
 	LOG_DBG("Layer Parameters.");
 	for (uint32_t i = CDC_LAYER_1; i < CDC_LAYER_MAX; i++) {
@@ -859,6 +951,15 @@ static const struct display_driver_api cdc200_display_api = {
 #define CDC200_PINCTRL_INIT(n) PINCTRL_DT_INST_DEFINE(n)
 #define CDC200_PINCTRL_GET(n)  PINCTRL_DT_INST_DEV_CONFIG_GET(n)
 #endif
+
+#define CDC200_GET_CLK(i)                                                                         \
+	IF_ENABLED(DT_INST_NODE_HAS_PROP(i, clocks),                                              \
+		(.clk_dev = DEVICE_DT_GET(DT_INST_CLOCKS_CTLR(i)),                                \
+		 .dpi_cid = (clock_control_subsys_t)DT_INST_CLOCKS_CELL_BY_NAME(i,                \
+			 dpi_clk_en, clkid),                                                      \
+		 .pix_cid = (clock_control_subsys_t)DT_INST_CLOCKS_CELL_BY_NAME(i,                \
+			 pixel_clk, clkid),))                                                     \
+
 /********************** Device Definition per instance Macros. ***********************/
 #define CDC200_DEFINE(i)                                                                           \
 	CDC200_PINCTRL_INIT(i);                                                                    \
@@ -873,6 +974,8 @@ static const struct display_driver_api cdc200_display_api = {
 		.irq_config_func = cdc200_config_func_##i,                                         \
 		.pcfg = CDC200_PINCTRL_GET(i),                                                     \
 		.bg_color = DT_INST_PROP(i, bg_color),                                             \
+                                                                                                   \
+		CDC200_GET_CLK(i)                                                                  \
                                                                                                    \
 		.panel_cfg =                                                                       \
 			{                                                                          \
@@ -953,6 +1056,7 @@ static const struct display_driver_api cdc200_display_api = {
 		.curr_fb[1] = FB1(i),                                                              \
 		.next_fb[0] = FB0(i),                                                              \
 		.next_fb[1] = FB1(i),                                                              \
+		.clk_freq = DT_INST_PROP_OR(i, clock_frequency, 0),                                \
 	};                                                                                         \
                                                                                                    \
 	DEVICE_DT_INST_DEFINE(i, cdc200_init, NULL, &data##i, &config##i, POST_KERNEL,             \

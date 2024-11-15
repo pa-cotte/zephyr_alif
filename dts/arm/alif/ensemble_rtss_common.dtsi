@@ -947,6 +947,9 @@
 		pinctrl-0 = < &pinctrl_cdc200 >;
 		pinctrl-names = "default";
 
+		clocks = <&clock ALIF_DPI_CLK>, <&clock ALIF_CDC200_PIX_SYST_ACLK>;
+		clock-names = "dpi-clk-en", "pixel-clk";
+
 		/* Panel Config */
 		width = <800>;
 		height = <480>;
@@ -960,6 +963,7 @@
 		vsync-active = <0>;
 		de-active = <1>;
 		pixelclk-active = <0>;
+		clock-frequency = <2779910>;
 		/* BG Layer color is 24-bit in size. */
 		bg-color = <0x5a5a5a>;
 
@@ -1104,6 +1108,10 @@
 		      <0x49032000 0x1000>,
 		      <0x49033000 0x1000>;
 		reg-names = "expmst_reg", "dsi_reg", "csi_reg";
+
+		clocks = <&clock ALIF_MIPI_PLLREF_CLK>;
+		clock-names = "pllref-clk";
+
 		ref-frequency = <38400000>;
 		cfg-clk-frequency = <25000000>;
 		status = "okay";
@@ -1118,6 +1126,9 @@
 		cdc-if = <&cdc200>;
 		phy-if = <&dphy>;
 
+		clocks = <&clock ALIF_DSI_CLK>, <&clock ALIF_CDC200_PIX_SYST_ACLK>,
+			<&clock ALIF_MIPI_TXDPHY_CLK>;
+		clock-names = "dsi-clk-en", "pixel-clk", "tx-dphy-clk";
 		dpi-shutdn-active = <1>;
 		dpi-colorm-active = <1>;
 		vid-pkt-size = <480>;
@@ -1125,7 +1136,7 @@
 		crc-recv-en;
 		frame-ack-en;
 		//dpi-video-pattern-gen = "horizontal-color-bar";
-		status = "okay";
+		status = "disabled";
 
 		mw405: mw405@0 {
 			status = "okay";
