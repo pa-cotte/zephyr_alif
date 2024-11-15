@@ -6,7 +6,7 @@ description: ILI9340 320x240 display controller
 
 compatible: "ilitek,ili9340"
 
-include: ilitek,ili9xxx-common.yaml
+include: ["mipi-dbi-spi-device.yaml", "ilitek,ili9xxx-common.yaml"]
 
 properties:
   gamset:

@@ -23,6 +23,7 @@
 
 /* VBAT Modules */
 #define VBAT_BASE                       0x1A609000UL
+#define VBAT_PWR_CTRL                   (VBAT_BASE + 0x8)
 #define LPRTC0_CLK_EN                   (VBAT_BASE + 0x10)
 #define LPRTC1_CLK_EN                   (VBAT_BASE + 0x14)
 
