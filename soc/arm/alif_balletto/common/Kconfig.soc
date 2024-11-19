@@ -111,13 +111,13 @@ config  ROM_ITCM
 	  Enable this to build applications to run from the ITCM.
 
 # Workaround for not being able to have commas in macro arguments
-DT_CHOSEN_Z_FLASH := zephyr,flash
-DT_CHOSEN_Z_ITCM := zephyr,itcm
+#DT_CHOSEN_Z_FLASH := zephyr,flash
+#DT_CHOSEN_Z_ITCM := zephyr,itcm
 
 config FLASH_SIZE
-	default $(dt_chosen_reg_size_int,$(DT_CHOSEN_Z_FLASH),0,K) if !ROM_ITCM
-	default $(dt_chosen_reg_size_int,$(DT_CHOSEN_Z_ITCM),0,K) if ROM_ITCM
+	default $(dt_node_reg_size_int,/soc/mram_flash@80000000,0,K) if !ROM_ITCM
+	default $(dt_node_reg_size_int,/soc/itcm@0,0,K) if ROM_ITCM
 
 config FLASH_BASE_ADDRESS
-	default $(dt_chosen_reg_addr_hex,$(DT_CHOSEN_Z_FLASH)) if !ROM_ITCM
-	default $(dt_chosen_reg_addr_hex,$(DT_CHOSEN_Z_ITCM)) if ROM_ITCM
+	default $(dt_node_reg_addr_hex,/soc/mram_flash@80000000) if !ROM_ITCM
+	default $(dt_node_reg_addr_hex,/soc/itcm@0) if ROM_ITCM

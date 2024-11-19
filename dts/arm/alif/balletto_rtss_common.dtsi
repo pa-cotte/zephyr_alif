@@ -896,7 +896,6 @@
 		zephyr,code-partition = &slot0_partition;
 		zephyr,sram = &dtcm;
 		zephyr,dtcm = &dtcm;
-		zephyr,itcm = &itcm;
 		zephyr,ieee802154 = &ieee802154;
 		zephyr,hci-uart = &uart_hci;
 		zephyr,ahi-uart = &uart_ahi;
