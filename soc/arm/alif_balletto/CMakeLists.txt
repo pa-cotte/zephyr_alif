@@ -9,6 +9,10 @@ zephyr_sources_ifdef(CONFIG_PM_RTSS
   common/power_rtss.c
   )
 
+zephyr_sources_ifdef(CONFIG_ARM_SECURE_FIRMWARE common/tgu_M55.c)
+
+zephyr_linker_sources_ifdef(CONFIG_ARM_SECURE_FIRMWARE SECTIONS common/alif_ns.ld)
+
 if(CONFIG_PM_RTSS AND CONFIG_POWEROFF)
   zephyr_sources(common/poweroff_rtss.c)
 endif()

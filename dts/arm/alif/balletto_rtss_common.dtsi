@@ -58,6 +58,13 @@
 				status = "okay";
 			};
 		};
+
+		ns: ns@2002a000 {
+			compatible = "zephyr,memory-region", "mmio-region";
+			reg = <0x2002a000 DT_SIZE_K(384)>;
+			zephyr,memory-region = "NS";
+		};
+
 		peripheral@40000000 {
 			#address-cells = < 0x1 >;
 			#size-cells = < 0x1 >;

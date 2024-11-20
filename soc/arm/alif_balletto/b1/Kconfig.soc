@@ -17,6 +17,9 @@ config SOC_B1_DK_RTSS_HE
 	select ARMV8_M_DSP
 	select ARMV8_1_M_MVEI
 	select ARMV8_1_M_MVEF
+	select BUILD_NO_GAP_FILL
+	select CPU_HAS_ARM_SAU
+	select ARM_SECURE_FIRMWARE if DISPLAY
 
 config SOC_B1_FPGA_RTSS_HE
 	bool "SOC_B1_RTSS_HE"

@@ -14,6 +14,11 @@
 #endif
 #include <zephyr/cache.h>
 
+#ifdef CONFIG_ARM_SECURE_FIRMWARE
+#include "partition_M55_HE.h"
+#include "tgu_M55.h"
+#endif
+
 /**
  * @brief Perform basic hardware initialization at boot.
  *
@@ -149,6 +154,11 @@ static int balletto_b1_dk_rtss_he_init(void)
 		 * sys_write32(0x140001, HE_CAMERA_PIXCLK);
 		 */
 	}
+
+#ifdef CONFIG_ARM_SECURE_FIRMWARE
+	alif_tz_sau_setup();
+	alif_tgu_setup();
+#endif
 
 	return 0;
 }
