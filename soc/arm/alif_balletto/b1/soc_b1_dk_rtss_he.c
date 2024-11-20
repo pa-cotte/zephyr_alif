@@ -155,6 +155,23 @@ static int balletto_b1_dk_rtss_he_init(void)
 		 */
 	}
 
+	if (IS_ENABLED(CONFIG_DISPLAY)) {
+		/* Enable CDC200 peripheral clock. */
+		sys_set_bits(EXPMST_PERIPH_CLK_EN, BIT(1));
+
+		/*
+		 * CDC200 clock Pixel clock for parallel display.
+		 *  Pixclk control register:
+		 *	clk_divisor[24:16] - 0x90 (144)
+		 * Pixel clock observed = (400 / 144) MHz = 2.77 MHz
+		 * Parallel display tested at 5 FPS.
+		 */
+		sys_write32(0x900001, EXPMST_CDC200_PIXCLK_CTRL);
+
+		/*CDC200 Flex GPIO*/
+		sys_write32(0x1, VBAT_GPIO_CTRL_EN);
+	}
+
 #ifdef CONFIG_ARM_SECURE_FIRMWARE
 	alif_tz_sau_setup();
 	alif_tgu_setup();

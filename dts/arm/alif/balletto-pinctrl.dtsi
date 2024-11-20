@@ -491,4 +491,37 @@
 			read_enable = < 0x1 >;
 		};
 	};
+
+	pinctrl_cdc200: pinctrl_cdc200 {
+		group0 {
+			pinmux = < PIN_P1_4__CDC_PCLK_A >,
+				 < PIN_P5_0__CDC_D0_A >,
+				 < PIN_P5_1__CDC_D1_A >,
+				 < PIN_P5_2__CDC_D2_A >,
+				 < PIN_P5_3__CDC_D3_A >,
+				 < PIN_P5_4__CDC_D4_A >,
+				 < PIN_P5_5__CDC_D5_A >,
+				 < PIN_P5_6__CDC_D6_A >,
+				 < PIN_P5_7__CDC_D7_A >,
+				 < PIN_P6_0__CDC_D8_A >,
+				 < PIN_P6_1__CDC_D9_A >,
+				 < PIN_P6_2__CDC_D10_A >,
+				 < PIN_P6_3__CDC_D11_A >,
+				 < PIN_P6_4__CDC_D12_A >,
+				 < PIN_P6_5__CDC_D13_A >,
+				 < PIN_P6_6__CDC_D14_A >,
+				 < PIN_P6_7__CDC_D15_A >,
+				 < PIN_P7_0__CDC_D16_A >,
+				 < PIN_P7_1__CDC_D17_A >,
+				 < PIN_P7_2__CDC_D18_A >,
+				 < PIN_P7_3__CDC_D19_A >,
+				 < PIN_P7_4__CDC_D20_A >,
+				 < PIN_P7_5__CDC_D21_A >,
+				 < PIN_P7_6__CDC_D22_A >,
+				 < PIN_P7_7__CDC_D23_A >,
+				 < PIN_P1_5__CDC_DE_A >,
+				 < PIN_P1_6__CDC_HSYNC_A >,
+				 < PIN_P1_7__CDC_VSYNC_A >;
+		};
+	};
 };

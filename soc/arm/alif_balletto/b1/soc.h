@@ -52,6 +52,11 @@
 #define CLKCTRL_PER_SLV			0X4902F000UL
 #define SSI_CTRL_EN			(CLKCTRL_PER_SLV + 0x28)
 
+/* Expansion Master-0 registers. */
+#define EXPMST_BASE			0x4903F000
+#define EXPMST_CDC200_PIXCLK_CTRL	(EXPMST_BASE + 0x4)
+#define EXPMST_PERIPH_CLK_EN		(EXPMST_BASE + 0xC)
+
 /* M55-HE Config Registers */
 #define M55HE_CFG_BASE			0x43007000UL
 #define HE_PER_CLK_EN			(M55HE_CFG_BASE + 0x10)
