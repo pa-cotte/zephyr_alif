@@ -6,6 +6,8 @@
 #include <zephyr/dt-bindings/timer/alif_utimer.h>
 #include <zephyr/dt-bindings/pwm/pwm.h>
 #include <zephyr/dt-bindings/clock/alif_balletto_clocks.h>
+#include <zephyr/dt-bindings/mipi_dsi/mipi_dsi.h>
+#include <zephyr/dt-bindings/display/ili9xxx.h>
 #include <zephyr/dt-bindings/gpio/gpio.h>
 #include <mem.h>
 / {
@@ -585,6 +587,8 @@
 			pinctrl-0 = < &pinctrl_cdc200 >;
 			pinctrl-names = "default";
 
+			clocks = <&clock ALIF_DPI_CLK>, <&clock ALIF_CDC200_PIX_SYST_ACLK>;
+			clock-names = "dpi-clk-en", "pixel-clk";
 			/* Panel Config */
 			width = <800>;
 			height = <480>;
@@ -598,6 +602,7 @@
 			vsync-active = <0>;
 			de-active = <1>;
 			pixelclk-active = <0>;
+			clock-frequency = <2779910>;
 			/* BG Layer color is 24-bit in size. */
 			bg-color = <0x5a5a5a>;
 
@@ -626,6 +631,64 @@
 			const-alpha-l2 = <0xaf>;
 		};
 
+		dphy: d-phy@4903f000{
+			compatible = "snps,designware-dphy";
+			reg = <0x4903f000 0x40>,
+			      <0x49032000 0x1000>,
+			      <0x49033000 0x1000>;
+			reg-names = "expmst_reg", "dsi_reg", "csi_reg";
+
+			clocks = <&clock ALIF_MIPI_PLLREF_CLK>;
+			clock-names = "pllref-clk";
+
+			ref-frequency = <38400000>;
+			cfg-clk-frequency = <25000000>;
+			status = "okay";
+		};
+
+		mipi_dsi: mipi-dsi@49032000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "snps,designware-dsi";
+			reg = <0x49032000 0x1000>;
+			interrupts = <343 3>;
+			cdc-if = <&cdc200>;
+			phy-if = <&dphy>;
+
+			clocks = <&clock ALIF_DSI_CLK>, <&clock ALIF_CDC200_PIX_SYST_ACLK>,
+				<&clock ALIF_MIPI_TXDPHY_CLK>;
+			clock-names = "dsi-clk-en", "pixel-clk", "tx-dphy-clk";
+			dpi-shutdn-active = <1>;
+			dpi-colorm-active = <1>;
+			vid-pkt-size = <320>;
+			ecc-recv-en;
+			crc-recv-en;
+			frame-ack-en;
+			panel-max-lane-bandwidth = <500000000>;
+			//dpi-video-pattern-gen = "vertical-color-bar";
+			status = "disabled";
+
+			ili9488: ili9488@0 {
+				compatible = "ilitek,ili9488";
+				reg = <0>;
+				pixel-format = <ILI9XXX_PIXEL_FORMAT_RGB666_PACKED>;
+				width = <320>;
+				height = <480>;
+				rotation = <0>;
+
+				display-inversion;
+
+				vmctrl = [00 25 80 25];
+				pwctrl1 = [0f 0c];
+				pwctrl2 = [41];
+				pgamctrl = [00 10 14 01 0e 04 33 56 48 03 0c 0b 2b 34 0f];
+				ngamctrl = [00 12 18 05 12 06 40 34 57 06 10 0c 3b 3f 0f];
+				data-lanes = <1>;
+				reset-gpios = <&gpio8 0 GPIO_ACTIVE_LOW>;
+				bl-gpios = <&gpio8 1 GPIO_ACTIVE_HIGH>;
+				status = "disabled";
+			};
+		};
 		ieee802154: ieee802154 {
 			compatible = "alif,ahi-ieee802154";
 			status = "disabled";
@@ -987,6 +1050,8 @@
 	aliases {
 		led0 = &aled0;
 		watchdog0 = &wdog0;
+		mipi-dsi = &mipi_dsi;
+		panel = &ili9488;
 	};
 	leds {
 		compatible = "gpio-leds";
