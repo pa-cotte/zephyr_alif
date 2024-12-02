@@ -114,12 +114,12 @@ static int balletto_b1_dk_rtss_he_init(void)
 
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(lpspi0), okay)
 		/*Clock : LP-SPI*/
-		sys_set_bit(HE_PER_CLK_EN, BIT(16));
+		sys_set_bits(HE_PER_CLK_EN, BIT(16));
 
 		/* LP-SPI0 Mode Selection */
 		/* To Slave Set Bit : 15  */
 		/* To Master Clear Bit : 15 */
-		sys_clear_bit(HE_PER_CLK_EN, BIT(15));
+		sys_clear_bits(HE_PER_CLK_EN, BIT(15));
 
 		/*LP-SPI0 Flex GPIO*/
 		sys_write32(0x1, VBAT_GPIO_CTRL_EN);
