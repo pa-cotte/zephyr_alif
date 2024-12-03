@@ -121,3 +121,9 @@ config FLASH_SIZE
 config FLASH_BASE_ADDRESS
 	default $(dt_node_reg_addr_hex,/soc/mram_flash@80000000) if !ROM_ITCM
 	default $(dt_node_reg_addr_hex,/soc/itcm@0) if ROM_ITCM
+
+config  NONSECURE0_REGION
+	string
+	default "NS" if ARM_SECURE_FIRMWARE && $(dt_nodelabel_enabled,ns)
+	help
+	    Provide config Non-Secure region

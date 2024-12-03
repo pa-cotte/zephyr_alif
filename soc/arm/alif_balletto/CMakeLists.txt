@@ -11,7 +11,14 @@ zephyr_sources_ifdef(CONFIG_PM_RTSS
 
 zephyr_sources_ifdef(CONFIG_ARM_SECURE_FIRMWARE common/tgu_M55.c)
 
-zephyr_linker_sources_ifdef(CONFIG_ARM_SECURE_FIRMWARE SECTIONS common/alif_ns.ld)
+if(CMAKE_C_COMPILER_ID STREQUAL "ARMClang")
+if(CONFIG_ARM_SECURE_FIRMWARE)
+  zephyr_linker_section_configure(SECTION ${CONFIG_NONSECURE0_REGION} INPUT ".alif_ns" )
+  zephyr_linker_section_configure(SECTION ${CONFIG_NONSECURE0_REGION} INPUT ".alif_ns.*" )
+endif()
+else()
+  zephyr_linker_sources_ifdef(CONFIG_ARM_SECURE_FIRMWARE SECTIONS common/alif_ns.ld)
+endif()
 
 if(CONFIG_PM_RTSS AND CONFIG_POWEROFF)
   zephyr_sources(common/poweroff_rtss.c)

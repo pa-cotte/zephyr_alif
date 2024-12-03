@@ -882,15 +882,6 @@ static const struct display_driver_api cdc200_display_api = {
 #define FB1(i) COND_CODE_1(DT_INST_PROP(i, enable_l2), (fb1_##i), (NULL))
 
 #else
-
-#if defined(NO_RELOCATE_SRAM0)
-#define ALLOCATE_FB0(i)
-#define ALLOCATE_FB1(i)
-
-#define FB0(i) ((uint8_t *)0x02000000)
-#define FB1(i) ((uint8_t *)0x02177000)
-
-#else
 #define FRAME_BUFFER_SECTION __alif_sram0_section
 
 #define ALLOCATE_FB0(i)                                                                            \
@@ -919,8 +910,6 @@ static const struct display_driver_api cdc200_display_api = {
 #define FB0(i) COND_CODE_1(DT_INST_PROP(i, enable_l1), (fb0_##i), (NULL))
 
 #define FB1(i) COND_CODE_1(DT_INST_PROP(i, enable_l2), (fb1_##i), (NULL))
-
-#endif
 #endif
 
 #define FB0_SIZE(i)                                                                                \

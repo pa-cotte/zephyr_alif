@@ -80,3 +80,21 @@ endif
 
 config ROM_START_OFFSET
 	default 0x800 if BOOTLOADER_MCUBOOT
+
+config  NONSECURE0_REGION
+	string
+	default "NS" if ARM_SECURE_FIRMWARE && $(dt_nodelabel_enabled,ns)
+	help
+	    Provide config Non-Secure region
+
+config  SRAM0_REGION
+	string
+	default "SRAM0" if $(dt_nodelabel_enabled,sram0)
+	help
+	    Provide config SRAM0 region
+
+config  SRAM1_REGION
+	string
+	default "SRAM1" if $(dt_nodelabel_enabled,sram1)
+	help
+	    Provide config SRAM1 region
