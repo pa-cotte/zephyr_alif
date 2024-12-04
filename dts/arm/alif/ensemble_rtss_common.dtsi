@@ -1452,7 +1452,7 @@
 
 	cmp3: cmp3@49026000 {
 		compatible = "alif,cmp";
-		reg = <0x49023000 0x1000>,
+		reg = <0x49026000 0x1000>,
 			  <0x49023000 0x1000>;
 		reg-names	 = "cmp_reg", "config_reg";
 		pinctrl-0	 = < &pinctrl_cmp3 >;
