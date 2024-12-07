@@ -8,6 +8,11 @@
 
 #define __MPU_PRESENT 1
 
+/* Host Base System Control Registers */
+#define HOST_BASE_SYS_CTRL	0x1A010000
+#define HOST_BSYS_PWR_REQ	(HOST_BASE_SYS_CTRL + 0x400)
+#define HOST_BSYS_PWR_ST	(HOST_BASE_SYS_CTRL + 0x404)
+
 /* CGU registers. */
 #define CGU_BASE		0x1A602000
 #define CGU_PLL_CLK_SEL		(CGU_BASE + 0x8)
@@ -87,6 +92,7 @@
 
 /* ANA Register */
 #define ANA_BASE            0x1A60A000
+#define ANA_VBAT_REG1       (ANA_BASE + 0x38)
 #define ANA_VBAT_REG2       (ANA_BASE + 0x3C)
 
 

@@ -9,3 +9,6 @@ menuconfig CDC200
 	depends on DT_HAS_TES_CDC_2_1_ENABLED
 	help
 	  Enable support for CDC200 driver controller.
+
+config FB_USES_DTCM_REGION
+	bool "CDC200 uses DTCM region for buffers"

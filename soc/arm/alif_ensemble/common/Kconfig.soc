@@ -34,17 +34,7 @@ config SPI_DW_ENABLE
 	  Enable Designware SPI driver.
 	select HAS_SPI_DW
 
-config ENSEMBLE_PDM
-	bool "Enable PDM in Ensemble family"
-	select AUDIO
-	select AUDIO_CODEC
-	select AUDIO_DMIC
-	help
-	  Enable PDM in Ensemble family
-
 if COUNTER_SNPS_DW
-menu "LPTIMER Configurations"
-
 config LPTIMER0_OUTPUT_TOGGLE
 	bool "LPTimer0 Output Toggle"
 	help
@@ -66,30 +56,6 @@ config LPTIMER1_EXT_CLK_FREQ
 	default 0
 	help
 	  Provide lptimer 1 clock frequency for external clock source.
-
-config LPTIMER2_OUTPUT_TOGGLE
-	bool "LPTimer2 Output Toggle"
-	help
-	  Enable lptimer 2 output toggle.
-
-config LPTIMER2_EXT_CLK_FREQ
-	int "LPTimer2 Ext-clock source Frequency value"
-	default 0
-	help
-	  Provide lptimer 2 clock frequency for external clock source.
-
-config LPTIMER3_OUTPUT_TOGGLE
-	bool "LPTimer3 Output Toggle"
-	help
-	  Enable lptimer 3 output toggle.
-
-config LPTIMER3_EXT_CLK_FREQ
-	int "LPTimer3 Ext-clock source Frequency value"
-	default 0
-	help
-	  Provide lptimer 3 clock frequency for external clock source.
-
-endmenu # LPTIMER Configurations
 endif # COUNTER_SNPS_DW
 
 config  ROM_ITCM
@@ -114,3 +80,21 @@ endif
 
 config ROM_START_OFFSET
 	default 0x800 if BOOTLOADER_MCUBOOT
+
+config  NONSECURE0_REGION
+	string
+	default "NS" if ARM_SECURE_FIRMWARE && $(dt_nodelabel_enabled,ns)
+	help
+	    Provide config Non-Secure region
+
+config  SRAM0_REGION
+	string
+	default "SRAM0" if $(dt_nodelabel_enabled,sram0)
+	help
+	    Provide config SRAM0 region
+
+config  SRAM1_REGION
+	string
+	default "SRAM1" if $(dt_nodelabel_enabled,sram1)
+	help
+	    Provide config SRAM1 region

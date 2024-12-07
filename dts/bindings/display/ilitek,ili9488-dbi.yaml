@@ -1,11 +1,11 @@
 # Copyright (c) 2020, Teslabs Engineering S.L.
 # SPDX-License-Identifier: Apache-2.0
 
-description: ILI9488 320x480 display controller
+description: ILI9488 320x480 display controller accessed via DBI interface
 
 compatible: "ilitek,ili9488"
 
-include: ilitek,ili9xxx-common.yaml
+include: ["mipi-dbi-spi-device.yaml", "ilitek,ili9xxx-common.yaml"]
 
 properties:
   frmctr1:

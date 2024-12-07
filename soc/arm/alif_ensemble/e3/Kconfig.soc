@@ -33,7 +33,7 @@ endchoice
 config SOC_SERIES_ENSEMBLE
 	bool "Alif Ensemble Series"
 
-if PM
+if (PM || POWEROFF)
 
 config PM_RTSS
 	bool
@@ -42,3 +42,27 @@ config PM_RTSS
 		Enable Power Management for RTSS cores
 
 endif
+
+if COUNTER_SNPS_DW
+config LPTIMER2_OUTPUT_TOGGLE
+	bool "LPTimer2 Output Toggle"
+	help
+	  Enable lptimer 2 output toggle.
+
+config LPTIMER2_EXT_CLK_FREQ
+	int "LPTimer2 Ext-clock source Frequency value"
+	default 0
+	help
+	  Provide lptimer 2 clock frequency for external clock source.
+
+config LPTIMER3_OUTPUT_TOGGLE
+	bool "LPTimer3 Output Toggle"
+	help
+	  Enable lptimer 3 output toggle.
+
+config LPTIMER3_EXT_CLK_FREQ
+	int "LPTimer3 Ext-clock source Frequency value"
+	default 0
+	help
+	  Provide lptimer 3 clock frequency for external clock source.
+endif # COUNTER_SNPS_DW

@@ -699,12 +699,17 @@ static int flash_alif_ospi_init(const struct device *dev)
 	}
 
 	/* Prepare command and address for setting flash in octal mode */
+#ifdef CONFIG_FLASH_ADDRESS_IN_SINGLE_FIFO_LOCATION
+	dev_data->cmd_buf[0] = CMD_WRITE_VOL_CONFIG;
+	dev_data->cmd_buf[1] = (uint8_t)(IO_MODE_ADDRESS >> 0);
+	dev_data->cmd_buf[2] = OCTAL_DDR;
+#else
 	dev_data->cmd_buf[0] = CMD_WRITE_VOL_CONFIG;
 	dev_data->cmd_buf[1] = (uint8_t)(IO_MODE_ADDRESS >> 16);
 	dev_data->cmd_buf[2] = (uint8_t)(IO_MODE_ADDRESS >> 8);
 	dev_data->cmd_buf[3] = (uint8_t)(IO_MODE_ADDRESS >> 0);
 	dev_data->cmd_buf[4] = OCTAL_DDR;
-
+#endif
 	dev_data->trans_conf.addr_len = OSPI_ADDR_LENGTH_24_BITS;
 
 	/* Select Chip */
@@ -721,7 +726,8 @@ static int flash_alif_ospi_init(const struct device *dev)
 
 	k_event_clear(&dev_data->event_f, OSPI_EVENT_TRANSFER_COMPLETE | OSPI_EVENT_DATA_LOST);
 
-	ret = alif_hal_ospi_send(dev_data->ospi_handle, dev_data->cmd_buf, 5);
+	ret = alif_hal_ospi_send(dev_data->ospi_handle,
+		dev_data->cmd_buf, CONFIG_FLASH_PREPARE_CMD_LEN);
 	if (ret != 0) {
 		ret = err_map_alif_hal_to_zephyr(ret);
 		return ret;

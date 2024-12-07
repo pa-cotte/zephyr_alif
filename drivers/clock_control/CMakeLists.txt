@@ -30,7 +30,14 @@ zephyr_library_sources_ifdef(CONFIG_CLOCK_CONTROL_RENESAS_RA          clock_cont
 zephyr_library_sources_ifdef(CONFIG_CLOCK_CONTROL_AMBIQ               clock_control_ambiq.c)
 zephyr_library_sources_ifdef(CONFIG_CLOCK_CONTROL_PWM                 clock_control_pwm.c)
 zephyr_library_sources_ifdef(CONFIG_CLOCK_CONTROL_RPI_PICO            clock_control_rpi_pico.c)
-zephyr_library_sources_ifdef(CONFIG_CLOCK_CONTROL_ALIF                clock_control_alif.c)
+
+if(CONFIG_CLOCK_CONTROL_ALIF)
+if(CONFIG_SOC_SERIES_ENSEMBLE_E1C OR CONFIG_SOC_SERIES_BALLETTO)
+zephyr_library_sources(clock_control_alif_balletto.c)
+elseif(CONFIG_SOC_SERIES_ENSEMBLE_E7 OR CONFIG_SOC_SERIES_ENSEMBLE_E3)
+zephyr_library_sources(clock_control_alif_ensemble.c)
+endif()
+endif()
 
 if(CONFIG_CLOCK_CONTROL_STM32_CUBE)
   zephyr_library_sources_ifdef(CONFIG_CLOCK_STM32_MUX clock_stm32_mux.c)

@@ -6,6 +6,11 @@
 #ifndef _SOC_H_
 #define _SOC_H_
 
+/* Host Base System Control Registers */
+#define HOST_BASE_SYS_CTRL	0x1A010000
+#define HOST_BSYS_PWR_REQ	(HOST_BASE_SYS_CTRL + 0x400)
+#define HOST_BSYS_PWR_ST	(HOST_BASE_SYS_CTRL + 0x404)
+
 /* CGU registers. */
 #define CGU_BASE		0x1A602000
 #define CGU_PLL_CLK_SEL		(CGU_BASE + 0x8)
@@ -66,6 +71,9 @@
 #define M55HP_CFG_HP_DMA_PERIPH		(M55HP_CFG_HP_CFG_BASE + 0x8)
 #define M55HP_CFG_HP_DMA_SEL		(M55HP_CFG_HP_CFG_BASE + 0xC)
 #define M55HP_CFG_HP_CLK_ENA		(M55HP_CFG_HP_CFG_BASE + 0x10)
+
+/* LPGPIO Base address for LPTIMER pin config */
+#define LPGPIO_BASE     0x42002008UL
 
 #define __NVIC_PRIO_BITS          NUM_IRQ_PRIO_BITS
 
