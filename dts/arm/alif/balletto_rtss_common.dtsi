@@ -312,18 +312,7 @@
 			pinctrl-names = "default";
 			interrupt-parent = <&nvic>;
 			interrupts = <132 3>;
-			status = "okay";
-			mt9m114: mt9m114@48{
-				compatible = "aptina,mt9m114";
-				reg = <0x48>;
-				status = "okay";
-
-				port {
-					mt9m114_ep_out: endpoint {
-						remote-endpoint = < &lpcam_ep_in >;
-					};
-				};
-			};
+			status = "disabled";
 		};
 
 		i2c1: i2c1@49011000 {
@@ -545,19 +534,7 @@
 
 			pinctrl-0 = < &pinctrl_lpcam >;
 			pinctrl-names = "default";
-
-			sensor = <&mt9m114>;
-			lp-cam;
-			status = "okay";
-			port {
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				lpcam_ep_in: endpoint@0 {
-					reg = <0>;
-					remote-endpoint = <&mt9m114_ep_out>;
-				};
-			};
+			status = "disabled";
 		};
 
 		cdc200: cdc200@49031000 {
