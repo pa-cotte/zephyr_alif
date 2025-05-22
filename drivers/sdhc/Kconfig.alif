@@ -1,0 +1,53 @@
+# Copyright (c) 2025 Alif Semiconductor
+# SPDX-License-Identifier: Apache-2.0
+
+config ALIF_SDIO
+	bool "Alif SDIO driver"
+	default y
+	depends on DT_HAS_ALIF_SDIO_ENABLED
+	select SDHC_SUPPORTS_NATIVE_MODE
+	help
+	  Enable support for Alif SDIO controller driver.
+	  This driver supports SDIO protocol for general I/O functions 
+	  on Alif microcontroller family.
+
+if ALIF_SDIO
+
+config SDHC_INIT_PRIORITY
+	default 70
+	
+config ALIF_SDIO_INIT_PRIORITY
+	int "Init priority"
+	default KERNEL_INIT_PRIORITY_DEVICE
+	help
+	  Device driver initialization priority.
+	  SDIO driver device must be initialized after the SD host controller.
+
+config ALIF_SDIO_LOG_LEVEL
+	int "Log level for Alif SDIO driver"
+	depends on LOG
+	range 0 4
+	default 3
+	help
+	  Sets log level for Alif SDIO driver.
+	  - 0: OFF
+	  - 1: ERROR
+	  - 2: WARNING
+	  - 3: INFO
+	  - 4: DEBUG
+
+config ALIF_SDIO_CMD_RETRY
+	int "Command retry count"
+	default 3
+	help
+	  Number of times to retry failed SDIO commands.
+	  Some cards may need retries during initialization.
+
+config ALIF_SDIO_ENABLE_DMA
+	bool "Enable DMA support"
+	default y
+	help
+	  Enable DMA support for SDIO data transfers.
+	  Disabling this option will use PIO mode instead.
+
+endif # ALIF_SDIO
