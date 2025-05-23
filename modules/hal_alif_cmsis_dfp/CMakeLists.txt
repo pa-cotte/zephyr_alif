@@ -3,3 +3,4 @@
 
 add_subdirectory(${ZEPHYR_CURRENT_MODULE_DIR} hal_alif_cmsis_dfp)
 
+zephyr_include_directories(.)
