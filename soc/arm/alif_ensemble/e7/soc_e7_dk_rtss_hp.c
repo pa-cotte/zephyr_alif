@@ -64,7 +64,7 @@ static int ensemble_e7_dk_rtss_hp_init(void)
 	 * here for SPI1 as master set the 9th bit. So the value to feed SPI1 as
 	 * master and remaining as slave is 0x0202.
 	 */
-	sys_write32(0x0202, 0x4902F028);
+	sys_write32(0x0808, 0x4902F028);
 
 	data = sys_read32(0x43007010);
 	data |= (1 << 16);
