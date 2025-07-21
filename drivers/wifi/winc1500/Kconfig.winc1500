@@ -61,6 +61,15 @@ config WIFI_WINC1500_OFFLOAD_MAX_SOCKETS
 	  Set the number of sockets that can be managed through the driver
 	  and the chip.
 
+config WIFI_WINC1500_SOCKET_OFFLOAD
+	bool "Enable socket offloading for WINC1500"
+	depends on NET_SOCKETS_OFFLOAD
+	help
+	  Enable socket offloading for WINC1500 WiFi driver using
+	  the modern NET_SOCKET_OFFLOAD_REGISTER API. This provides
+	  better integration with Zephyr's socket layer compared to
+	  the legacy net_offload API.
+
 choice
 	bool "In which region is the chip running?"
 	default WIFI_WINC1500_REGION_NORTH_AMERICA
