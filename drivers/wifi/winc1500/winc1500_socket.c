@@ -61,18 +61,30 @@ NMI_API void socketInit(void);
 typedef void (*tpfAppSocketCb)(SOCKET sock, uint8 u8Msg, void *pvMsg);
 typedef void (*tpfAppResolveCb)(uint8 *pu8DomainName, uint32 u32ServerIP);
 NMI_API void registerSocketCallback(tpfAppSocketCb socket_cb, tpfAppResolveCb resolve_cb);
-NMI_API SOCKET winc1500_socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags);
-NMI_API sint8 winc1500_socket_bind(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen);
-NMI_API sint8 winc1500_socket_listen(SOCKET sock, uint8 backlog);
-NMI_API sint8 winc1500_socket_accept(SOCKET sock, struct sockaddr *addr, uint8 *addrlen);
-NMI_API sint8 winc1500_socket_connect(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen);
-NMI_API sint16 winc1500_socket_recv(SOCKET sock, void *pvRecvBuf, uint16 u16BufLen,
-				    uint32 u32Timeoutmsec);
-NMI_API sint16 winc1500_socket_send(SOCKET sock, void *pvSendBuffer, uint16 u16SendLength,
-				    uint16 u16Flags);
-NMI_API sint16 winc1500_socket_sendto(SOCKET sock, void *pvSendBuffer, uint16 u16SendLength,
-				      uint16 flags, struct sockaddr *pstrDestAddr, uint8 u8AddrLen);
+NMI_API SOCKET socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags);
+NMI_API sint8 bind(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen);
+NMI_API sint8 listen(SOCKET sock, uint8 backlog);
+NMI_API sint8 accept(SOCKET sock, struct sockaddr *addr, uint8 *addrlen);
+NMI_API sint8 connect(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen);
+NMI_API sint16 recv(SOCKET sock, void *pvRecvBuf,
+            uint16 u16BufLen, uint32 u32Timeoutmsec);
+NMI_API sint16 send(SOCKET sock, void *pvSendBuffer,
+            uint16 u16SendLength, uint16 u16Flags);
+NMI_API sint16 sendto(SOCKET sock, void *pvSendBuffer,
+              uint16 u16SendLength, uint16 flags,
+              struct sockaddr *pstrDestAddr, uint8 u8AddrLen);
 NMI_API sint8 winc1500_close(SOCKET sock);
+
+/* Forward declarations des wrappers pour éviter les warnings */
+SOCKET winc1500_socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags);
+sint8 winc1500_socket_bind(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen);
+sint8 winc1500_socket_listen(SOCKET sock, uint8 backlog);
+sint8 winc1500_socket_accept(SOCKET sock, struct sockaddr *addr, uint8 *addrlen);
+sint8 winc1500_socket_connect(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen);
+sint16 winc1500_socket_recv(SOCKET sock, void *pvRecvBuf, uint16 u16BufLen, uint32 u32Timeoutmsec);
+sint16 winc1500_socket_send(SOCKET sock, void *pvSendBuffer, uint16 u16SendLength, uint16 u16Flags);
+sint16 winc1500_socket_sendto(SOCKET sock, void *pvSendBuffer, uint16 u16SendLength,
+			      uint16 flags, struct sockaddr *pstrDestAddr, uint8 u8AddrLen);
 
 int __winc1500_socket_new(sa_family_t family, enum net_sock_type type,
 			  enum net_ip_protocol ip_proto, struct net_context **context)
@@ -232,4 +244,46 @@ int __winc1500_close(int sock)
 	memset(sd, 0, sizeof(struct socket_data));
 
 	return ret;
+}
+
+/* Wrappers pour compatibilité avec l'ancien code */
+SOCKET winc1500_socket(uint16 u16Domain, uint8 u8Type, uint8 u8Flags)
+{
+	return socket(u16Domain, u8Type, u8Flags);
+}
+
+sint8 winc1500_socket_bind(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen)
+{
+	return bind(sock, pstrAddr, u8AddrLen);
+}
+
+sint8 winc1500_socket_listen(SOCKET sock, uint8 backlog)
+{
+	return listen(sock, backlog);
+}
+
+sint8 winc1500_socket_accept(SOCKET sock, struct sockaddr *addr, uint8 *addrlen)
+{
+	return accept(sock, addr, addrlen);
+}
+
+sint8 winc1500_socket_connect(SOCKET sock, struct sockaddr *pstrAddr, uint8 u8AddrLen)
+{
+	return connect(sock, pstrAddr, u8AddrLen);
+}
+
+sint16 winc1500_socket_recv(SOCKET sock, void *pvRecvBuf, uint16 u16BufLen, uint32 u32Timeoutmsec)
+{
+	return recv(sock, pvRecvBuf, u16BufLen, u32Timeoutmsec);
+}
+
+sint16 winc1500_socket_send(SOCKET sock, void *pvSendBuffer, uint16 u16SendLength, uint16 u16Flags)
+{
+	return send(sock, pvSendBuffer, u16SendLength, u16Flags);
+}
+
+sint16 winc1500_socket_sendto(SOCKET sock, void *pvSendBuffer, uint16 u16SendLength,
+			      uint16 flags, struct sockaddr *pstrDestAddr, uint8 u8AddrLen)
+{
+	return sendto(sock, pvSendBuffer, u16SendLength, flags, pstrDestAddr, u8AddrLen);
 }
