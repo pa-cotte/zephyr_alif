@@ -25,6 +25,8 @@ manifest:
       url-base: https://github.com/BabbleSim
     - name: alif
       url-base: https://github.com/alifsemi
+    - name: github-pa-cotte
+      url-base: https://github.com/pa-cotte
 
   group-filter: [-babblesim, -optional]
 
@@ -139,9 +141,9 @@ manifest:
       groups:
         - fs
     - name: hal_alif
-      revision: 0db33a7136cc1512b292a4dbbd0e086d0e8a888e
+      revision: b5ae4e96a75762a8a96bf24ca5ba60fa51f84e79
       path: modules/hal/alif
-      remote: alif
+      remote: github-pa-cotte
       groups:
         - hal
     - name: hal_altera
